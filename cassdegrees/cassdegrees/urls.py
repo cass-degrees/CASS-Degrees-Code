@@ -18,8 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Try commenting and uncommenting this to see the changes in the interface!
-    # when this is uncommented, Django will instead redirect traffic to our index.html
-    # (take a peek in ui/urls.py and ui/views.py)
-    # path('', include('ui.urls')),
+    path('api/', include('api.urls')),
+    path('', include('ui.urls')),
 ]
