@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block page-title %}No title defined{% endblock %} - CASS Degree Planner</title>
+
+    <!-- Adapted from CASS homepage root -->
+    <link href="//style.anu.edu.au/_anu/4/images/logos/anu.ico" rel="shortcut icon" type="image/x-icon"/>
+    <link href="//style.anu.edu.au/_anu/images/icons/web/anu-app-57.png" rel="apple-touch-icon" sizes="57x57"/>
+    <link href="//style.anu.edu.au/_anu/images/icons/web/anu-app-76.png" rel="apple-touch-icon" sizes="76x76"/>
+    <link href="//style.anu.edu.au/_anu/images/icons/web/anu-app-120.png" rel="apple-touch-icon" sizes="120x120"/>
+    <link href="//style.anu.edu.au/_anu/images/icons/web/anu-app-152.png" rel="apple-touch-icon" sizes="152x152"/>
+    <link href="//style.anu.edu.au/_anu/images/icons/web/anu-app-180.png" rel="apple-touch-icon" sizes="180x180"/>
+
+    <!--[if !IE]>--><link href="//style.anu.edu.au/_anu/4/min/cass.min.css?1" rel="stylesheet" type="text/css" media="screen"/><!--<![endif]-->
+    <!--[if lt IE 8]><link href="//style.anu.edu.au/_anu/4/min/cass.ie7.min.css?1" rel="stylesheet" type="text/css" media="screen"/><![endif]-->
+    <!--[if gt IE 7]><link href="//style.anu.edu.au/_anu/4/min/cass.ie8.min.css?1" rel="stylesheet" type="text/css" media="screen"/><![endif]-->
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Heavily modified from CASS homepage root + ANU styling guide -->
+    <div id="bnr-wrap" class="bnr-gwy-high" role="banner">
+        <div id="bnr-gwy" class="bnr-gwy-high">
+            <div id="bnr-left">
+                <a href="http://www.anu.edu.au/" class="anu-logo-png">
+                    <img class="text-white" src="//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png"
+                        onmouseover="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small_over.png';"
+                        onfocus="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small_over.png';"
+                        onmouseout="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png'"
+                        onblur="this.src='//style.anu.edu.au/_anu/4/images/logos/2x_anu_logo_small.png'"
+                        alt="The Australian National University">
+                </a>
+            </div>
+            <div id="bnr-mid">
+                <div class="left">
+                    <img src="//style.anu.edu.au/_anu/4/images/logos/pipe_logo_small.png" alt="" class="anu-logo-pipe left" width="66" height="51">
+                </div>
+                
+                <div class="left" id="bnr-h-lines">
+                    <div class="bnr-line-1 bnr-1line">
+                        <h1><a href="/">CASS Degrees Planner</a></h1>
+                    </div>
+                </div>
+            
+                <div id="bnr-right">
+                    {% block right-nav %}&nbsp;{% endblock %}
+                </div>
+                
+                <div id="bnr-low">
+                    <div id="utility-menu" class="bnr-gw-util-wrap" role="navigation">
+                        <!-- Non-breaking space, as we want this to force correct layout even if nothing specified -->
+                        {% block utility-menu %}&nbsp;{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="body-wrap" role="main">
+        <div id="body">
+            <div id="content-main" class="margintop clearfix">
+                <div id="content-header" class="full nomargintop nomarginbottom">
+                    <h1 class="title" id="page-title">{% block subtitle %}No title defined{% endblock %}</h1>
+                </div>
+            </div>
+
+            <div id="band-first" class="region region-band-first">
+                <div id="block-system-main" class="block block-system full nomargintop">
+                    <div class="content block-content clearfix">
+                        {% block content %}No page content defined{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
