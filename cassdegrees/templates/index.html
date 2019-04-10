@@ -1,12 +1,9 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static "css/style.css" %}">
-</head>
-<body>
-Hello World!!! :)
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block page-title %}Title{% endblock %}
+
+{% block subtitle %}This is a test{% endblock %}
+
+{% block content %}
+    <p>Welcome!</p>
+{% endblock %}

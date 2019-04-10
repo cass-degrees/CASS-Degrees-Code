@@ -1,5 +1,5 @@
 @charset "UTF-8";
 
-body {
-    border: 1px;
+#body {
+    min-height: 600px;
 }
