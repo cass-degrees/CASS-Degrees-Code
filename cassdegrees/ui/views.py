@@ -12,7 +12,7 @@ def index(request):
     # TODO: Update URLs once initial page views are created
     buttons = [
         {'url': "/api/model/degree/", 'img': "../static/img/create_plan_img.png", 'label': "Create Plan"},
-        {'url': "/api/model/subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
+        {'url': "/create_subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
         {'url': "", 'img': "../static/img/create_list_img.png", 'label': "Create List"},
         {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
         {'url': "/api/model/course/", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
@@ -86,3 +86,7 @@ def sampleform(request):
 
     else:
         return render(request, 'sampleform.html')
+
+
+def create_subplan(request):
+    return render(request, 'createsubplan.html')
