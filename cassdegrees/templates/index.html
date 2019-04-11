@@ -1,9 +1,26 @@
 {% extends "base.html" %}
 
-{% block page-title %}Title{% endblock %}
+{% block page-title %}Home{% endblock %}
 
-{% block subtitle %}This is a test{% endblock %}
+{% block subtitle %}Welcome{% endblock %}
 
 {% block content %}
-    <p>Welcome!</p>
+
+<div class = "splash_menu_container">
+
+    {# generate splash menu based on buttons defined in ui/views.py   #}
+    {% for button in buttons %}
+        <div class = "img_btn_container">
+            <div>
+                <a href={{ button.url }}>
+                    <img src={{ button.img }} alt={{ button.label }}>
+                </a>
+            </div>
+
+            <div class="btn_label"><h3>{{ button.label }}</h3></div>
+        </div>
+    {%  endfor %}
+
+</div>
+
 {% endblock %}

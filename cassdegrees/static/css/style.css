@@ -3,3 +3,27 @@
 #body {
     min-height: 600px;
 }
+
+.btn_label {
+    text-align: center;
+}
+
+.btn_label h3 {
+    padding-top: 12px;
+    vertical-align: center;
+}
+
+.splash_menu_container {
+    display: flex;
+    padding-top: 20px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.img_btn_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 12px;
+}
