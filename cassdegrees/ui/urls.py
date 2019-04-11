@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import index
+from .views import index, sampleform
 
 urlpatterns = [
     path('', index),
+    path('sampleform/', sampleform),
 ]
