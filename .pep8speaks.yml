@@ -1,0 +1,10 @@
+scanner:
+  diff_only: True
+  linter: flake8
+
+flake8:
+  max-line-length: 120  # Set max length to be the same as what PyCharmm currently has it at (120).
+  ignore:
+    - F401  # Ignore unused imports - some files are automatically generated with import statements.
+    - F403  # F403, F405: Ignore warnings caused by * imports
+    - F405

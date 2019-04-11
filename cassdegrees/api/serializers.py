@@ -40,12 +40,13 @@ class SubplanIDSerializer(serializers.PrimaryKeyRelatedField):
 
 
 class CoursesInSubplanSerializer(serializers.HyperlinkedModelSerializer):
-    courseId = CourseIDSerializer(queryset = CourseModel.objects.all())
-    subplanId = SubplanIDSerializer(queryset = SubplanModel.objects.all())
+    courseId = CourseIDSerializer(queryset=CourseModel.objects.all())
+    subplanId = SubplanIDSerializer(queryset=SubplanModel.objects.all())
 
     class Meta:
         model = CoursesInSubplanModel
         fields = ('id', 'courseId', 'subplanId')
+
 
 class DegreeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
