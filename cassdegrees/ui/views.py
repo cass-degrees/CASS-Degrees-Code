@@ -14,12 +14,22 @@ def index(request):
         {'url': "/api/model/degree/", 'img': "../static/img/create_plan_img.png", 'label': "Create Plan"},
         {'url': "/api/model/subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
         {'url': "", 'img': "../static/img/create_list_img.png", 'label': "Create List"},
-        {'url': "", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
+        {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
         {'url': "/api/model/course/", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
     ]
 
     return render(request, 'index.html', context={'buttons': buttons})
 
+def planList(request):
+    """ Generates a table based on whatever JSON object is stored in 'data'
+
+    :param request:
+    :return <class django.http.response.HttpResponse>:
+    """
+    subplans = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
+    degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
+    
+    return render(request, 'list.html', context={'subplans': subplans, 'degrees': degree})
 
 # I went through this tutorial to create the form html file and this view:
 # https://docs.djangoproject.com/en/2.2/topics/forms/

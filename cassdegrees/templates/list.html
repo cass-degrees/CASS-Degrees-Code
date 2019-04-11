@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block page-title %}Template/Subplan List{% endblock %}
+
+{% block subtitle %}Template and Subplan List{% endblock %}
+
+{% block content %}
+
+    <div class="pagetabs-nav">
+        <ul>
+            <li><a onClick="setActive(0)" id="TemplateLink">Templates</a></li>
+            <li><a onClick="setActive(1)" id="SubplanLink">Subplans</a></li>
+        </ul>
+    </div>
+
+    <div id="TemplateTable">
+        <table class="fullwidth tbl-cell-bdr">
+            <tr>
+                {% for item in degrees.0 %}
+                    <th>{{ item }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in degrees %}
+                <tr>
+                    {% for _, item in row.items %}
+                        <td>{{ item }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        {% if not degrees %}<p>No templates to display</p>{% endif %}
+    </div>
+
+    <div id="SubplanTable">
+        <table class="fullwidth tbl-cell-bdr">
+            <tr>
+                {% for item in subplans.0 %}
+                    <th>{{ item }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in subplans %}
+                <tr>
+                    {% for _, item in row.items %}
+                        <td>{{ item }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        {% if not subplans %}<p>No subplans to display</p>{% endif %}
+    </div>
+
+    <script>
+        function setActive(index){
+            document.getElementById("TemplateLink").setAttribute("class", "");
+            document.getElementById("TemplateTable").style.display = "none";
+            document.getElementById("SubplanLink").setAttribute("class", "");
+            document.getElementById("SubplanTable").style.display = "none";
+
+            switch(index) {
+                case 0: //Show Templates
+                    document.getElementById("TemplateLink").setAttribute("class", "pagetabs-select");
+                    document.getElementById("TemplateTable").style.display = "block";
+                    break;
+                case 1: //Show Templates
+                    document.getElementById("SubplanLink").setAttribute("class", "pagetabs-select");
+                    document.getElementById("SubplanTable").style.display = "block";
+                    break;
+            }
+        }
+
+        setActive(0)
+    </script>
+{% endblock %}
