@@ -15,7 +15,8 @@ def index(request):
 def sampleform(request):
     # If POST request, redirect the received information to the backend:
     if request.method == 'POST':
-        model_api_url = 'http://127.0.0.1:8000/api/sample/'
+        # Hard coding url is a bad practice; this is only a temporary measure for this demo sampleform.
+        model_api_url = 'http://127.0.0.1:8000/api/model/sample/'
         post_data = request.POST
         actual_request = post_data.get('_method')
 
