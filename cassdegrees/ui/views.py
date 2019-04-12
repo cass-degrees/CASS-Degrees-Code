@@ -15,21 +15,26 @@ def index(request):
         {'url': "/create_subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
         {'url': "", 'img': "../static/img/create_list_img.png", 'label': "Create List"},
         {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
-        {'url': "/api/model/course/", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
+        {'url': "/list/?view=Course", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
     ]
 
     return render(request, 'index.html', context={'buttons': buttons})
 
 def planList(request):
-    """ Generates a table based on whatever JSON object is stored in 'data'
+    """ Generates a table based on the JSON objects stored in 'data'
+
+    NOTE: For the page to generate the tabs correctly, the api table data must be put in the context
+    under the dictionary {'data': {'RELATION': RELATION_DATA, ...}}. To link to the actual data correctly,
+    ensure the RELATION text is the same as what is called in the API (e.g. /api/model/RELATION/?format=json)
 
     :param request:
     :return <class django.http.response.HttpResponse>:
     """
-    subplans = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
     degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
-    
-    return render(request, 'list.html', context={'subplans': subplans, 'degrees': degree})
+    subplan = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
+    course  = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
+
+    return render(request, 'list.html', context={'data': {'Degree': degree, 'Subplan': subplan, 'Course': course}})
 
 # I went through this tutorial to create the form html file and this view:
 # https://docs.djangoproject.com/en/2.2/topics/forms/

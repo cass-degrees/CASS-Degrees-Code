@@ -1,73 +1,72 @@
 {% extends "base.html" %}
 
-{% block page-title %}Template/Subplan List{% endblock %}
+{% block page-title %}Template/Subplan/Course List{% endblock %}
 
-{% block subtitle %}Template and Subplan List{% endblock %}
+{% block subtitle %}Template, Subplan, and Course List{% endblock %}
 
 {% block content %}
-
+    {# Generates the tabs based on the keys to 'data' #}
     <div class="pagetabs-nav">
         <ul>
-            <li><a onClick="setActive(0)" id="TemplateLink">Templates</a></li>
-            <li><a onClick="setActive(1)" id="SubplanLink">Subplans</a></li>
+            {% for title in data %}
+                <li><a onClick='setActive("{{ title }}")' id="{{ title }}Link">{{ title }}s</a></li>
+            {% endfor %}
         </ul>
     </div>
 
-    <div id="TemplateTable">
-        <table class="fullwidth tbl-cell-bdr">
-            <tr>
-                {% for item in degrees.0 %}
-                    <th>{{ item }}</th>
-                {% endfor %}
-            </tr>
-            {% for row in degrees %}
+    {# Generates table instances for each table in 'data', as well as the appropriate settings to keep it hidden #}
+    {% for title, content in data.items %}
+        <div id="{{ title }}Table" hidden>
+            <table class="fullwidth tbl-cell-bdr">
+                {# Add title row based on what was in the dictionary #}
                 <tr>
-                    {% for _, item in row.items %}
-                        <td>{{ item }}</td>
+                    {% for key in content.0 %}
+                        {% if key != "id" %}
+                            <th>{{ key }}</th>
+                        {% else %}
+                            <th>{{ title }}</th>
+                        {% endif %}
                     {% endfor %}
                 </tr>
-            {% endfor %}
-        </table>
-        {% if not degrees %}<p>No templates to display</p>{% endif %}
-    </div>
-
-    <div id="SubplanTable">
-        <table class="fullwidth tbl-cell-bdr">
-            <tr>
-                {% for item in subplans.0 %}
-                    <th>{{ item }}</th>
+                {# Add rows containing the contents of each json data instance #}
+                {% for row in content %}
+                    <tr>
+                        {% for key, item in row.items %}
+                            <td>
+                                {# If the item is in the ID column, generate a link to it instead #}
+                                {% if key != "id" %}
+                                    {{ item }}
+                                {% else %}
+                                    (<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
                 {% endfor %}
-            </tr>
-            {% for row in subplans %}
-                <tr>
-                    {% for _, item in row.items %}
-                        <td>{{ item }}</td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        </table>
-        {% if not subplans %}<p>No subplans to display</p>{% endif %}
-    </div>
+            </table>
+            {# If there is no data available, notify the user #}
+            {% if not content %}<p>No {{ title }}s to display</p>{% endif %}
+        </div>
+    {% endfor %}
 
+    {# Function to hide the previous tab while opening a new one #}
     <script>
-        function setActive(index){
-            document.getElementById("TemplateLink").setAttribute("class", "");
-            document.getElementById("TemplateTable").style.display = "none";
-            document.getElementById("SubplanLink").setAttribute("class", "");
-            document.getElementById("SubplanTable").style.display = "none";
+        var oldLabel = "Degree";
 
-            switch(index) {
-                case 0: //Show Templates
-                    document.getElementById("TemplateLink").setAttribute("class", "pagetabs-select");
-                    document.getElementById("TemplateTable").style.display = "block";
-                    break;
-                case 1: //Show Templates
-                    document.getElementById("SubplanLink").setAttribute("class", "pagetabs-select");
-                    document.getElementById("SubplanTable").style.display = "block";
-                    break;
-            }
+        function setActive(label){
+            if(document.getElementById(label+"Link") == null)
+                label = oldLabel;
+
+            document.getElementById(oldLabel+"Link").setAttribute("class", "");
+            document.getElementById(oldLabel+"Table").style.display = "none";
+
+            document.getElementById(label+"Link").setAttribute("class", "pagetabs-select");
+            document.getElementById(label+"Table").style.display = "block";
+
+            oldLabel = label;
         }
 
-        setActive(0)
+        var openElement = (new URLSearchParams(window.location.search)).get("view");
+        setActive(openElement)
     </script>
 {% endblock %}
