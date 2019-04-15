@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block page-title %}Manage Courses{% endblock %}
+
+{% block subtitle %}Manage Courses{% endblock %}
+
+{% block content %}
+    {# Generates the tabs based on the keys #}
+    <div class="pagetabs-nav">
+        <ul>
+            {% for title in actions %}
+                <li><a onClick='setActive("{{ title }}")' id="{{ title }}Link">{{ title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if render.msg != None %}
+        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
+    {% endif %}
+
+    {% for action in actions %}
+        <div id="{{ action }}Page" hidden>
+            {% if action == 'Add' %}
+                <form class="anuform" action="/manage_courses/?action=Add" method="post">
+                    {% csrf_token %}
+                    {% with required='<img src="//style.anu.edu.au/_anu/4/images/styles/asterisk.png" alt=" required">' %}
+                        <fieldset>
+                            <legend>Add Course</legend>
+
+                            <p>
+                                <label for="id">Course Name {{ required }}</label>
+                                <input class="text tfull" id="text" type="text" name="name" aria-required="true" required>
+                            </p>
+
+                            <p>
+                                <label for="id">Course Code {{ required }}</label>
+                                <input class="text tfull" id="text" type="text" name="code" minlength="8" maxlength="8" size="8" aria-required="true" required>
+                            </p>
+
+                            <p>
+                                <label for="text">Year {{ required }}</label>
+                                <input class="text tfull" id="number" type="number" name="year" min="1990" aria-required="true" required>
+                            </p>
+
+                            <p>
+                                <label for="text">Semester(s)</label>
+                                <select class="text tfull" name="semesters[]" size="2" multiple>
+                                    <option value="semester1">Semester 1</option>
+                                    <option value="semester2">Semester 2</option>
+                                </select>
+                            </p>
+
+                             <p>
+                                <label for="text">Units {{ required }}</label>
+                                 <!-- max value is chosen arbitrarily -->
+                                <input class="text tfull" id="number" type="number" name="units" min="0" step="6" aria-required="true" required>
+                            </p>
+
+                            <p>
+                                <label for="text">Requisite Course(s)</label>
+                                <select class="text tfull" name="requisites[]" size="5" multiple>
+                                    {% for course in courses %}
+                                        <option value="{{ course.code }}">{{ course.code }}</option>
+                                    {% endfor %}
+                                </select>
+                            </p>
+
+                            <p>
+                                <label for="text">Incompatible Course(s)</label>
+                                <select class="text tfull" name="incompatibles[]" size="5" multiple>
+                                    {% for course in courses %}
+                                        <option value="{{ course.code }}">{{ course.code }}</option>
+                                    {% endfor %}
+                                </select>
+                            </p>
+                        </fieldset>
+                    {% endwith %}
+
+                    <p class="text-right">
+                        <input class="btn-uni-grad btn-large" type ="submit" value="{{ action }}">
+                    </p>
+                </form>
+            {% elif action == 'Edit' %}
+                <p>Edit</p>
+            {% else %}
+                <p>Delete</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+    {# Function to hide the previous tab while opening a new one #}
+    <script>
+        var oldLabel = "Add";
+
+        function setActive(label){
+            if(document.getElementById(label+"Link") == null)
+                label = oldLabel;
+
+            document.getElementById(oldLabel+"Link").setAttribute("class", "");
+            document.getElementById(oldLabel+"Page").style.display = "none";
+
+            document.getElementById(label+"Link").setAttribute("class", "pagetabs-select");
+            document.getElementById(label+"Page").style.display = "block";
+
+            oldLabel = label;
+        }
+
+        var openElement = (new URLSearchParams(window.location.search)).get("action");
+        setActive(openElement)
+    </script>
+{% endblock %}

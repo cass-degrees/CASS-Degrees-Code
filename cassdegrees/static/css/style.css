@@ -27,3 +27,11 @@
     justify-content: center;
     margin: 12px;
 }
+
+select.tfull {
+    width: 70.25%;
+}
+
+select.text{
+    border-radius: 3px;
+}
