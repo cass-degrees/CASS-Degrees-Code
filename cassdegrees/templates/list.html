@@ -5,6 +5,21 @@
 {% block subtitle %}Template, Subplan, and Course List{% endblock %}
 
 {% block content %}
+    <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="/list?action=Search" method="get">
+        <input class="text" name="q" size="24" maxlength="75" type="text"
+               placeholder="Search Degrees, Subplans, or Courses..."
+               value="{{ autofill }}"
+        >
+        <input class="btn-uni-grad btn-medium" type="submit" value="Search">
+    </form>
+
+    <div class="divline-solid-uni"></div><br />
+
+    {# If no data was sent, assume the user searched and got no results #}
+    {% if not data %}
+        No search results found
+    {% endif %}
+
     {# Generates the tabs based on the keys to 'data' #}
     <div class="pagetabs-nav">
         <ul>
@@ -51,7 +66,12 @@
 
     {# Function to hide the previous tab while opening a new one #}
     <script>
-        var oldLabel = "Degree";
+        {# Gets the first key in the data array (Can't find a better way of doing this) #}
+        {% for title in data %}
+            {% if forloop.first %}
+                var oldLabel = "{{ title }}";
+            {% endif %}
+        {% endfor %}
 
         function setActive(label){
             if(document.getElementById(label+"Link") == null)
