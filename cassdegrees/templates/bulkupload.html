@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block page-title %}Bulk Data Upload{% endblock %}
+
+{% block subtitle %}Bulk Data Upload{% endblock %}
+
+{% block content %}
+    {# Generates the tabs based on the keys #}
+    <div class="pagetabs-nav">
+        <ul>
+            {% for type in upload_type %}
+                <li><a onClick='setActive("{{ type }}")' id="{{ type }}Link">{{ type }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% if err_type != None %}
+        <p class="{% if err_type == 'error' %}msg-error{% elif err_type == 'warn' %}msg-warn{% elif err_type == 'success' %}msg-success{% endif %}">{{ user_msg }}</p>
+    {% endif %}
+
+    {% for type in upload_type %}
+        <div id="{{ type }}Page" hidden>
+            <form class="anuform" action="/bulk_upload/?type={{ type }}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                 <fieldset>
+                     <legend>Upload {{ type }} File</legend>
+                     <p>
+                        <input type="file" name="uploaded_file" id="uploaded_file" aria-required="true" required>
+                     </p>
+                 </fieldset>
+                <p class="text-right">
+                    <input class="btn-uni-grad btn-large" type="submit" name="submit">
+                </p>
+            </form>
+        </div>
+    {% endfor %}
+    {# Function to hide the previous tab while opening a new one #}
+    <script>
+        {# If user was already on a tab (e.g. uploaded a subplan file and got a message), stay on the same tab #}
+        {%  if current_tab in upload_type %}
+            var oldLabel = "{{ current_tab }}";
+        {% else %}
+            var oldLabel = "Courses";
+        {%  endif %}
+
+        function setActive(label){
+            if(document.getElementById(label+"Link") == null)
+                label = oldLabel;
+
+            document.getElementById(oldLabel+"Link").setAttribute("class", "");
+            document.getElementById(oldLabel+"Page").style.display = "none";
+
+            document.getElementById(label+"Link").setAttribute("class", "pagetabs-select");
+            document.getElementById(label+"Page").style.display = "block";
+
+            oldLabel = label;
+        }
+
+        var openElement = (new URLSearchParams(window.location.search)).get("view");
+        setActive(openElement)
+    </script>
+{% endblock %}
