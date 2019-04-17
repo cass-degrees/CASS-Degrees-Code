@@ -51,4 +51,4 @@ class CoursesInSubplanSerializer(serializers.HyperlinkedModelSerializer):
 class DegreeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = DegreeModel
-        fields = ('id', 'code', 'year', 'name', 'units', 'degreeType')
+        fields = ('id', 'code', 'year', 'name', 'units', 'degreeType', 'rules')
