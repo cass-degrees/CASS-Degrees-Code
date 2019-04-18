@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import index, sampleform, create_subplan, planList, manage_courses, bulk_data_upload
+from .views import index, sampleform, create_program, create_subplan, planList, manage_courses, bulk_data_upload
 
 urlpatterns = [
     path('', index),
     path('sampleform/', sampleform),
+    path('create_program/', create_program),
     path('create_subplan/', create_subplan),
     path('list/', planList),
     path('manage_courses/', manage_courses),

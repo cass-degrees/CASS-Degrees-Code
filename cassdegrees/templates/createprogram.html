@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block page-title %}Create Program Template{% endblock %}
+
+{% block subtitle %}Create Program Template{% endblock %}
+
+{% block content %}
+    {% if msg != None %}
+        <p class="{% if is_error %}msg-error{% else %}msg-success{% endif %}">{{ msg }}</p>
+    {% endif %}
+
+
+    <form class="anuform" action="" method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <legend>Configure Program Details</legend>
+
+            <p>
+                <label for="code">Program Code:</label>
+                <input class="text" id="code" type="text" name="code" aria-required="true" placeholder="e.g. BARTS" required value="{{ code|default:"" }}">
+            </p>
+
+            <p>
+                <label for="name">Program Name:</label>
+                <input class="text" id="name" type="text" name="name" aria-required="true" placeholder="e.g. Bachelor of Arts" required value="{{ name|default:"" }}">
+            </p>
+
+            <p>
+                <label for="year">Program Year:</label>
+                <input class="text" id="year" type="number" min="2000" max="2100" value="{{ year|default:"2019" }}" name="year" aria-required="true" required>
+            </p>
+
+            <p>
+                <label for="units">Program Units:</label>
+                <input class="text" id="units" type="number" min="0" max="1000" value="{{ units|default:"144" }}" name="units" aria-required="true" required>
+            </p>
+
+            <p>
+                <label for="degreeType">Program Type:</label>
+                <select id="degreeType" name="degreeType" aria-required="true" required value="{{ degreeType|default:"" }}>
+                    <option value="ugrad-sing" selected>Undergraduate Single Pass Degree</option>
+                    <option value="ugrad-doub">Undergraduate Flexible Double Degree</option>
+                    <option value="hon">Honours Degree</option>
+                    <option value="mast-sing">Masters Single Degree</option>
+                    <option value="mast-adv">Masters (Advanced) Degree</option>
+                    <option value="mast-doub">Masters Flexible Double Degree</option>
+                    <option value="vert_doub">Vertical Flexible Double Degree</option>
+                </select>
+            </p>
+        </fieldset>
+
+        <p class="text-right">
+            <input class="btn-uni-grad btn-large" type="submit" value="Create">
+        </p>
+    </form>
+
+{% endblock %}
