@@ -177,7 +177,8 @@ def create_program(request):
                 # Do some early validation of these fields
                 'year': int(post_data.get('year')),
                 'units': int(post_data.get('units')),
-                'degreeType': post_data.get('degreeType')
+                'degreeType': post_data.get('degreeType'),
+                'globalRequirements': post_data.get('globalRequirements')
             }
 
         for k, v in degree_dict.items():

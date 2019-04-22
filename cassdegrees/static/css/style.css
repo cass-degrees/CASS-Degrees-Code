@@ -56,3 +56,14 @@ select.tfull {
 select.text{
     border-radius: 3px;
 }
+
+/* Fixes an issue with ANU styling where buttons cannot be included in legends */
+.anuform fieldset legend input {
+    float: none;
+    margin-left: 0;
+}
+
+/* Fix padding around inline form errors */
+.anuform .form-group .msg-error {
+    margin-top: 5px;
+}

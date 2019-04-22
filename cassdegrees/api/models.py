@@ -60,11 +60,12 @@ class DegreeModel(models.Model):
                      ("mast-sing", "Masters Single Degree"),
                      ("mast-adv", "Masters (Advanced) Degree"),
                      ("mast-doub", "Masters Flexible Double Degree"),
-                     ("vert_doub", "Vertical Flexible Double Degree"),
+                     ("vert-doub", "Vertical Flexible Double Degree"),
                      ("other", "Other Degree"))
 
     degreeType = models.CharField(max_length=10, choices=degreeChoices)
 
+    globalRequirements = psql.JSONField(default=list)
     rules = psql.JSONField(default=list)
 
     class Meta:
