@@ -21,17 +21,17 @@
 
                     <p>
                         <label for="id">Course Name {{ required }}</label>
-                        <input class="text tfull" id="text" type="text" name="name" aria-required="true" required {% if action == 'Edit' %}value="{{ render.edit_course_info.name }}"{% endif %}>
+                        <input class="text tfull" id="text" type="text" name="name" placeholder="e.g. Culture and Human Diversity: Introducing Anthropology" aria-required="true" required {% if action == 'Edit' %}value="{{ render.edit_course_info.name }}"{% endif %}>
                     </p>
 
                     <p>
                         <label for="id">Course Code {{ required }}</label>
-                        <input class="text tfull" id="text" type="text" name="code" minlength="8" maxlength="8" size="8" aria-required="true" required {% if action == 'Edit' %}value="{{ render.edit_course_info.code }}"{% endif %}>
+                        <input class="text tfull" id="text" type="text" name="code" minlength="8" maxlength="8" size="8" placeholder="e.g. ANTH1002" aria-required="true" required {% if action == 'Edit' %}value="{{ render.edit_course_info.code }}"{% endif %}>
                     </p>
 
                     <p>
                         <label for="text">Year {{ required }}</label>
-                        <input class="text tfull" id="number" type="number" name="year" min="1990" aria-required="true" required {% if action == 'Edit' %}value="{{ render.edit_course_info.year }}"{% endif %}>
+                        <input class="text tfull" id="number" type="number" name="year" min="1990"  aria-required="true" required value={% if action == 'Edit' %}"{{ render.edit_course_info.year }}"{% else %}{{ year|default:"2019" }}{% endif %}>
                     </p>
 
                     <p>
@@ -44,8 +44,7 @@
 
                      <p>
                         <label for="text">Units {{ required }}</label>
-                         <!-- max value is chosen arbitrarily -->
-                        <input class="text tfull" id="number" type="number" name="units" min="0" step="6" aria-required="true" required {% if action == 'Edit' %}value="{{ render.edit_course_info.units }}"{% endif %}>
+                        <input class="text tfull" id="number" type="number" name="units" min="0" step="6" aria-required="true" required value={% if action == 'Edit' %}"{{ render.edit_course_info.units }}"{% else %}{{ units|default:"6" }}{% endif %}>
                     </p>
 
                     <p>
