@@ -69,6 +69,11 @@
                 {# If there is no data available, notify the user #}
                 {% if not content %}
                     <p>No {{ title }}s to display</p>
+                    <div class="right">
+                        <p class="left marginright">
+                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}manage_programs{% elif title == 'Subplan' %}manage_subplans{% elif title == 'Course' %}manage_courses{% endif %}/?action=Add" value="Add a {{ title }}">
+                        </p>
+                    </div>
                 {% else %}
                     <div class="right">
                         <p class="left marginright">
