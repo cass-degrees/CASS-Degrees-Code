@@ -270,76 +270,108 @@ def create_subplan(request):
 # inspired by the samepleform function created by Daniel Jang
 def manage_courses(request):
     # Reads the 'action' attribute from the url (i.e. manage/?action=Add) and determines the submission method
-    actions = ['Add', 'Edit', 'Delete']
     action = request.GET.get('action', 'Add')
 
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
-    courses = [{'code': course} for course in set([x['code'] for x in courses])]
     # If POST request, redirect the received information to the backend:
     render_properties = {
         'msg': None,
         'is_error': False
     }
+
     if request.method == 'POST':
         model_api_url = request.build_absolute_uri('/api/model/course/')
         post_data = request.POST
-        # actual_request = post_data.get('_method')
+        perform_function = post_data.get('perform_function')
 
-        if action == 'Add':
-            # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
-            offered_sems = post_data.getlist('semesters[]')
-            course_instance = \
-                {
-                    'code': post_data.get('code'),
-                    'year': post_data.get('year'),
-                    'name': post_data.get('name'),
-                    'units': post_data.get('units'),
-                    'offeredSem1': 'semester1' in offered_sems,
-                    'offeredSem2': 'semester2' in offered_sems
-                }
-            # Submit a POST request to the course API with course_instance as data
-            rest_api = requests.post(model_api_url, data=course_instance)
-            if rest_api.status_code == 201:
-                render_properties['msg'] = 'Course successfully added!'
-            else:
-                render_properties['is_error'] = True
-                # detects if the course already exists
-                if 'The fields code, year must make a unique set.' in rest_api.json()['non_field_errors']:
-                    render_properties['msg'] = "The course you are trying to create already exists!"
+        # If the post request came from itself (managecourses.html -> managecourses.html), then it must mean that
+        # course information has been requested by user to be either added or edited.
+        if perform_function == 'Add/Edit data to db':
+            if action == 'Add':
+                # Create a python dictionary with exactly the same fields as the model (in this case, CourseModel)
+                offered_sems = post_data.getlist('semesters[]')
+                course_instance = \
+                    {
+                        'code': post_data.get('code'),
+                        'year': post_data.get('year'),
+                        'name': post_data.get('name'),
+                        'units': post_data.get('units'),
+                        'offeredSem1': 'semester1' in offered_sems,
+                        'offeredSem2': 'semester2' in offered_sems
+                    }
+                # Submit a POST request to the course API with course_instance as data
+                rest_api = requests.post(model_api_url, data=course_instance)
+                if rest_api.status_code == 201:
+                    render_properties['msg'] = 'Course successfully added!'
                 else:
-                    render_properties['msg'] = "Unknown error while submitting document. Please try again."
+                    render_properties['is_error'] = True
+                    # detects if the course already exists
+                    if 'The fields code, year must make a unique set.' in rest_api.json()['non_field_errors']:
+                        render_properties['msg'] = "The course you are trying to create already exists!"
+                    else:
+                        render_properties['msg'] = "Unknown error while submitting document. Please try again."
 
-        # to be implemented, currently has the sample model code
-        elif action == 'Edit':
-            id_to_edit = post_data.get('id')
-            # Patch requests (editing an already existing resource only requires fields that are changed
-            course_instance = \
-                {
-                    'text': post_data.get('text')
-                }
+            elif action == 'Edit':
+                id_to_edit = post_data.get('id')
+                if id_to_edit:
+                    render_properties['hide_form'] = False
+                    # Patch requests (editing an already existing resource only requires fields that are changed
+                    offered_sems = post_data.getlist('semesters[]')
+                    course_instance = \
+                        {
+                            'id': id_to_edit,
+                            'code': post_data.get('code'),
+                            'year': post_data.get('year'),
+                            'name': post_data.get('name'),
+                            'units': post_data.get('units'),
+                            'offeredSem1': 'semester1' in offered_sems,
+                            'offeredSem2': 'semester2' in offered_sems
+                        }
 
-            rest_api = requests.patch(model_api_url + id_to_edit + '/', data=course_instance)
+                    rest_api = requests.patch(model_api_url + id_to_edit + '/', data=course_instance)
 
-            if rest_api.status_code == 200:
-                render_properties['msg'] = 'Course information successfully modified!'
-            else:
-                render_properties['is_error'] = True
-                render_properties['msg'] = "Failed to edit course information (unknown error). Please try again."
+                    if rest_api.status_code == 200:
+                        render_properties['msg'] = 'Course information successfully modified!'
+                    else:
+                        render_properties['is_error'] = True
+                        render_properties['msg'] = "Failed to edit course information. Please try again."
 
-        # to be implemented, currently has the sample model code
-        elif action == 'Delete':
-            id_to_delete = post_data.get('id')
+        # If the request came from list.html (from the add, edit and delete button from the courses list page),
+        # fetch and pre-fill the course info on the edit form if edit button was clicked on,
+        # or delete the selected course immediately.
+        elif perform_function == 'retrieve view from selected':
+            if action == 'Edit':
+                id_to_edit = post_data.get('id')
+                if id_to_edit:
+                    render_properties['hide_form'] = False
+                    current_course_info = requests.get(model_api_url + id_to_edit + '/?format=json').json()
+                    current_course_info['id'] = id_to_edit
+                    render_properties['edit_course_info'] = current_course_info
 
-            rest_api = requests.delete(model_api_url + id_to_delete + '/')
+                else:
+                    render_properties['is_error'] = True
+                    render_properties['hide_form'] = True
+                    render_properties['msg'] = "Please select a course to edit!"
 
-            if rest_api.status_code == 204:
-                render_properties['msg'] = 'Course successfully deleted!'
-            else:
-                render_properties['is_error'] = True
-                render_properties['msg'] = "Failed to delete course. An unknown error has occurred. Please try again."
+            elif action == 'Delete':
+                ids_to_delete = post_data.getlist('id')
+                rest_api = None
+                for id_to_delete in ids_to_delete:
+                    rest_api = requests.delete(model_api_url + id_to_delete + '/')
+
+                if rest_api is None:
+                    render_properties['is_error'] = True
+                    render_properties['msg'] = 'Please select a course to delete!'
+                else:
+                    if rest_api.status_code == 204:
+                        render_properties['msg'] = 'Course successfully deleted!'
+                    else:
+                        render_properties['is_error'] = True
+                        render_properties['msg'] = "Failed to delete course. " \
+                                                   "An unknown error has occurred. Please try again."
 
     return render(request, 'managecourses.html', context={'action': action, 'courses': courses,
-                                                          'render': render_properties, 'actions': actions})
+                                                          'render': render_properties})
 
 
 # Submit file with courses or subplans with the following formats:
@@ -404,7 +436,6 @@ def bulk_data_upload(request):
                             'offeredSem1': bool(row[map['offeredSem1']]),
                             'offeredSem2': bool(row[map['offeredSem2']])
                         }
-                    print(course_instance)
 
                     # Submit a POST request to the course API with course_instance as data
                     rest_api = requests.post(base_model_url + 'course/', data=course_instance)
