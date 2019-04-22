@@ -72,13 +72,13 @@
                 {% else %}
                     <div class="right">
                         <p class="left marginright">
-                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}{% elif title == 'Subplan' %}{% elif title == 'Course' %}manage_courses{% endif %}/?action=Add" value="Add a {{ title }}">
+                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}manage_programs{% elif title == 'Subplan' %}manage_subplans{% elif title == 'Course' %}manage_courses{% endif %}/?action=Add" value="Add a {{ title }}">
                         </p>
                         <p class="left marginright">
-                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}{% elif title == 'Subplan' %}{% elif title == 'Course' %}manage_courses{% endif %}/?action=Edit" value="Edit Selected">
+                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}manage_programs{% elif title == 'Subplan' %}manage_subplans{% elif title == 'Course' %}manage_courses{% endif %}/?action=Edit" value="Edit Selected">
                         </p>
                         <p class="right">
-                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}{% elif title == 'Subplan' %}{% elif title == 'Course' %}manage_courses{% endif %}/?action=Delete" value="Delete Selected">
+                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}manage_programs{% elif title == 'Subplan' %}manage_subplans{% elif title == 'Course' %}manage_courses{% endif %}/?action=Delete" value="Delete Selected">
                         </p>
                    </div>
                 {% endif %}
