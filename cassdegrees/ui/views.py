@@ -434,6 +434,7 @@ def manage_courses(request):
         elif perform_function == 'retrieve view from selected':
             if action == 'Edit':
                 id_to_edit = post_data.get('id')
+                id_to_edit = ''.join(filter(lambda x: x.isdigit(), id_to_edit))
                 if id_to_edit:
                     render_properties['hide_form'] = False
                     current_course_info = requests.get(model_api_url + id_to_edit + '/?format=json').json()
