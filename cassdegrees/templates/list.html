@@ -58,7 +58,7 @@
                                     {% if key != "id" %}
                                         <td>{{ item }}</td>
                                     {% else %}
-                                        <td><input title="Select" type="radio" name="id" value="{{ item }}"  /></td>
+                                        <td><input title="Select" type="checkbox" name="id" value="{{ item }}"  /></td>
                                         <td>(<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)</td>
                                     {% endif %}
 
