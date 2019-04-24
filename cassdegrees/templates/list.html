@@ -60,10 +60,10 @@
                                     {% if key != "id" %}
                                         <td>{{ item }}</td>
                                     {% else %}
-                                        <td><input title="Select" type="checkbox" name="id" value="{{ item }}"  /></td>
+                                        <td><p class="text-center"><input title="Select" type="checkbox" name="id" value="{{ item }}"  /></p></td>
                                         <td>
+                                            <input class="btn-uni-grad" name="id" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Edit" value="Edit {{ title }} (ID: {{ item }})">
                                             (<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)
-                                            <input class="btn-uni-grad" name="id" type ="submit" formaction="/{% if title == 'Degree' %}manage_programs{% elif title == 'Subplan' %}manage_subplans{% elif title == 'Course' %}manage_courses{% endif %}/?action=Edit" value="Edit {{ title }} (ID: {{ item }})">
                                         </td>
                                     {% endif %}
 
@@ -79,7 +79,7 @@
                 {% else %}
                 <div class="right">
                     <p class="right">
-                       <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}manage_programs{% elif title == 'Subplan' %}manage_subplans{% elif title == 'Course' %}manage_courses{% endif %}/?action=Delete" value="Delete Selected">
+                       <input class="btn-uni-grad btn-large" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Delete" value="Delete Selected">
                     </p>
                 </div>
                 {% endif %}
