@@ -36,7 +36,9 @@
                 {% csrf_token %}
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
-
+                <p class="left">
+                    <input class="btn-uni-grad" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Add" value="New {{ title }}">
+                </p>
                 <table class="fullwidth tbl-cell-bdr">
                     {# Add title row based on what was in the dictionary #}
                     <tr>
@@ -58,29 +60,28 @@
                                     {% if key != "id" %}
                                         <td>{{ item }}</td>
                                     {% else %}
-                                        <td><input title="Select" type="radio" name="id" value="{{ item }}"  /></td>
-                                        <td>(<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)</td>
+                                        <td><p class="text-center"><input title="Select" type="checkbox" name="id" value="{{ item }}"  /></p></td>
+                                        <td>
+                                            <input class="btn-uni-grad" name="id" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Edit" value="Edit {{ title }} (ID: {{ item }})">
+                                            (<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)
+                                        </td>
                                     {% endif %}
 
                             {% endfor %}
                         </tr>
                     {% endfor %}
                 </table>
+
                 {# If there is no data available, notify the user #}
                 {% if not content %}
                     <p>No {{ title }}s to display</p>
+                {# otherwise if theres content then have the delete button show #}
                 {% else %}
-                    <div class="right">
-                        <p class="left marginright">
-                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}{% elif title == 'Subplan' %}{% elif title == 'Course' %}manage_courses{% endif %}/?action=Add" value="Add a {{ title }}">
-                        </p>
-                        <p class="left marginright">
-                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}{% elif title == 'Subplan' %}{% elif title == 'Course' %}manage_courses{% endif %}/?action=Edit" value="Edit Selected">
-                        </p>
-                        <p class="right">
-                           <input class="btn-uni-grad btn-large" type ="submit" formaction="/{% if title == 'Degree' %}{% elif title == 'Subplan' %}{% elif title == 'Course' %}manage_courses{% endif %}/?action=Delete" value="Delete Selected">
-                        </p>
-                   </div>
+                <div class="right">
+                    <p class="right">
+                       <input class="btn-uni-grad btn-large" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Delete" value="Delete Selected">
+                    </p>
+                </div>
                 {% endif %}
             </form>
         </div>

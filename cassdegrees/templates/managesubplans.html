@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block page-title %}{{ action }} Subplan{% endblock %}
+
+{% block subtitle %}{{ action }} Subplan{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
+    {% endif %}
+
+    <div id="{{ action }}Page" {% if action == 'Delete' or render.hide_form %}hidden{% endif %}>
+        <form class="anuform" action="/create_subplan/" method="post">
+
+            {% csrf_token %}
+
+            <fieldset>
+
+                <legend>Subplan details</legend>
+
+                <!-- As HTML forms only support get or post methods,
+                add this hidden input for consistency with the rest of the forms -->
+                <input type="hidden" name="_method" value="post">
+
+                <p>
+                    <label for="code">Subplan Code:</label>
+                    <input class="text" id="code" type="text" name="code" placeholder="e.g. ANTH-MIN"
+                           aria-required="true" required value="{{ code|default:"" }}">
+                </p>
+
+                <p>
+                    <label for="year">Subplan Year:</label>
+                    <input class="text" id="year" type="number" name="year"
+                           aria-required="true" required min="2000" value="{{ year|default:"2019" }}">
+                </p>
+
+                <p>
+                    <label for="name">Subplan Name:</label>
+                    <input class="text" id="name" type="text" name="name"
+                           aria-required="true" placeholder="e.g. Anthropology" required value="{{ name|default:"" }}">
+                </p>
+
+                <p>
+                    <label for="plantype">Subplan Type:</label>
+                    <select class="text" id="planType" type="text" name="planType"
+                            aria-required="true" required">
+                        <option value="MAJ" {% if planType == "MAJ" %}selected{% endif %}>Major</option>
+                        <option value="MIN" {% if planType == "MIN" %}selected{% endif %}>Minor</option>
+                        <option value="SPEC" {% if planType == "SPEC" %}selected{% endif %}>Specialisation</option>
+                    </select>
+                </p>
+
+            </fieldset>
+            <p class="text-right">
+                <input class="btn-uni-grad btn-large" type ="submit" value="Create">
+            </p>
+        </form>
+    </div>
+{% endblock %}
