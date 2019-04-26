@@ -41,7 +41,7 @@ def data_list(request):
 
     # No search, render default page
     if not query:
-        degree = requests.get(request.build_absolute_uri('/api/search/?model=degree')).json()
+        degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
         subplan = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
         course = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
 
