@@ -62,8 +62,8 @@
                                     {% else %}
                                         <td><p class="text-center"><input title="Select" type="checkbox" name="id" value="{{ item }}"  /></p></td>
                                         <td>
-                                            <input class="btn-uni-grad" name="id" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Edit" value="Edit {{ title }} (ID: {{ item }})">
-                                            (<a href="/api/model/{{ title.lower }}/{{ item }}/">View</a>)
+                                            <input class="btn-uni-grad" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Edit&id={{ item }}" value="Edit">
+                                            <input class="btn-uni-grad" type ="submit" formaction="/api/model/{{ title.lower }}/{{ item }}/" value="View">
                                         </td>
                                     {% endif %}
 
