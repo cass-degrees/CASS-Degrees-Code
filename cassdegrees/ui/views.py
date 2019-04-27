@@ -1,9 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Q
-from api.models import DegreeModel, SubplanModel, CourseModel
+from api.models import DegreeModel, SubplanModel, CourseModel, CoursesInSubplanModel
 import requests
 import csv
+import operator
 from io import TextIOWrapper
 
 
@@ -366,10 +367,12 @@ def manage_courses(request):
     id_to_edit = request.GET.get('id', None)
 
     courses = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
+    subplans = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
     # If POST request, redirect the received information to the backend:
     render_properties = {
         'msg': None,
-        'is_error': False
+        'msg_type': None,
+        'is_confirm': False
     }
 
     if request.method == 'POST':
@@ -396,8 +399,9 @@ def manage_courses(request):
                 rest_api = requests.post(model_api_url, data=course_instance)
                 if rest_api.status_code == 201:
                     render_properties['msg'] = 'Course successfully added!'
+                    render_properties['msg_type'] = 'msg-success'
                 else:
-                    render_properties['is_error'] = True
+                    render_properties['msg_type'] = 'msg-error'
                     # detects if the course already exists
                     if 'The fields code, year must make a unique set.' in rest_api.json()['non_field_errors']:
                         render_properties['msg'] = "The course you are trying to create already exists!"
@@ -424,14 +428,15 @@ def manage_courses(request):
 
                     if rest_api.status_code == 200:
                         render_properties['msg'] = 'Course information successfully modified!'
+                        render_properties['msg_type'] = 'msg-success'
                     else:
-                        render_properties['is_error'] = True
+                        render_properties['msg_type'] = 'msg-error'
                         render_properties['msg'] = "Failed to edit course information. Please try again."
 
         # If the request came from list.html (from the add, edit and delete button from the courses list page),
         # fetch and pre-fill the course info on the edit form if edit button was clicked on,
         # or delete the selected course immediately.
-        elif perform_function == 'retrieve view from selected':
+        elif perform_function == 'retrieve view from selected' or perform_function == 'confirm deletion':
             if action == 'Edit':
                 id_to_edit = ''.join(filter(lambda x: x.isdigit(), id_to_edit))
                 if id_to_edit:
@@ -441,24 +446,42 @@ def manage_courses(request):
                     render_properties['edit_course_info'] = current_course_info
 
                 else:
-                    render_properties['is_error'] = True
+                    render_properties['msg_type'] = 'msg-error'
                     render_properties['hide_form'] = True
                     render_properties['msg'] = "Please select a course to edit!"
 
             elif action == 'Delete':
-                ids_to_delete = post_data.getlist('id')
                 rest_api = None
+                ids_to_delete = post_data.getlist('id')
+                used_subplans = []
+                courses_in_subplans = list(CoursesInSubplanModel.objects.all().values())
                 for id_to_delete in ids_to_delete:
-                    rest_api = requests.delete(model_api_url + id_to_delete + '/')
-
-                if rest_api is None:
-                    render_properties['is_error'] = True
+                    if perform_function == 'confirm deletion':  # if user has clicked 'yes' on the confirmation page
+                        rest_api = requests.delete(model_api_url + id_to_delete + '/')
+                    else:
+                        if not courses_in_subplans:  # delete immediately if no subplans use the course
+                            rest_api = requests.delete(model_api_url + id_to_delete + '/')
+                        else:
+                            for course in courses_in_subplans:
+                                # if course being deleted is in current subplan
+                                if int(id_to_delete) == int(course['courseId_id']):
+                                    # TODO: improve this using django queries
+                                    used_subplans.extend(
+                                        [subplan['name'] + '(' + subplan['code'] + ')' for subplan in subplans if
+                                         course['subplanId_id'] == subplan['id']])
+                if used_subplans:  # if there any subplans that use the course
+                    render_properties['is_confirm'] = True
+                    render_properties['msg_type'] = 'msg-warn'
+                    render_properties['msg'] = 'The Sub-Plan(s) ' + ', '.join(used_subplans) + ' use this course. Do you want to continue?'
+                elif rest_api is None:
+                    render_properties['msg_type'] = 'msg-error'
                     render_properties['msg'] = 'Please select a course to delete!'
                 else:
                     if rest_api.status_code == 204:
+                        render_properties['msg_type'] = 'msg-success'
                         render_properties['msg'] = 'Course successfully deleted!'
                     else:
-                        render_properties['is_error'] = True
+                        render_properties['msg_type'] = 'msg-error'
                         render_properties['msg'] = "Failed to delete course. " \
                                                    "An unknown error has occurred. Please try again."
 

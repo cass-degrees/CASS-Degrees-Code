@@ -5,8 +5,8 @@
 {% block subtitle %}{{ action }} Course{% endblock %}
 
 {% block content %}
-    {% if render.msg != None %}
-        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
+    {% if render.msg != None and render.msg_type != None %}
+        <p class={{ render.msg_type }}>{{ render.msg }}</p>
     {% endif %}
 
     <div id="{{ action }}Page" {% if action == 'Delete' or render.hide_form %}hidden{% endif %}>
@@ -72,4 +72,26 @@
             </p>
         </form>
     </div>
+    {# code onwards is to confirm the user that the course is in one or more subplans #}
+    {% if render.is_confirm %}
+        <p class="right padtop">
+            <input class="btn-uni-grad btn-medium" onclick="history.back()" type="submit" value="No">
+        </p>
+        <form class="anuform right" action="/manage_courses/?action=Delete" method="post">
+            {% csrf_token %}
+            <input id="selected" title="Select" name="id" hidden/>
+            <p class="marginright">
+                <input class="btn-uni-grad btn-medium" name="confirm_delete" type="submit" value="Yes">
+            </p>
+            <input type="hidden" id="perform_function" name="perform_function" value="confirm deletion">
+        </form>
+    {% endif %}
+    {# grabs form data from list.html - reference: https://stackoverflow.com/questions/14845710/javascript-variable-access-in-html #}
+    <script>
+        let data = sessionStorage.getItem('selected');
+
+        window.onload = function() {
+            document.getElementById("selected").value = data;
+        }
+    </script>
 {% endblock %}

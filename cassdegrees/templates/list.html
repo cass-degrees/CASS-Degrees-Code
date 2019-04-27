@@ -60,7 +60,7 @@
                                     {% if key != "id" %}
                                         <td>{{ item }}</td>
                                     {% else %}
-                                        <td><p class="text-center"><input title="Select" type="checkbox" name="id" value="{{ item }}"  /></p></td>
+                                        <td><p class="text-center"><input title="Select" type="checkbox" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
                                         <td>
                                             <input class="btn-uni-grad" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Edit&id={{ item }}" value="Edit">
                                             <input class="btn-uni-grad" type ="submit" formaction="/api/model/{{ title.lower }}/{{ item }}/" value="View">
@@ -71,7 +71,6 @@
                         </tr>
                     {% endfor %}
                 </table>
-
                 {# If there is no data available, notify the user #}
                 {% if not content %}
                     <p>No {{ title }}s to display</p>
