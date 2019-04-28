@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page-title %}View Program{% endblock %}
+
+{% block subtitle %}View Program{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
+    {% endif %}
+
+    <div class = 'anuform'>
+        <fieldset>
+            <legend>{{data.name}}</legend>
+            <p><b>Name:</b> {{ data.name }}</p>
+            <p><b>Code:</b> {{ data.code }}</p>
+            <p><b>Year:</b> {{ data.year }}</p>
+            <p><b>Units:</b> {{ data.units }}</p>
+            <p>
+                <b>Program Type:</b>
+                {% if data.degreeType == 'ugrad-sing' %}
+                    Undergraduate Single Pass Degree
+                {% endif %}
+                {% if data.degreeType == 'ugrad-doub' %}
+                    Undergraduate Flexible Double Degree
+                {% endif %}
+                {% if data.degreeType == 'hon' %}
+                    Honours Degree
+                {% endif %}
+                {% if data.degreeType == 'mast-sing' %}
+                    Masters Single Degree
+                {% endif %}
+                {% if data.degreeType == 'mast-adv' %}
+                    Masters (Advanced) Degree
+                {% endif %}
+                {% if data.degreeType == 'mast-doub' %}
+                    Masters Flexible Double Degree
+                {% endif %}
+                {% if data.degreeType == 'vert-doub' %}
+                    Vertical Flexible Double Degree
+                {% endif %}
+                {% if data.degreeType == 'other' %}
+                    Other Degree
+                {% endif %}
+            </p>
+        </fieldset>
+    </div>
+    <div class = 'anuform'>
+        <fieldset>
+            <legend>Global Requirements</legend>
+            <p><b>Global:</b> {{ data.globalRequirements}}</p>
+        </fieldset>
+    </div>
+{% endblock %}

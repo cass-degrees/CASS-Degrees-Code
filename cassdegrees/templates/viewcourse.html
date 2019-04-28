@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page-title %}View Course{% endblock %}
+
+{% block subtitle %}View Course{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
+    {% endif %}
+
+    <div class = 'anuform'>
+        <fieldset>
+            <legend>{{data.name}}</legend>
+            <p><b>Name:</b> {{ data.name }}</p>
+            <p><b>Code:</b> {{ data.code }}</p>
+            <p><b>Year:</b> {{ data.year }}</p>
+            <p><b>Units:</b> {{ data.units }}</p>
+            <p><b>Offerings:</b>
+                {% if data.offeredSem1 and data.offeredSem2 %}
+                    Semester 1, Semester 2
+                {% else %}
+                    {% if data.offeredSem1 %}
+                        Semester 1
+                    {% endif %}
+                    {% if data.offeredSem2 %}
+                        Semester 2
+                    {% endif %}
+                {% endif %}
+
+            </p>
+        </fieldset>
+    </div>
+{% endblock %}

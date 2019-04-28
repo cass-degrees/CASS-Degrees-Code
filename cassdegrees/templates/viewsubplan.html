@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page-title %}View Subplan{% endblock %}
+
+{% block subtitle %}View Subplan{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="{% if render.is_error %}msg-error{% else %}msg-success{% endif %}">{{ render.msg }}</p>
+    {% endif %}
+
+    <div class = 'anuform'>
+        <fieldset>
+            <legend>{{data.name}}</legend>
+            <p><b>Name:</b> {{ data.name }}</p>
+            <p><b>Code:</b> {{ data.code }}</p>
+            <p><b>Year:</b> {{ data.year }}</p>
+            <p><b>Units:</b> {{ data.units }}</p>
+            <p>
+                <b>Subplan Type:</b>
+                {% if data.planType == 'MAJ' %}
+                    Major
+                {% endif %}
+                {% if data.planType == 'MIN' %}
+                    Minor
+                {% endif %}
+                {% if data.planType == 'SPEC' %}
+                    Specialisation
+                {% endif %}
+            </p>
+        </fieldset>
+    </div>
+    <div class = 'anuform'>
+        <fieldset>
+            <legend>Global Requirements</legend>
+            <p><b>Global:</b> {{ data.globalRequirements}}</p>
+        </fieldset>
+    </div>
+{% endblock %}
