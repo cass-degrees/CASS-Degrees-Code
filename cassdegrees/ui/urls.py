@@ -15,8 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from .views import index, sampleform, create_program, create_subplan, data_list, manage_courses, manage_subplans, \
-    manage_programs, bulk_data_upload, view_
+from .views import index, sampleform, create_program, create_subplan, data_list, manage_courses, manage_subplans, manage_programs, bulk_data_upload
 
 urlpatterns = [
     path('', index),
@@ -28,7 +27,4 @@ urlpatterns = [
     path('manage_subplans/', manage_subplans),
     path('manage_programs/', manage_programs),
     path('bulk_upload/', bulk_data_upload),
-    path('view_course/', view_),
-    path('view_subplan/', view_),
-    path('view_program/', view_),
 ]
