@@ -40,16 +40,6 @@ class SubplanRecord(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubplanSerializer
 
 
-class CoursesInSubplanList(generics.ListCreateAPIView):
-    queryset = CoursesInSubplanModel.objects.all()
-    serializer_class = CoursesInSubplanSerializer
-
-
-class CoursesInSubplanRecord(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CoursesInSubplanModel.objects.all()
-    serializer_class = CoursesInSubplanSerializer
-
-
 class DegreeList(generics.ListCreateAPIView):
     queryset = DegreeModel.objects.all()
     serializer_class = DegreeSerializer
