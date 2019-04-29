@@ -67,3 +67,15 @@ select.text{
 .anuform .form-group .msg-error {
     margin-top: 5px;
 }
+
+/* Allow for inline errors */
+.anuform .inline-error {
+    clear: none;
+
+    margin: 4px 25px 4px calc(20.8333% + 20px);
+    min-width: 70%;
+
+    box-sizing: border-box;
+
+    padding: 4px 25px 4px 25px;
+}

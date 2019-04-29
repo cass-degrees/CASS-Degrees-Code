@@ -10,7 +10,7 @@
     {% endif %}
 
     <div id="{{ action }}Page" {% if action == 'Delete' or render.hide_form %}hidden{% endif %}>
-        <form class="anuform" action="/create_subplan/" method="post">
+        <form class="anuform" action="" method="post">
 
             {% csrf_token %}
 

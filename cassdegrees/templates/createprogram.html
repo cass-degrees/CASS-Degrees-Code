@@ -6,197 +6,43 @@
 {% block subtitle %}Create Program Template{% endblock %}
 
 {% block content %}
-    {% if msg != None %}
-        <p class="{% if is_error %}msg-error{% else %}msg-success{% endif %}" id="serverError">{{ msg }}</p>
+    {% if submitted %}
+        <p class="msg-success">Program successfully added!</p>
     {% endif %}
 
+    {% for error in form.non_field_errors %}
+         <p class="msg-error">{{ error }}</p>
+    {% endfor %}
 
-    <form class="anuform" id="mainForm" action="" novalidate method="post">
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return handleProgram()">
         {% csrf_token %}
 
         <fieldset>
             <legend>Configure Program Details</legend>
 
-            <p class="form-group">
-                <label for="code">Program Code:</label>
-                <input class="text" id="code" type="text" name="code" aria-required="true" minlength="4" placeholder="e.g. BARTS" required value="{{ code|default:"" }}">
-            </p>
+            {{ form.management_form }}
 
-            <p class="form-group">
-                <label for="name">Program Name:</label>
-                <input class="text" id="name" type="text" name="name" aria-required="true" minlength="5" placeholder="e.g. Bachelor of Arts" required value="{{ name|default:"" }}">
-            </p>
-
-            <p class="form-group">
-                <label for="year">Program Year:</label>
-                <input class="text" id="year" type="number" min="2000" max="2100" value="{{ year|default:"2019" }}" name="year" aria-required="true" required>
-            </p>
-
-            <p class="form-group">
-                <label for="units">Program Units:</label>
-                <input class="text" id="units" type="number" min="0" max="1000" value="{{ units|default:"144" }}" name="units" aria-required="true" required>
-            </p>
-
-            <p class="form-group">
-                <label for="degreeType">Program Type:</label>
-                <select id="degreeType" name="degreeType" aria-required="true" required>
-                    <option value="ugrad-sing" {% if degreeType == "ugrad-sing" or degreeType == None %}selected{% endif %}>Undergraduate Single Pass Degree</option>
-                    <option value="ugrad-doub" {% if degreeType == "ugrad-doub" %}selected{% endif %}>Undergraduate Flexible Double Degree</option>
-                    <option value="hon" {% if degreeType == "hon" %}selected{% endif %}>Honours Degree</option>
-                    <option value="mast-sing" {% if degreeType == "mast-sing" %}selected{% endif %}>Masters Single Degree</option>
-                    <option value="mast-adv" {% if degreeType == "mast-adv" %}selected{% endif %}>Masters (Advanced) Degree</option>
-                    <option value="mast-doub" {% if degreeType == "mast-doub" %}selected{% endif %}>Masters Flexible Double Degree</option>
-                    <option value="vert-doub" {% if degreeType == "vert-doub" %}selected{% endif %}>Vertical Flexible Double Degree</option>
-                </select>
-            </p>
+            {% for field in form %}
+                <p class="form-group">
+                    {% if not field.is_hidden %}
+                        {{ field.label_tag }}
+                    {% endif %}
+                    {{ field }}
+                </p>
+                {% for error in field.errors %}
+                     <div class="msg-error inline-error">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
         </fieldset>
-
-        <!-- Everything after here is generated on the fly -->
-        <input class="text" hidden id="globalRequirements" name="globalRequirements">
     </form>
 
     <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
          structure -->
-    <form class="anuform" id="manualSerializedForm" novalidate>
-        <fieldset>
-            <legend>Add Global Requirements</legend>
-
-            <br />
-
-            <div id="globalRequirementsContainer">
-
-            </div>
-
-            <input class="btn-uni-grad btn-large" type="button" onclick="addGlobalReq()" value="Add New Global Requirement" />
-        </fieldset>
+    <form class="anuform" id="manualSerializedForm">
+        {% include "widgets/globalrequirements.html" %}
     </form>
 
     <p class="text-right">
-        <input class="btn-uni-grad btn-large" type="submit" value="Create" onclick="submitProgram()">
+        <input class="btn-uni-grad btn-large" type="submit" value="Create" onclick="if (handleProgram()) document.getElementById('mainForm').submit()">
     </p>
-
-    <!-- Acts as a master template for duplication, preventing inline HTML in Javascript. -->
-    <div id="minMaxUnitsTemplate" style="display: none">
-        <fieldset>
-            <legend></legend>
-
-            <p class="form-group">
-                <label>
-                    Unit Count:
-                </label>
-                <input class="text" type="number" name="unit_count" min="0" max="1000" value="48" aria-required="true" required>
-            </p>
-
-            <p>
-                <label>
-                    Year Options:
-                </label>
-            </p>
-
-            <br />
-
-            <table class="tbl-row-bdr">
-                <thead>
-                    <tr>
-                        <th>
-                            1000-level
-                        </th>
-                        <th>
-                            2000-level
-                        </th>
-                        <th>
-                            3000-level
-                        </th>
-                        <th>
-                            4000-level
-                        </th>
-                        <th>
-                            5000-level
-                        </th>
-                        <th>
-                            6000-level
-                        </th>
-                        <th>
-                            7000-level
-                        </th>
-                        <th>
-                            8000-level
-                        </th>
-                        <th>
-                            9000-level
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type="checkbox" name="courses1000Level">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="courses2000Level">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="courses3000Level">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="courses4000Level">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="courses5000Level">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="courses6000Level">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="courses7000Level">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="courses8000Level">
-                        </td>
-                        <td>
-                            <input type="checkbox" name="courses9000Level">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </fieldset>
-
-    </div>
-
-    <div id="globalReqsTemplate" class="box bdr-top-solid bdr-bottom-solid" style="display: none">
-        <fieldset>
-            <legend>
-                Global Requirement
-
-                <input class="btn-uni-grad btn-snall" type="button" onclick="removeGlobalReq(this)" value="Remove" />
-            </legend>
-
-            <p class="form-group">
-                <label for="ruleType">
-                    Rule Type:
-                </label>
-
-                <select name="ruleType" aria-required="true" required id="globalReqsTypePlaceholder" onchange="onGlobalReqsTypeChanged(this)">
-                    <!-- https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box -->
-                    <option value="" disabled selected>Select...</option>
-                    <option value="min">Minimum Units From Year(s)</option>
-                    <option value="max">Maximum Units From Year(s)</option>
-                </select>
-            </p>
-
-            <hr />
-
-            <!-- Placeholder for min/max templates to be injected -->
-            <div id="globalReqsInnerPlaceholder"></div>
-
-        </fieldset>
-    </div>
-
-    <script src="{% static 'js/pristine.js' %}" type="application/javascript"></script>
-    <script src="{% static 'js/programmanagement.js' %}" type="application/javascript"></script>
-    {% if globalRequirements != None %}
-        <script>
-            deserializeReqs({{ globalRequirements|safe }});
-        </script>
-    {% endif %}
 {% endblock %}

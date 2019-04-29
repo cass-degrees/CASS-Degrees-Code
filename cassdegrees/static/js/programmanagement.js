@@ -181,33 +181,25 @@ function deserializeReqs(json) {
 /**
  * Submits the program form.
  */
-function submitProgram() {
-    // Remove built-in error message - further validation might confuse the user.
-    var serverError = document.getElementById("serverError");
-
-    if (serverError !== undefined && serverError != null) {
-        serverError.remove();
-    }
-
+function handleProgram() {
     // Verify forms
-    var mainFormPristine = new Pristine(document.getElementById("mainForm"), {
+    var manuallySerializedPristine = new Pristine(document.getElementById("globalRequirementsContainer"), {
         errorTextClass: 'msg-error'
     }, false);
-    var manuallySerializedPristine = new Pristine(document.getElementById("manualSerializedForm"), {
-        errorTextClass: 'msg-error'
-    }, false);
-
-    if (!mainFormPristine.validate(null, false)) {
-        console.log("Main form validation failed.");
-        return;
-    }
 
     if (!manuallySerializedPristine.validate(null, false)) {
         console.log("Manually serialized form validation failed.");
-        return;
+        return false;
     }
 
     // Serialize list structures - this doesn't translate well over POST requests normally.
     document.getElementById("globalRequirements").value = JSON.stringify(serializeGlobalReqs());
-    document.getElementById("mainForm").submit();
+
+    return true;
 }
+
+var reqs = document.getElementById("globalRequirements").value.trim();
+if (reqs.length > 0) {
+    deserializeReqs(JSON.parse(reqs));
+}
+

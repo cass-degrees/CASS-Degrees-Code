@@ -1,0 +1,133 @@
+{% load static %}
+
+<fieldset>
+    <legend>Add Global Requirements</legend>
+
+    <br />
+
+    <div id="globalRequirementsContainer">
+
+    </div>
+
+    <input class="btn-uni-grad btn-large" type="button" onclick="addGlobalReq()" value="Add New Global Requirement" />
+</fieldset>
+
+<!-- Acts as a master template for duplication, preventing inline HTML in Javascript. -->
+<div id="minMaxUnitsTemplate" style="display: none">
+    <fieldset>
+        <legend></legend>
+
+        <p class="form-group">
+            <label>
+                Unit Count:
+            </label>
+            <input class="text" type="number" name="unit_count" min="0" max="1000" value="48" aria-required="true" required>
+        </p>
+
+        <p>
+            <label>
+                Year Options:
+            </label>
+        </p>
+
+        <br />
+
+        <table class="tbl-row-bdr">
+            <thead>
+                <tr>
+                    <th>
+                        1000-level
+                    </th>
+                    <th>
+                        2000-level
+                    </th>
+                    <th>
+                        3000-level
+                    </th>
+                    <th>
+                        4000-level
+                    </th>
+                    <th>
+                        5000-level
+                    </th>
+                    <th>
+                        6000-level
+                    </th>
+                    <th>
+                        7000-level
+                    </th>
+                    <th>
+                        8000-level
+                    </th>
+                    <th>
+                        9000-level
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="checkbox" name="courses1000Level">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="courses2000Level">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="courses3000Level">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="courses4000Level">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="courses5000Level">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="courses6000Level">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="courses7000Level">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="courses8000Level">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="courses9000Level">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+
+</div>
+
+<div id="globalReqsTemplate" class="box bdr-top-solid bdr-bottom-solid" style="display: none">
+    <fieldset>
+        <legend>
+            Global Requirement
+
+            <input class="btn-uni-grad btn-snall" type="button" onclick="removeGlobalReq(this)" value="Remove" />
+        </legend>
+
+        <p class="form-group">
+            <label for="ruleType">
+                Rule Type:
+            </label>
+
+            <select name="ruleType" aria-required="true" required id="globalReqsTypePlaceholder" onchange="onGlobalReqsTypeChanged(this)">
+                <!-- https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box -->
+                <option value="" disabled selected>Select...</option>
+                <option value="min">Minimum Units From Year(s)</option>
+                <option value="max">Maximum Units From Year(s)</option>
+            </select>
+        </p>
+
+        <hr />
+
+        <!-- Placeholder for min/max templates to be injected -->
+        <div id="globalReqsInnerPlaceholder"></div>
+
+    </fieldset>
+</div>
+
+<script src="{% static 'js/pristine.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/programmanagement.js' %}" type="application/javascript"></script>

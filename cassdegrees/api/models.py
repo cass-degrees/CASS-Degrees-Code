@@ -69,4 +69,4 @@ class DegreeModel(models.Model):
     rules = psql.JSONField(default=list)
 
     class Meta:
-        unique_together = (("code", "year"),)
+        unique_together = (("code", "year"), ("name", "year"))

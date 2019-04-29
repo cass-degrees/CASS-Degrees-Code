@@ -10,7 +10,7 @@
     {% endif %}
 
     <div id="{{ action }}Page" {% if action == 'Delete' or render.hide_form %}hidden{% endif %}>
-        <form class="anuform" action="/manage_courses/?action={{ action }}" method="post">
+        <form class="anuform" action="/manage/courses/?action={{ action }}" method="post">
             {% csrf_token %}
             {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
             <input type="hidden" id="perform_function" name="perform_function" value="Add/Edit data to db">
@@ -77,7 +77,7 @@
         <p class="right padtop">
             <input class="btn-uni-grad btn-medium" onclick="history.back()" type="submit" value="No">
         </p>
-        <form class="anuform right" action="/manage_courses/?action=Delete" method="post">
+        <form class="anuform right" action="/manage/courses/?action=Delete" method="post">
             {% csrf_token %}
             <input id="selected" title="Select" name="id" hidden/>
             <p class="marginright">

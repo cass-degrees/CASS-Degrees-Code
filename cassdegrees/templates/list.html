@@ -37,7 +37,7 @@
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
                 <p class="left">
-                    <input class="btn-uni-grad" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Add" value="New {{ title }}">
+                    <input class="btn-uni-grad" type ="submit" formaction="/manage/{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Add" value="New {{ title }}">
                 </p>
                 <table class="fullwidth tbl-cell-bdr">
                     {# Add title row based on what was in the dictionary #}
@@ -62,7 +62,7 @@
                                     {% else %}
                                         <td><p class="text-center"><input title="Select" type="checkbox" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
                                         <td>
-                                            <input class="btn-uni-grad" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Edit&id={{ item }}" value="Edit">
+                                            <input class="btn-uni-grad" type ="submit" formaction="/manage/{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Edit&id={{ item }}" value="Edit">
                                             <input class="btn-uni-grad" type ="submit" formaction="/api/model/{{ title.lower }}/{{ item }}/" value="View">
                                         </td>
                                     {% endif %}
@@ -78,7 +78,7 @@
                 {% else %}
                 <div class="right">
                     <p class="right">
-                       <input class="btn-uni-grad btn-large" type ="submit" formaction="/manage_{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Delete" value="Delete Selected">
+                       <input class="btn-uni-grad btn-large" type ="submit" formaction="/manage/{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/?action=Delete" value="Delete Selected">
                     </p>
                 </div>
                 {% endif %}
