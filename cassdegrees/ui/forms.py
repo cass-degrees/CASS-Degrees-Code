@@ -118,9 +118,10 @@ class EditCourseFormSnippet(ModelForm):
         model = CourseModel
         fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
         widgets = {
-            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ANTH1002"}),
+            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
-            'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Culture and Human Diversity: Introducing Anthropology"}),
+            'name': forms.TextInput(attrs={'class': "text tfull",
+                                           'placeholder': "e.g. Art and Design Histories: Form and Space"}),
             'units': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
         }
         labels = {
