@@ -1,4 +1,3 @@
-import requests
 from api.models import DegreeModel, SubplanModel, CourseModel
 from django.db.models import Q
 from django.shortcuts import render
@@ -16,13 +15,16 @@ def data_list(request):
     """
     query = request.GET.get('q', '')
 
+    render_properties = {
+        'msg': request.GET.get('msg')
+    }
+
     # No search, render default page
     if not query:
-        degree = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
-        subplan = requests.get(request.build_absolute_uri('/api/model/subplan/?format=json')).json()
-        course = requests.get(request.build_absolute_uri('/api/model/course/?format=json')).json()
-
-        return render(request, 'list.html', context={'data': {'Degree': degree, 'Subplan': subplan, 'Course': course}})
+        return render(request, 'list.html', context={'data': {'Degree': DegreeModel.objects.values(),
+                                                              'Subplan': SubplanModel.objects.values(),
+                                                              'Course': CourseModel.objects.values()},
+                                                     'render': render_properties})
     # User search, render results
     else:
         # Remove common words and make the query set unique and uppercase
@@ -82,4 +84,5 @@ def data_list(request):
         data = {k: v for k, v in data.items() if v}
 
         # Render the requested data and autofill the query in the search
-        return render(request, 'list.html', context={'autofill': query, 'data': data})
+        return render(request, 'list.html', context={'autofill': query, 'data': data,
+                                                     'render': render_properties})

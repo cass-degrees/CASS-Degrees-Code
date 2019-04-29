@@ -1,67 +1,65 @@
-from django.shortcuts import render
-import requests
+from api.models import DegreeModel
+from django.http import HttpResponseNotFound
+from django.shortcuts import render, redirect
 
 from ui.forms import EditProgramFormSnippet
 
 
 def create_program(request):
-    submitted = False
-
     if request.method == 'POST':
         form = EditProgramFormSnippet(request.POST)
 
         if form.is_valid():
             form.save()
-            submitted = True
+            return redirect('/list/?view=Degree&msg=Successfully Added Program!')
 
     else:
         form = EditProgramFormSnippet()
 
     return render(request, 'createprogram.html', context={
-        "form": form,
-        "submitted": submitted
+        "edit": False,
+        "form": form
     })
 
 
-def manage_programs(request):
-    # Reads the 'action' attribute from the url (i.e. manage/?action=Add) and determines the submission method
-    action = request.GET.get('action', 'Add')
+def delete_program(request):
+    data = request.POST
+    instances = []
 
-    program = requests.get(request.build_absolute_uri('/api/model/degree/?format=json')).json()
-    # If POST request, redirect the received information to the backend:
-    render_properties = {
-        'msg': None,
-        'is_error': False
-    }
+    ids_to_delete = data.getlist('id')
+    for id_to_delete in ids_to_delete:
+        instances.append(DegreeModel.objects.get(id=int(id_to_delete)))
+
+    if "confirm" in data:
+        for instance in instances:
+            instance.delete()
+
+        return redirect('/list/?view=Degree&msg=Successfully Deleted Program(s)!')
+    else:
+        return render(request, 'deleteprograms.html', context={
+            "instances": instances
+        })
+
+
+def edit_program(request):
+    id = request.GET.get('id')
+    if not id:
+        return HttpResponseNotFound("Specified ID not found")
+
+    # Find the program to specifically edit
+    instance = DegreeModel.objects.get(id=int(id))
 
     if request.method == 'POST':
-        model_api_url = request.build_absolute_uri('/api/model/degree/')
-        post_data = request.POST
-        perform_function = post_data.get('perform_function')
+        form = EditProgramFormSnippet(request.POST, instance=instance)
 
-        # If the request came from list.html (from the add, edit and delete button from the courses list page)
-        # Edit is pending the relevant story issue.
-        if perform_function == 'retrieve view from selected':
-            if action == 'Edit':
-                # TODO: edit programs
-                render_properties['msg'] = 'Not yet Implemented!'
+        if form.is_valid():
+            form.save()
+            return redirect('/list/?view=Degree&msg=Successfully Edited Program!')
 
-            elif action == 'Delete':
-                ids_to_delete = post_data.getlist('id')
-                rest_api = None
-                for id_to_delete in ids_to_delete:
-                    rest_api = requests.delete(model_api_url + id_to_delete + '/')
+    else:
+        form = EditProgramFormSnippet(instance=instance)
 
-                if rest_api is None:
-                    render_properties['is_error'] = True
-                    render_properties['msg'] = 'Please select a program to delete!'
-                else:
-                    if rest_api.status_code == 204:
-                        render_properties['msg'] = 'program successfully deleted!'
-                    else:
-                        render_properties['is_error'] = True
-                        render_properties['msg'] = "Failed to delete program. " \
-                                                   "An unknown error has occurred. Please try again."
-
-    return render(request, 'manageprograms.html', context={'action': action, 'program': program,
-                                                           'render': render_properties})
+    return render(request, 'createprogram.html', context={
+        "edit": True,
+        "form": form
+    })

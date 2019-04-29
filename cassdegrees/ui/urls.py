@@ -26,11 +26,15 @@ from .views.subplans import *
 urlpatterns = [
     path('', index),
     path('sampleform/', sampleform),
+    path('create/course/', create_course),
     path('create/program/', create_program),
     path('create/subplan/', create_subplan),
+    path('delete/courses/', delete_course),
+    path('delete/programs/', delete_program),
+    path('delete/subplans/', delete_subplan),
+    path('edit/course/', edit_course),
+    path('edit/program/', edit_program),
+    path('edit/subplan/', edit_subplan),
     path('list/', data_list),
-    path('manage/programs/', manage_programs),
-    path('manage/subplans/', manage_subplans),
-    path('manage/courses/', manage_courses),
     path('bulk_upload/', bulk_data_upload),
 ]

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Course{% endblock %}
+
+{% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} Course{% endblock %}
+
+{% block content %}
+
+    {% for error in form.non_field_errors %}
+         <p class="msg-error">{{ error }}</p>
+    {% endfor %}
+
+    <form class="anuform" action="" method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <legend>Course details</legend>
+
+            {{ form.management_form }}
+
+            {% for field in form %}
+                <p class="form-group">
+                    {% if not field.is_hidden %}
+                        {{ field.label_tag }}
+                    {% endif %}
+                    {{ field }}
+                </p>
+                {% for error in field.errors %}
+                     <div class="msg-error inline-error">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            <!-- TODO: Unhandled so far -->
+            <p>
+                <label for="text">Requisite Course(s)</label>
+                <select class="text tfull" name="requisites[]" size="5" multiple>
+                    {% for course in courses %}
+                        <option value="{{ course.code }}">{{ course.code }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p>
+                <label for="text">Incompatible Course(s)</label>
+                <select class="text tfull" name="incompatibles[]" size="5" multiple>
+                    {% for course in courses %}
+                        <option value="{{ course.code }}">{{ course.code }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+        </fieldset>
+
+        <p class="text-right">
+            <input class="btn-uni-grad btn-large" type ="submit" value="{% if edit %}Edit{% else %}Create{% endif %}">
+        </p>
+    </form>
+
+{% endblock %}

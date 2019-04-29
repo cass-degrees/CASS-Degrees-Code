@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page-title %}Delete Subplans{% endblock %}
+
+{% block subtitle %}Are you sure?{% endblock %}
+
+{% block content %}
+    <form class="anuform" action="" method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <p>Are you sure you want to delete:</p>
+            {% for instance in instances %}
+                <p>
+                    {{ instance.name }} ({{ instance.code }}) in {{ instance.year }}
+                </p>
+                <input type="number" hidden value="{{ instance.id }}" name="id" />
+            {% endfor %}
+        </fieldset>
+
+        <input type="hidden" value="confirm" name="confirm" />
+
+        <p class="text-right">
+            <input class="btn-uni-grad btn-large" type="submit" value="Delete">
+        </p>
+    </form>
+
+{% endblock %}

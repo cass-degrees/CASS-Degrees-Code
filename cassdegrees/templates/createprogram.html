@@ -1,15 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block page-title %}Create Program Template{% endblock %}
+{% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Program Template{% endblock %}
 
-{% block subtitle %}Create Program Template{% endblock %}
+{% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} Program Template{% endblock %}
 
 {% block content %}
-    {% if submitted %}
-        <p class="msg-success">Program successfully added!</p>
-    {% endif %}
-
     {% for error in form.non_field_errors %}
          <p class="msg-error">{{ error }}</p>
     {% endfor %}
@@ -43,6 +39,6 @@
     </form>
 
     <p class="text-right">
-        <input class="btn-uni-grad btn-large" type="submit" value="Create" onclick="if (handleProgram()) document.getElementById('mainForm').submit()">
+        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Edit{% else %}Create{% endif %}" onclick="if (handleProgram()) document.getElementById('mainForm').submit()">
     </p>
 {% endblock %}
