@@ -6,6 +6,24 @@ from ui.forms import EditProgramFormSnippet
 
 
 def create_program(request):
+    duplicate = request.GET.get('duplicate', 'false')
+    if duplicate == 'true':
+        duplicate = True
+    elif duplicate == 'false':
+        duplicate = False
+
+    # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
+    instance = ""
+
+    # If we are creating a program from a duplicate, we retrieve the instance with the given id
+    # (should always come along with 'duplicate' variable) and return that data to the user.
+    if duplicate:
+        id = request.GET.get('id')
+        if not id:
+            return HttpResponseNotFound("Specified ID not found")
+        # Find the program to specifically create from:
+        instance = ProgramModel.objects.get(id=int(id))
+
     if request.method == 'POST':
         form = EditProgramFormSnippet(request.POST)
 
@@ -14,7 +32,10 @@ def create_program(request):
             return redirect('/list/?view=Program&msg=Successfully Added Program!')
 
     else:
-        form = EditProgramFormSnippet()
+        if duplicate:
+            form = EditProgramFormSnippet(instance=instance)
+        else:
+            form = EditProgramFormSnippet()
 
     return render(request, 'createprogram.html', context={
         "edit": False,
