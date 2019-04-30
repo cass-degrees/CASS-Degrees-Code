@@ -6,7 +6,7 @@ from ui.forms import EditSubplanFormSnippet
 from api.models import SubplanModel
 
 
-# Using sampleform template and #59 - basic degree creation workflow as it's inspirations
+# Using sampleform template and #59 - basic program creation workflow as it's inspirations
 def create_subplan(request):
     if request.method == 'POST':
         form = EditSubplanFormSnippet(request.POST)

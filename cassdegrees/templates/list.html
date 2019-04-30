@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load breadcrumbs %}
 
-{% block page-title %}Template/Subplan/Course List{% endblock %}
+{% block page-title %}Program/Subplan/Course List{% endblock %}
 
-{% block subtitle %}Template, Subplan, and Course List{% endblock %}
+{% block subtitle %}Program, Subplan, and Course List{% endblock %}
 
 {% block breadcrumb-trail %}
-    {% finalcrumb 'Templates/Subplans/Courses' %}
+    {% finalcrumb 'Programs/Subplans/Courses' %}
 {% endblock %}
 
 {% block content %}
@@ -16,7 +16,7 @@
 
     <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="/list/?action=Search" method="get">
         <input class="text" name="q" size="24" maxlength="75" type="text"
-               placeholder="Search Degrees, Subplans, or Courses..."
+               placeholder="Search Programs, Subplans, or Courses..."
                value="{{ autofill }}"
         >
         <input class="btn-uni-grad btn-medium" type="submit" value="Search">
@@ -46,7 +46,7 @@
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
                 <p class="left">
-                    <input class="btn-uni-grad" type ="submit" formmethod="get" formaction="/create/{% if title == 'Degree' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/" value="New {{ title }}">
+                    <input class="btn-uni-grad" type ="submit" formmethod="get" formaction="/create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/" value="New {{ title }}">
                 </p>
                 <table class="fullwidth tbl-cell-bdr">
                     {# Add title row based on what was in the dictionary #}
@@ -71,7 +71,7 @@
                                     {% else %}
                                         <td><p class="text-center"><input title="Select" type="checkbox" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
                                         <td>
-                                            <a class="btn-uni-grad" href="/edit/{% if title == 'Degree' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">Edit</a>
+                                            <a class="btn-uni-grad" href="/edit/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">Edit</a>
                                             <a class="btn-uni-grad" href="/api/model/{{ title.lower }}/{{ item }}/">View</a>
                                         </td>
                                     {% endif %}
@@ -87,7 +87,7 @@
                 {% else %}
                 <div class="right">
                     <p class="right">
-                       <input class="btn-uni-grad btn-large" type ="submit" formaction="/delete/{% if title == 'Degree' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/" value="Delete Selected">
+                       <input class="btn-uni-grad btn-large" type ="submit" formaction="/delete/{% if title == 'Program' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/" value="Delete Selected">
                     </p>
                 </div>
                 {% endif %}

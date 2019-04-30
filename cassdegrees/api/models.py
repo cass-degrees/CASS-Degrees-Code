@@ -36,7 +36,7 @@ class SubplanModel(models.Model):
         unique_together = (("code", "year"), ("year", "name", "planType"),)
 
 
-class DegreeModel(models.Model):
+class ProgramModel(models.Model):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=32)
     year = models.PositiveIntegerField()
@@ -52,7 +52,7 @@ class DegreeModel(models.Model):
                      ("vert-doub", "Vertical Flexible Double Degree"),
                      ("other", "Other Degree"))
 
-    degreeType = models.CharField(max_length=10, choices=degreeChoices)
+    programType = models.CharField(max_length=10, choices=degreeChoices)
 
     globalRequirements = psql.JSONField(default=list)
     rules = psql.JSONField(default=list)

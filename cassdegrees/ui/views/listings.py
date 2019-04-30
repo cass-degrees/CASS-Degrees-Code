@@ -1,4 +1,4 @@
-from api.models import DegreeModel, SubplanModel, CourseModel
+from api.models import ProgramModel, SubplanModel, CourseModel
 from django.db.models import Q
 from django.shortcuts import render
 
@@ -21,7 +21,7 @@ def data_list(request):
 
     # No search, render default page
     if not query:
-        return render(request, 'list.html', context={'data': {'Degree': DegreeModel.objects.values(),
+        return render(request, 'list.html', context={'data': {'Program': ProgramModel.objects.values(),
                                                               'Subplan': SubplanModel.objects.values(),
                                                               'Course': CourseModel.objects.values()},
                                                      'render': render_properties})
@@ -33,7 +33,7 @@ def data_list(request):
 
         # Create blank queries for text and dates (Allows AND relationship between dates and text)
         # The AND/OR representations are there to give higher priority to results that contain all keywords
-        new_query = {x: {'AND': Q(), 'OR': Q(), 'date': Q()} for x in ['Course', 'Subplan', 'Degree']}
+        new_query = {x: {'AND': Q(), 'OR': Q(), 'date': Q()} for x in ['Course', 'Subplan', 'Program']}
 
         # Function that takes an input dict and a sub-query, and appends the sub-query based on the appropriate logic
         def build_query(target, q):
@@ -59,16 +59,16 @@ def data_list(request):
                 #      in a search for `COMP CHIN`
                 new_query['Course']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
                 new_query['Subplan']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
-                new_query['Degree']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
+                new_query['Program']['date'] |= Q(year=int(term)) | Q(name__icontains=term) | Q(code__icontains=term)
             # If the search term has no obvious structure, search for it in the code and name fields
             else:
                 build_query(new_query['Course'], Q(code__icontains=term) | Q(name__icontains=term))
                 build_query(new_query['Subplan'], Q(code__icontains=term) | Q(name__icontains=term))
-                build_query(new_query['Degree'], Q(code__icontains=term) | Q(name__icontains=term))
+                build_query(new_query['Program'], Q(code__icontains=term) | Q(name__icontains=term))
 
-        # If the degree, subplan, or course searches are non-empty, query the database
+        # If the program, subplan, or course searches are non-empty, query the database
         data = {}
-        for target, model in [('Degree', DegreeModel), ('Subplan', SubplanModel), ('Course', CourseModel)]:
+        for target, model in [('Program', ProgramModel), ('Subplan', SubplanModel), ('Course', CourseModel)]:
             # If the query is not blank, search for it in the database (Prevents unnecessary searches)
             if new_query[target]['AND'].children or new_query[target]['date'].children:
                 # SELECT from the the appropriate relation with the AND and OR queries
