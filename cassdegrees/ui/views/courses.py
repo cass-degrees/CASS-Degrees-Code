@@ -1,4 +1,4 @@
-from api.models import CoursesInSubplanModel, CourseModel
+from api.models import CourseModel
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 
