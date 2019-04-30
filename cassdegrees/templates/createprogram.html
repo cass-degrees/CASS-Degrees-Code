@@ -1,9 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
+{% load breadcrumbs %}
 
 {% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Program Template{% endblock %}
 
 {% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} Program Template{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Degree' 'Templates/Subplans/Courses' %}
+    {% if edit %}
+        {% finalcrumb 'Edit Program' %}
+    {% else %}
+        {% finalcrumb 'Create Program' %}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     {% for error in form.non_field_errors %}

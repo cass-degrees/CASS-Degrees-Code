@@ -1,8 +1,19 @@
 {% extends "base.html" %}
+{% load breadcrumbs %}
 
 {% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Course{% endblock %}
 
 {% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} Course{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Course' 'Templates/Subplans/Courses' %}
+    {% if edit %}
+        {% finalcrumb 'Edit Course' %}
+    {% else %}
+        {% finalcrumb 'Create Course' %}
+    {% endif %}
+
+{% endblock %}
 
 {% block content %}
 

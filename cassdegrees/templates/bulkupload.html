@@ -1,8 +1,13 @@
 {% extends "base.html" %}
+{% load breadcrumbs %}
 
 {% block page-title %}Bulk Data Upload{% endblock %}
 
 {% block subtitle %}Bulk Data Upload{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% finalcrumb 'Bulk Upload' %}
+{% endblock %}
 
 {% block content %}
     {# Generates the tabs based on the keys #}

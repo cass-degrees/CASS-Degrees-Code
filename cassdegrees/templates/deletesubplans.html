@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load breadcrumbs %}
 
 {% block page-title %}Delete Subplans{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Subplan' 'Templates/Subplans/Courses' %}
+    {% finalcrumb 'Delete Subplan' %}
+{% endblock %}
 
 {% block subtitle %}Are you sure?{% endblock %}
 

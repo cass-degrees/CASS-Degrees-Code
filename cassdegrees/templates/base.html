@@ -63,6 +63,10 @@
         <div id="body">
             <div id="content-main" class="margintop clearfix">
                 <div id="content-header" class="full nomargintop nomarginbottom">
+                    <div id="breadcrumb" class="breadcrumbs">
+                        <a href="/"><img src="//style.anu.edu.au/_anu/images/icons/web/home.png" class="w16px absmiddle" alt="Home"></a>
+                        {% block breadcrumb-trail %} No breadcrumb trail specified {% endblock %}
+                    </div>
                     <h1 class="title" id="page-title">{% block subtitle %}No title defined{% endblock %}</h1>
                 </div>
             </div>
