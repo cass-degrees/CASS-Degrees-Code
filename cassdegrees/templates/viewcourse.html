@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
+
+{% block subtitle %}{{ data.name }}{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'View Course' %}
+{% endblock %}
+
+{% block content %}
+    <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px;">
+        <div>
+            <div class="left">
+                <h4>Code</h4>
+                <li>{{ data.code }}</li>
+            </div>
+            <div class="right">
+                <h4>Year</h4>
+                <li>{{ data.year }}</li>
+            </div>
+
+            </br>
+            </br>
+            </br>
+
+            <h4>Offered in</h4>
+            {% if data.offeredSem1 %}
+                <li>
+                    First Semester {{ data.year }}
+                </li>
+            {% endif %}
+            {% if data.offeredSem2 %}
+                <li>
+                    Second Semester {{ data.year }}
+                </li>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <h3>Requisite and Incompatibility</h3>
+        <p>
+            There are no requirements to enrol in this course.
+        </p>
+    </div>
+
+{% endblock %}

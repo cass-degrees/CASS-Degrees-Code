@@ -22,6 +22,7 @@ from .views.listings import *
 from .views.programs import *
 from .views.sampleform import *
 from .views.subplans import *
+from .views.view_ import *
 
 urlpatterns = [
     path('', index),
@@ -37,4 +38,7 @@ urlpatterns = [
     path('edit/subplan/', edit_subplan),
     path('list/', data_list),
     path('bulk_upload/', bulk_data_upload),
+    path('view/program/', view_),
+    path('view/subplan/', view_),
+    path('view/course/', view_),
 ]

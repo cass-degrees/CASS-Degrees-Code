@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
+
+{% block subtitle %}{{ data.name }}{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'View Program' %}
+{% endblock %}
+
+{% block content %}
+    <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px">
+        <div>
+            <h4>Program Type</h4>
+            <li>
+                {% if data.programType == 'ugrad-sing' %}
+                    Undergraduate Single Pass Degree
+                {% endif %}
+                {% if data.programType == 'ugrad-doub' %}
+                    Undergraduate Flexible Double Degree
+                {% endif %}
+                {% if data.programType == 'hon' %}
+                    Honours Degree
+                {% endif %}
+                {% if data.programType == 'mast-sing' %}
+                    Masters Single Degree
+                {% endif %}
+                {% if data.programType == 'mast-adv' %}
+                    Masters (Advanced) Degree
+                {% endif %}
+                {% if data.programType == 'mast-doub' %}
+                    Masters Flexible Double Degree
+                {% endif %}
+                {% if data.programType == 'vert-doub' %}
+                    Vertical Flexible Double Degree
+                {% endif %}
+                {% if data.programType == 'other' %}
+                    Other Degree
+                {% endif %}
+            </li>
+        </br>
+            <div class="left">
+                <h4>Academic Plan</h4>
+                <li>{{ data.code }}</li>
+            </div>
+            <div class="right">
+                <h4>Year</h4>
+                <li>{{ data.year }}</li>
+            </div>
+
+        </div>
+    </div>
+
+    </br>
+
+    <div>
+        <h3>Program Requirements</h3>
+        <p>The {{ data.name }} requires completion of {{ data.units }} units, of which:</p>
+
+        {% for rule in data.globalRequirements %}
+            {% if rule.type == "min" %}
+                <p style="margin-left: 40px">
+                    A minimum of {{ rule.unit_count }} units must come from completion of {{ rule.prettyList }} courses.
+                </p>
+            {% endif %}
+            {% if rule.type == "max" %}
+                <p style="margin-left: 40px">
+                    A maximum of {{ rule.unit_count }} units may come from completion of {{ rule.prettyList }} courses.
+                </p>
+            {% endif %}
+        {% endfor %}
+
+        <p>The {{ data.units }} units must include:</p>
+        {% for rule in data.rules %}
+            {% if rule.type == "subplan" %}
+                <p style="margin-left: 40px">Completion of one subplan from the following list:</p>
+                {% for id, name in rule.ids.items %}
+                    <a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" style="margin-left: 80px">{{ name }}</a>
+                {% endfor %}
+            {% endif %}
+
+            {% if rule.type == "custom_text" %}
+                <p style="margin-left: 40px">For {{ rule.units }} units:</p>
+                <p style="margin-left: 80px">{{ rule.text }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
