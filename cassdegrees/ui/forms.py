@@ -66,11 +66,12 @@ class EditSubplanFormSnippet(ModelForm):
 
     class Meta:
         model = SubplanModel
-        fields = ('code', 'year', 'name', 'units', 'planType')
+        fields = ('code', 'year', 'name', 'units', 'planType', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History Minor"}),
+            'publish': forms.CheckboxInput()
             # See units above
             # planType auto generated
         }
