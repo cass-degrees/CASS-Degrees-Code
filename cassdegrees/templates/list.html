@@ -13,8 +13,8 @@
     {% if render.msg != None %}
         <p class="msg-success">{{ render.msg }}</p>
     {% endif %}
-    {% if render.errmsg != None %}
-        <p class="msg-error">{{ render.errmsg }}</p>
+    {% if render.error != None %}
+        <p class="msg-error">{{ render.error }}</p>
     {% endif %}
 
     <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="/list/?action=Search" method="get">

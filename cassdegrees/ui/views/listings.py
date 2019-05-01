@@ -17,7 +17,7 @@ def data_list(request):
 
     render_properties = {
         'msg': request.GET.get('msg'),
-        'errmsg': request.GET.get('errmsg')
+        'error': request.GET.get('error')
     }
 
     # No search, render default page
