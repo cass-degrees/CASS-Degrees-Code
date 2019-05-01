@@ -1,0 +1,114 @@
+{% load static %}
+
+<fieldset id="rulesContainer">
+    <legend>Add Rules</legend>
+
+    <br />
+
+    <rule_container v-bind:rules="rules" />
+</fieldset>
+
+{% verbatim %}
+<script type="text/x-template" id="subplanRuleTemplate">
+    <fieldset v-if="!redraw">
+        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+        <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
+
+        <p>
+            Students must pick one from the following:
+        </p>
+
+        <div v-for="(id, index) in details.ids">
+            <select v-model="details.ids[index]" v-on:change="check_options" required>
+                <option v-for="subplan in subplans" v-bind:value="subplan.id">{{ subplan.name }} {{ subplan.year }} ({{ subplan.units }} units)</option>
+            </select>
+            <input v-if="index != 0" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </div>
+
+        <input type="button" v-on:click="add_subplan()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
+    </fieldset>
+</script>
+
+<script type="text/x-template" id="customTextRuleTemplate">
+    <fieldset>
+        <p>
+            Students must complete the following:
+        </p>
+
+        <p>
+            <textarea v-model="details.text" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
+        </p>
+
+        <p class="form-group">
+            <label>Unit value for this item:</label>
+            <input class="text" type="number" min="0" max="1000" v-model="details.units" aria-required="true" required>
+        </p>
+
+        <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>
+    </fieldset>
+</script>
+
+<script type="text/x-template" id="ruleTemplate">
+    <div class="card">
+        <header class="box-header">
+            <a href="#" class="card-header-icon">
+                <span class="icon">
+                    <i class="fas fa-grip-vertical"></i>
+                </span>
+            </a>
+            <p class="card-header-title">
+                {{ component_names[details.type] }}
+            </p>
+            <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </header>
+        <div class="box-solid">
+            <div class="card-content" v-bind:is="'rule_' + details.type" v-bind:details="details"></div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="ruleContainerTemplate">
+    <div v-if="!redraw">
+        <div v-for="(item, index) in rules" :key="index" >
+            <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></rule>
+            <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+        </div>
+
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true" value="Add New Rule" />
+
+        <div class="modal" v-if="show_add_a_rule_modal">
+            <div class="modal-background" v-on:click="show_add_a_rule_modal = false"></div>
+            <div class="modal-card">
+                <div class="card">
+                    <header class="box-header">
+                        Add a rule...
+                    </header>
+                    <div class="box-solid box-has-footer">
+                        <p>Select a kind of rule to add:</p>
+                        <div class="select">
+                            <select v-model="add_a_rule_modal_option">
+                                <option v-for="(option, index) in component_names" v-bind:value="index">
+                                    {{ option }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <footer class="box-solid">
+                        <button class="button is-success" v-on:click="add_rule">Add</button>
+                        <button class="button" v-on:click="show_add_a_rule_modal = false">Cancel</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+{% endverbatim %}
+
+<script src="{% static 'js/vue.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/rules.js' %}" type="application/javascript"></script>
+
+{% if rules != None %}
+    <script>
+        app.rules = {{ rules|safe }};
+    </script>
+{% endif %}

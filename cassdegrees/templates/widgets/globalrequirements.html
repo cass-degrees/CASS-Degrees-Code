@@ -1,133 +1,158 @@
 {% load static %}
 
-<fieldset>
+<fieldset id="globalRequirementsContainer">
     <legend>Add Global Requirements</legend>
 
     <br />
 
-    <div id="globalRequirementsContainer">
-
-    </div>
-
-    <input class="btn-uni-grad btn-large" type="button" onclick="addGlobalReq()" value="Add New Global Requirement" />
+    <global_requirement_container v-bind:global_requirements="global_requirements" />
 </fieldset>
 
-<!-- Acts as a master template for duplication, preventing inline HTML in Javascript. -->
-<div id="minMaxUnitsTemplate" style="display: none">
-    <fieldset>
-        <legend></legend>
+{% verbatim %}
+<script type="text/x-template" id="minMaxUnitsTemplate">
+    <div>
+        <fieldset>
+            <p class="form-group">
+                <label>
+                    Unit Count:
+                </label>
+                <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            </p>
 
-        <p class="form-group">
-            <label>
-                Unit Count:
-            </label>
-            <input class="text" type="number" name="unit_count" min="0" max="1000" value="48" aria-required="true" required>
-        </p>
+            <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+            <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
 
-        <p>
-            <label>
-                Year Options:
-            </label>
-        </p>
+            <p>
+                <label>
+                    Year Options:
+                </label>
+            </p>
 
-        <br />
+            <br />
 
-        <table class="tbl-row-bdr">
-            <thead>
-                <tr>
-                    <th>
-                        1000-level
-                    </th>
-                    <th>
-                        2000-level
-                    </th>
-                    <th>
-                        3000-level
-                    </th>
-                    <th>
-                        4000-level
-                    </th>
-                    <th>
-                        5000-level
-                    </th>
-                    <th>
-                        6000-level
-                    </th>
-                    <th>
-                        7000-level
-                    </th>
-                    <th>
-                        8000-level
-                    </th>
-                    <th>
-                        9000-level
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <input type="checkbox" name="courses1000Level">
-                    </td>
-                    <td>
-                        <input type="checkbox" name="courses2000Level">
-                    </td>
-                    <td>
-                        <input type="checkbox" name="courses3000Level">
-                    </td>
-                    <td>
-                        <input type="checkbox" name="courses4000Level">
-                    </td>
-                    <td>
-                        <input type="checkbox" name="courses5000Level">
-                    </td>
-                    <td>
-                        <input type="checkbox" name="courses6000Level">
-                    </td>
-                    <td>
-                        <input type="checkbox" name="courses7000Level">
-                    </td>
-                    <td>
-                        <input type="checkbox" name="courses8000Level">
-                    </td>
-                    <td>
-                        <input type="checkbox" name="courses9000Level">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </fieldset>
+            <table class="tbl-row-bdr">
+                <thead>
+                    <tr>
+                        <th>
+                            1000-level
+                        </th>
+                        <th>
+                            2000-level
+                        </th>
+                        <th>
+                            3000-level
+                        </th>
+                        <th>
+                            4000-level
+                        </th>
+                        <th>
+                            5000-level
+                        </th>
+                        <th>
+                            6000-level
+                        </th>
+                        <th>
+                            7000-level
+                        </th>
+                        <th>
+                            8000-level
+                        </th>
+                        <th>
+                            9000-level
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="checkbox" v-model="details.courses1000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses2000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses3000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses4000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses5000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses6000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses7000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses8000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses9000Level">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</script>
 
-</div>
+<script type="text/x-template" id="globalRequirementTemplate">
+    <div class="card">
+        <header class="box-header">
+            <a href="#" class="card-header-icon">
+                <span class="icon">
+                    <i class="fas fa-grip-vertical"></i>
+                </span>
+            </a>
+            <p class="card-header-title">
+                {{ component_names[details.type] }}
+            </p>
+            <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </header>
+        <div class="box-solid">
+            <div class="card-content" v-bind:is="'global_requirement_' + details.type" v-bind:details="details"></div>
+        </div>
+    </div>
+</script>
 
-<div id="globalReqsTemplate" class="box bdr-top-solid bdr-bottom-solid" style="display: none">
-    <fieldset>
-        <legend>
-            Global Requirement
+<script type="text/x-template" id="globalRequirementContainerTemplate">
+    <div v-if="!redraw">
+        <div v-for="(item, index) in global_requirements" :key="index" >
+            <global_requirement class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></global_requirement>
+            <div v-if="index < global_requirements.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+        </div>
 
-            <input class="btn-uni-grad btn-snall" type="button" onclick="removeGlobalReq(this)" value="Remove" />
-        </legend>
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_global_requirement_modal = true" value="Add New Global Requirement" />
 
-        <p class="form-group">
-            <label for="ruleType">
-                Rule Type:
-            </label>
+        <div class="modal" v-if="show_add_a_global_requirement_modal">
+            <div class="modal-background" v-on:click="show_add_a_global_requirement_modal = false"></div>
+            <div class="modal-card">
+                <div class="card">
+                    <header class="box-header">
+                        Add a global requirement...
+                    </header>
+                    <div class="box-solid box-has-footer">
+                        <p>Select a kind of global requirement to add:</p>
+                        <div class="select">
+                            <select v-model="add_a_global_requirement_modal_option">
+                                <option v-for="(option, index) in component_names" v-bind:value="index">
+                                    {{ option }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <footer class="box-solid">
+                        <button class="button is-success" v-on:click="add_global_requirement">Add</button>
+                        <button class="button" v-on:click="show_add_a_global_requirement_modal = false">Cancel</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+{% endverbatim %}
 
-            <select name="ruleType" aria-required="true" required id="globalReqsTypePlaceholder" onchange="onGlobalReqsTypeChanged(this)">
-                <!-- https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box -->
-                <option value="" disabled selected>Select...</option>
-                <option value="min">Minimum Units From Year(s)</option>
-                <option value="max">Maximum Units From Year(s)</option>
-            </select>
-        </p>
-
-        <hr />
-
-        <!-- Placeholder for min/max templates to be injected -->
-        <div id="globalReqsInnerPlaceholder"></div>
-
-    </fieldset>
-</div>
-
-<script src="{% static 'js/pristine.js' %}" type="application/javascript"></script>
-<script src="{% static 'js/programmanagement.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/vue.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/globalrequirements.js' %}" type="application/javascript"></script>

@@ -79,3 +79,45 @@ select.text{
 
     padding: 4px 25px 4px 25px;
 }
+
+/* ANU doesn't provide modal systems */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.modal-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-card {
+    position: absolute;
+    left: 35%;
+    width: 30%;
+    top: 35%;
+}
+
+.box-has-footer {
+    margin-bottom: 0;
+}
+
+.card-header-title {
+    display: inline;
+}
+
+/* Fix off-center fieldsets */
+.anuform fieldset {
+    padding-right: 3%;
+}
+
+.no-left-margin {
+    margin-left: 0 !important;
+}

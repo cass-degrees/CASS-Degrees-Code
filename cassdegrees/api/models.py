@@ -33,6 +33,8 @@ class SubplanModel(models.Model):
 
     planType = models.CharField(max_length=4, choices=subplanChoices)
 
+    rules = psql.JSONField(default=list)
+
     class Meta:
         unique_together = (("code", "year"), ("year", "name", "planType"),)
 

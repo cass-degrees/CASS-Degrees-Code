@@ -20,7 +20,7 @@
          <p class="msg-error">{{ error }}</p>
     {% endfor %}
 
-    <form class="anuform" action="" method="post">
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return handleRules()">
         {% csrf_token %}
 
         <fieldset>
@@ -40,10 +40,16 @@
                 {% endfor %}
             {% endfor %}
         </fieldset>
-
-        <p class="text-right">
-            <input class="btn-uni-grad btn-large" type ="submit" value="{% if edit %}Edit{% else %}Create{% endif %}">
-        </p>
     </form>
 
+    <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
+         structure -->
+    <form class="anuform">
+        {% include "widgets/rules.html" %}
+    </form>
+
+    <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Edit{% else %}Create{% endif %}"
+               onclick="if (handleRules()) document.getElementById('mainForm').submit()">
+    </p>
 {% endblock %}

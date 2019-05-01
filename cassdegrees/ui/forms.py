@@ -15,16 +15,20 @@ class JSONField(forms.CharField):
         return json.loads(value)
 
     def prepare_value(self, value):
-        return json.dumps(value)
+        if isinstance(value, str):
+            return value
+        else:
+            return json.dumps(value)
 
 
 class EditProgramFormSnippet(ModelForm):
     # Use custom handlers for JSON fields
     globalRequirements = JSONField(field_id='globalRequirements', required=False)
+    rules = JSONField(field_id='rules', required=False)
 
     class Meta:
         model = ProgramModel
-        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements')
+        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
@@ -63,10 +67,11 @@ class EditProgramFormSnippet(ModelForm):
 class EditSubplanFormSnippet(ModelForm):
     # Automatically injected by default
     units = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    rules = JSONField(field_id='rules', required=False)
 
     class Meta:
         model = SubplanModel
-        fields = ('code', 'year', 'name', 'units', 'planType', 'publish')
+        fields = ('code', 'year', 'name', 'units', 'planType', 'rules', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
