@@ -1,9 +1,11 @@
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpRequest
 from django.shortcuts import render, redirect
 
 from ui.forms import EditSubplanFormSnippet
 
 from api.models import SubplanModel
+from api.views import search
+import json
 
 
 # Using sampleform template and #59 - basic program creation workflow as it's inspirations
@@ -48,9 +50,24 @@ def delete_subplan(request):
     data = request.POST
     instances = []
 
+    gen_request = HttpRequest()
+    gen_request.GET = {'select': 'rules', 'from': 'program'}
+
+    send_search_request = search(gen_request)
+    subplans_in_degrees = json.loads(send_search_request.content.decode())
+
     ids_to_delete = data.getlist('id')
+    safe_to_delete = True
     for id_to_delete in ids_to_delete:
-        instances.append(SubplanModel.objects.get(id=int(id_to_delete)))
+        for degree in subplans_in_degrees:
+            for subplans in degree['rules']:
+                if int(id_to_delete) in subplans['ids']:
+                    safe_to_delete = False
+
+        if (safe_to_delete):
+            instances.append(SubplanModel.objects.get(id=int(id_to_delete)))
+        else:
+            return redirect('/list/?view=Subplan&errmsg=Failed to Delete Subplan(s)! Subplan is used by a Degree. Please check dependencies')
 
     if "confirm" in data:
         for instance in instances:
