@@ -1,9 +1,11 @@
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpRequest
 from django.shortcuts import render, redirect
 
 from ui.forms import EditSubplanFormSnippet
 
 from api.models import SubplanModel
+from api.views import search
+import json
 
 
 # Using sampleform template and #59 - basic program creation workflow as it's inspirations
@@ -48,9 +50,46 @@ def delete_subplan(request):
     data = request.POST
     instances = []
 
+    # This is used to get the ids of subplans which are used by programs.
+    # Generates an internal request to the search api made by Jack
+    gen_request = HttpRequest()
+    gen_request.GET = {'select': 'code,rules,year', 'from': 'program'}
+    # Sends the request to the search api
+    send_search_request = search(gen_request)
+    subplans_in_programs = json.loads(send_search_request.content.decode())
+
+    # Generate another request to get the subplan codes and ids
+    # This is so we can get the code of the subplan from the id we are given
+    gen_request.GET = {'select': 'code,id,year', 'from': 'subplan'}
+    send_search_request = search(gen_request)
+    subplan_ids = json.loads(send_search_request.content.decode())
+
+    # Get the ids to delete and check if they're used by any programs
     ids_to_delete = data.getlist('id')
+    safe_to_delete = True
+    error_msg = ""
     for id_to_delete in ids_to_delete:
-        instances.append(SubplanModel.objects.get(id=int(id_to_delete)))
+        # find if the id matches any rules in the programs.
+        for program in subplans_in_programs:
+            for subplans in program['rules']:
+                # if we find a subplan in a program then its not safe to delete
+                if int(id_to_delete) in subplans['ids']:
+                    safe_to_delete = False
+                    # Find the subplan code for the id to delete
+                    for subplan in subplan_ids:
+                        if int(id_to_delete) == subplan['id']:
+                            # Populate the error message with the id's code names we found
+                            error_msg += "Subplan code: '" + subplan['code'] + "' of year: " + str(subplan['year']) + \
+                                        " is used by Program code: '" + program['code'] + "' of year: " + \
+                                         str(subplan['year']) + ".\n"
+
+        # Only delete if its safe to delete, otherwise notify the user of the dependencies
+        if safe_to_delete:
+            instances.append(SubplanModel.objects.get(id=int(id_to_delete)))
+
+    if error_msg != "":
+        return redirect('/list/?view=Subplan&error=Failed to Delete Subplan(s)!\n\n' + error_msg +
+                        '\nPlease check dependencies!')
 
     if "confirm" in data:
         for instance in instances:
