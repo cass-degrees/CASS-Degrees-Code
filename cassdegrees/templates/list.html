@@ -13,8 +13,9 @@
     {% if render.msg != None %}
         <p class="msg-success">{{ render.msg }}</p>
     {% endif %}
+    {# linebreaksbr adds a <br> whenever there is a \n in a string #}
     {% if render.error != None %}
-        <p class="msg-error">{{ render.error }}</p>
+        <p class="msg-error">{{ render.error|linebreaksbr }}</p>
     {% endif %}
 
     <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="/list/?action=Search" method="get">

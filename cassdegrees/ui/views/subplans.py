@@ -53,14 +53,14 @@ def delete_subplan(request):
     # This is used to get the ids of subplans which are used by programs.
     # Generates an internal request to the search api made by Jack
     gen_request = HttpRequest()
-    gen_request.GET = {'select': 'code,rules', 'from': 'program'}
+    gen_request.GET = {'select': 'code,rules,year', 'from': 'program'}
     # Sends the request to the search api
     send_search_request = search(gen_request)
     subplans_in_programs = json.loads(send_search_request.content.decode())
 
     # Generate another request to get the subplan codes and ids
     # This is so we can get the code of the subplan from the id we are given
-    gen_request.GET = {'select': 'code,id', 'from': 'subplan'}
+    gen_request.GET = {'select': 'code,id,year', 'from': 'subplan'}
     send_search_request = search(gen_request)
     subplan_ids = json.loads(send_search_request.content.decode())
 
@@ -79,16 +79,17 @@ def delete_subplan(request):
                     for subplan in subplan_ids:
                         if int(id_to_delete) == subplan['id']:
                             # Populate the error message with the id's code names we found
-                            error_msg += "Subplan code: '" + subplan['code'] + \
-                                        "' is used by Program code: '" + program['code'] + "'. "
+                            error_msg += "Subplan code: '" + subplan['code'] + "' of year: " + str(subplan['year']) + \
+                                        " is used by Program code: '" + program['code'] + "' of year: " + \
+                                         str(subplan['year']) + ".\n"
 
         # Only delete if its safe to delete, otherwise notify the user of the dependencies
         if safe_to_delete:
             instances.append(SubplanModel.objects.get(id=int(id_to_delete)))
 
     if error_msg != "":
-        return redirect('/list/?view=Subplan&error=Failed to Delete Subplan(s)! ' + error_msg +
-                        'Please check dependencies!')
+        return redirect('/list/?view=Subplan&error=Failed to Delete Subplan(s)!\n\n' + error_msg +
+                        '\nPlease check dependencies!')
 
     if "confirm" in data:
         for instance in instances:
