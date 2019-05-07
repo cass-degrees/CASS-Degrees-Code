@@ -1,8 +1,9 @@
 from api.models import ProgramModel
-from django.http import HttpResponseNotFound
-from django.shortcuts import render, redirect
+from django.http import HttpResponseNotFound, HttpRequest, HttpResponseRedirect
+from django.shortcuts import render, redirect, reverse
 
 from ui.forms import EditProgramFormSnippet
+from ui.views.subplans import create_subplan
 
 
 def create_program(request):
@@ -25,6 +26,12 @@ def create_program(request):
         instance = ProgramModel.objects.get(id=int(id))
 
     if request.method == 'POST':
+        # If the user clicked the 'Create New Subplan' button, cache the form and start creating a new subplan
+        if request.POST['action'] == 'Create New Subplan':
+            request.session['cached_program_form_data'] = request.POST
+            request.session['cached_program_form_source'] = request.path
+            return redirect('/create/subplan/')
+
         form = EditProgramFormSnippet(request.POST)
 
         if form.is_valid():
@@ -35,7 +42,17 @@ def create_program(request):
         if duplicate:
             form = EditProgramFormSnippet(instance=instance)
         else:
-            form = EditProgramFormSnippet()
+            # If the cached path matches the current path, load the cached form and then clear the cache
+            if request.session.get('cached_program_form_source', '') == request.path:
+                form = EditProgramFormSnippet(request.session.get('cached_program_form_data', ''))
+
+                try:
+                    del request.session['cached_program_form_data']
+                    del request.session['cached_program_form_source']
+                except KeyError:
+                    pass
+            else:
+                form = EditProgramFormSnippet()
 
     return render(request, 'createprogram.html', context={
         "edit": False,
@@ -71,6 +88,12 @@ def edit_program(request):
     instance = ProgramModel.objects.get(id=int(id))
 
     if request.method == 'POST':
+        # If the user clicked the 'Create New Subplan' button, cache the form and start creating a new subplan
+        if (request.POST['action'] == 'Create New Subplan'):
+            request.session['cached_program_form_data'] = request.POST
+            request.session['cached_program_form_source'] = request.build_absolute_uri()
+            return redirect('/create/subplan/')
+
         form = EditProgramFormSnippet(request.POST, instance=instance)
 
         if form.is_valid():
@@ -78,7 +101,17 @@ def edit_program(request):
             return redirect('/list/?view=Program&msg=Successfully Edited Program!')
 
     else:
-        form = EditProgramFormSnippet(instance=instance)
+        # If the cached path matches the current path, load the cached form and then clear the cache
+        if request.session.get('cached_program_form_source', '') == request.build_absolute_uri():
+            form = EditProgramFormSnippet(request.session.get('cached_program_form_data', ''), instance=instance)
+
+            try:
+                del request.session['cached_program_form_data']
+                del request.session['cached_program_form_source']
+            except KeyError:
+                pass
+        else:
+            form = EditProgramFormSnippet(instance=instance)
 
     return render(request, 'createprogram.html', context={
         "edit": True,

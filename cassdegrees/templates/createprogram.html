@@ -39,6 +39,8 @@
                      <div class="msg-error inline-error">{{ error }}</div>
                 {% endfor %}
             {% endfor %}
+
+            <input type="hidden" name="action" value="Save" />
         </fieldset>
     </form>
 
@@ -50,7 +52,18 @@
     </form>
 
     <p class="text-right">
-        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Edit{% else %}Create{% endif %}"
-               onclick="if (handleProgram() && handleRules()) document.getElementById('mainForm').submit()">
+        <input type="submit" class="btn-uni-grad btn-large" value="Create New Subplan" onclick="submit_form(this.value)">
+        <input class="btn-uni-grad btn-large" type="submit" value="Save"
+               onclick="submit_form(this.value)">
     </p>
+
+    <script>
+        function submit_form(form_action) {
+            if (handleProgram() && handleRules()) {
+                document.getElementById('mainForm').action.value = form_action;
+                document.getElementById('mainForm').submit()
+            }
+            return false
+        }
+    </script>
 {% endblock %}

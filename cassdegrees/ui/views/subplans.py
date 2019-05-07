@@ -33,7 +33,12 @@ def create_subplan(request):
 
         if form.is_valid():
             form.save()
-            return redirect('/list/?view=Subplan&msg=Successfully Added Subplan!')
+
+            # If there is cached 'program' data, redirect to that page instead
+            if request.session.get('cached_program_form_data', ''):
+                return redirect(request.session.get('cached_program_form_source', '/'))
+            else:
+                return redirect('/list/?view=Subplan&msg=Successfully Added Subplan!')
 
     else:
         if duplicate:
