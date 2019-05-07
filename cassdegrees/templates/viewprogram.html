@@ -87,5 +87,14 @@
                 <p style="margin-left: 80px">{{ rule.text }}</p>
             {% endif %}
         {% endfor %}
+
+        {% if data.studentNotes != "" %}
+            <p></p>
+            <h3>Notes for students</h3>
+            <p>
+                {# use linebreaks to render <br> from \n #}
+                {{ data.studentNotes|linebreaks }}
+            </p>
+        {% endif %}
     </div>
 {% endblock %}

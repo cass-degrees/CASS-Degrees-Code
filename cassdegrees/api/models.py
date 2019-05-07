@@ -45,6 +45,8 @@ class ProgramModel(models.Model):
     year = models.PositiveIntegerField()
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
+    staffNotes = models.TextField(blank=True, default='')
+    studentNotes = models.TextField(blank=True, default='')
 
     degreeChoices = (("ugrad-sing", "Undergraduate Single Pass Degree"),
                      ("ugrad-doub", "Undergraduate Flexible Double Degree"),

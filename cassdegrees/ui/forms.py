@@ -28,16 +28,25 @@ class EditProgramFormSnippet(ModelForm):
 
     class Meta:
         model = ProgramModel
-        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules')
+        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules', 'staffNotes',
+                  'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
             'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
             'units': forms.NumberInput(attrs={'class': "text tfull", 'step': 6, 'max': 512}),
+            'staffNotes': forms.Textarea(attrs={
+                'class': "tfull",
+                'placeholder': "Notes for other CASS staff - these will not be displayed on the final template"}),
+            'studentNotes': forms.Textarea(attrs={
+                'class': "tfull",
+                'placeholder': "Explanatory program notes for students, shown on the final template"}),
             # ProgramType auto generated
         }
         labels = {
             'programType': "Program Type",
+            'staffNotes': "Internal comments not shown on the template",
+            'studentNotes': "Explanatory notes shown on the template",
         }
         error_messages = {
             NON_FIELD_ERRORS: {

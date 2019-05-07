@@ -29,26 +29,53 @@
             {{ form.management_form }}
 
             {% for field in form %}
-                <p class="form-group">
-                    {% if not field.is_hidden %}
-                        {{ field.label_tag }}
-                    {% endif %}
-                    {{ field }}
-                </p>
-                {% for error in field.errors %}
-                     <div class="msg-error inline-error">{{ error }}</div>
-                {% endfor %}
+                {% if field.name not in render_separately %}
+                    <p class="form-group">
+                        {% if not field.is_hidden and not field == form.staffNotes  %}
+                            {{ field.label_tag }}
+                        {% endif %}
+                        {{ field }}
+                    </p>
+                    {% for error in field.errors %}
+                         <div class="msg-error inline-error">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
             {% endfor %}
 
             <input type="hidden" name="action" value="Save" />
         </fieldset>
-    </form>
 
-    <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
+
+        <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
          structure -->
-    <form class="anuform">
+        <div class="anuform">
         {% include "widgets/globalrequirements.html" %}
         {% include "widgets/rules.html" %}
+        </div>
+
+        <fieldset>
+            <legend>Student Notes</legend>
+
+            <p class="form-group">
+                {{ form.studentNotes.label_tag }}
+                {{ form.studentNotes }}
+            </p>
+            {% for error in form.studentNotes.errors %}
+                <div class="msg-error inline-error">{{ error }}</div>
+            {% endfor %}
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Staff Comments</legend>
+            <p class="form-group">
+                {{ form.staffNotes.label_tag }}
+                {{ form.staffNotes }}
+            </p>
+            {% for error in form.staffNotes.errors %}
+                <div class="msg-error inline-error">{{ error }}</div>
+            {% endfor %}
+        </fieldset>
     </form>
 
     <p class="text-right">
