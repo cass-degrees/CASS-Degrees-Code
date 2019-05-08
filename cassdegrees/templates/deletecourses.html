@@ -9,16 +9,17 @@
     {% finalcrumb 'Delete Course' %}
 {% endblock %}
 
-{% block subtitle %}Are you sure?{% endblock %}
+{% block subtitle %}Are You Sure?{% endblock %}
 
 {% block content %}
-    <form class="anuform" action="" method="post">
+    <form % class="anuform" action="" method="post">
         {% csrf_token %}
 
         <fieldset>
             <p>Are you sure you want to delete:</p>
+
             {% for instance in instances %}
-                <p>
+                <p class="marginleft">
                     {{ instance.name }} ({{ instance.code }}) in {{ instance.year }}
                 </p>
                 <input type="number" hidden value="{{ instance.id }}" name="id" />
