@@ -83,6 +83,9 @@ def search(request):
 
     # Generates a query mapping for "title":"containing text" relationships
     include = {x+"__icontains": request.GET.get(x, None) for x in columns if request.GET.get(x, None)}
+    include.update(
+        {x + "__iexact": request.GET.get(x+"_exact", None) for x in columns if request.GET.get(x+"_exact", None)}
+    )
     query = Q(**include)
 
     # If the model is valid and all parameters are valid, returns the response, otherwise returning ["Invalid parameter given"]
@@ -90,7 +93,7 @@ def search(request):
         for parameter in columns:
             if parameter not in [f.name for f in model._meta.fields]:
                 return JsonResponse(["Invalid parameter given"], safe=False)
-        result = list(model.objects.filter(query).values(*columns))
+        result = list(model.objects.filter(query).values(*columns).distinct())
     else:
         return JsonResponse(["Invalid parameter given"], safe=False)
 
