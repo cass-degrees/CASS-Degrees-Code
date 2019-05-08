@@ -45,14 +45,6 @@
             <input type="hidden" name="action" value="Save" />
         </fieldset>
 
-
-        <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
-         structure -->
-        <div class="anuform">
-        {% include "widgets/globalrequirements.html" %}
-        {% include "widgets/rules.html" %}
-        </div>
-
         <fieldset>
             <legend>Student Notes</legend>
 
@@ -78,6 +70,13 @@
         </fieldset>
     </form>
 
+    <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
+     structure -->
+    <div class="anuform">
+    {% include "widgets/globalrequirements.html" %}
+    {% include "widgets/rules.html" %}
+    </div>
+
     <p class="text-right">
         <input type="submit" class="btn-uni-grad btn-large" value="Create New Subplan" onclick="submit_form(this.value)">
         <input class="btn-uni-grad btn-large" type="submit" value="Save"
@@ -88,9 +87,11 @@
         function submit_form(form_action) {
             if (handleProgram() && handleRules()) {
                 document.getElementById('mainForm').action.value = form_action;
-                document.getElementById('mainForm').submit()
+                document.getElementById('mainForm').submit();
+                return true;
+            } else {
+                return false;
             }
-            return false
         }
     </script>
 {% endblock %}
