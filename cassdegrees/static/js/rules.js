@@ -3,6 +3,7 @@
 // Translation table between internal names for components and human readable ones.
 const COMPONENT_NAMES = {
     'subplan': "Subplan",
+    'course': "Course",
     'custom_text': "Custom (Text)"
 };
 
@@ -104,6 +105,93 @@ Vue.component('rule_subplan', {
         }
     },
     template: '#subplanRuleTemplate'
+});
+
+Vue.component('rule_course', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("codes")) {
+                    value.codes = [""];
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            "courses": [],
+
+            // Display related warnings if true
+            "non_unique_options": false,
+
+            "invalid_units": false,
+            "invalid_units_step": false,
+
+            "redraw": false
+        }
+    },
+    created: function() {
+        // Javascript has the best indirection...
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.courses = JSON.parse(request.response);
+
+            rule.check_options();
+        });
+        request.open("GET", "/api/search/?select=code,name&from=course");
+        request.send();
+    },
+    methods: {
+        add_course: function() {
+            // Mutable modification - redraw needed
+            this.details.codes.push(-1);
+            this.check_options();
+            this.do_redraw();
+        },
+        remove_course: function(index) {
+            // Mutable modification - redraw needed
+            this.details.codes.splice(index, 1);
+            this.check_options();
+            this.do_redraw();
+        },
+        check_options: function() {
+            // Check for duplicates
+            this.non_unique_options = false;
+            var found = [];
+
+            for (var index in this.details.codes) {
+                var value = this.details.codes[index];
+                if (found.includes(value)) {
+                    this.non_unique_options = true;
+                    break;
+                }
+                found.push(value);
+            }
+
+            // Ensure Unit Count is valid:
+            if (this.details.unit_count != null) {
+                this.invalid_units = this.details.unit_count <= 0;
+                this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            }
+        },
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#courseRequirementTemplate'
 });
 
 Vue.component('rule_custom_text', {

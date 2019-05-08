@@ -29,6 +29,35 @@
     </fieldset>
 </script>
 
+<script type="text/x-template" id="courseRequirementTemplate">
+    <fieldset v-if="!redraw">
+        <p class="form-group">
+            <label>
+                Students must select...
+            </label>
+            <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            units
+        </p>
+
+        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+
+        <p>
+            from the following courses:
+        </p>
+
+        <div v-for="(code, index) in details.codes">
+            <select v-model="details.codes[index]" v-on:change="check_options" required>
+                <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
+            </select>
+            <input v-if="index != 0" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </div>
+
+        <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
+    </fieldset>
+</script>
+
 <script type="text/x-template" id="customTextRuleTemplate">
     <fieldset>
         <p>
@@ -73,6 +102,7 @@
             <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></rule>
             <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
         </div>
+
 
         <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true" value="Add New Rule" />
 
