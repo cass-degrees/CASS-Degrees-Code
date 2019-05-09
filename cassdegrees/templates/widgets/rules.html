@@ -58,6 +58,31 @@
     </fieldset>
 </script>
 
+<script type="text/x-template" id="subjectAreaRuleTemplate">
+    <fieldset v-if="!redraw">
+        <p class="form-group">
+            <label>
+                Students must complete...
+            </label>
+            <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            units
+        </p>
+
+        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+
+        <p>
+            from the following subject area:
+        </p>
+
+        <div>
+            <select v-model="details.subject" required>
+                <option v-for="subject_area in subject_areas" v-bind:value="subject_area">{{ subject_area }}</option>
+            </select>
+        </div>
+    </fieldset>
+</script>
+
 <script type="text/x-template" id="customTextRuleTemplate">
     <fieldset>
         <p>
