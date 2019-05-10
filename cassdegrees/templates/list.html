@@ -59,7 +59,10 @@
                             {% if key != "id" %}
                                 <th>{{ key }}</th>
                             {% else %}
-                                <th>Select</th>
+                                <th class="text-center">
+                                    Select All </br>
+                                    <input title="Select All" type="checkbox" name="select_all" onclick="selectAll(this, '{{ title }}')">
+                                </th>
                                 <th>{{ title }}</th>
                             {% endif %}
                         {% endfor %}
@@ -73,7 +76,7 @@
                                     {% if key != "id" %}
                                         <td>{{ item }}</td>
                                     {% else %}
-                                        <td><p class="text-center"><input title="Select" type="checkbox" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
+                                        <td><p class="text-center"><input title="Select" type="checkbox" name="select_{{ title }}" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
                                         <td>
                                             <a class="btn-uni-grad" href="/create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}&duplicate=true">Duplicate</a>
                                             <a class="btn-uni-grad" href="/edit/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">Edit</a>
@@ -120,6 +123,14 @@
             document.getElementById(label+"Table").style.display = "block";
 
             oldLabel = label;
+        }
+
+        {# https://stackoverflow.com/questions/386281/how-to-implement-select-all-check-box-in-html #}
+        function selectAll(source, title) {
+            var checkboxes = document.getElementsByName('select_' + title);
+            for(var i=0, n=checkboxes.length; i<n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
         }
 
         var openElement = (new URLSearchParams(window.location.search)).get("view");
