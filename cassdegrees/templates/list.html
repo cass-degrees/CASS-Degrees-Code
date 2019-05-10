@@ -50,7 +50,7 @@
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
                 <p class="left">
-                    <input class="btn-uni-grad" type ="submit" formmethod="get" formaction="/create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/" value="New {{ title }}">
+                    <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="/create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/" value="+ New {{ title }}">
                 </p>
                 <table class="fullwidth tbl-cell-bdr">
                     {# Add title row based on what was in the dictionary #}
