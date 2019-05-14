@@ -77,16 +77,18 @@ def delete_subplan(request):
         # find if the id matches any rules in the programs.
         for program in subplans_in_programs:
             for subplans in program['rules']:
-                # if we find a subplan in a program then its not safe to delete
-                if int(id_to_delete) in subplans['ids']:
-                    safe_to_delete = False
-                    # Find the subplan code for the id to delete
-                    for subplan in subplan_ids:
-                        if int(id_to_delete) == subplan['id']:
-                            # Populate the error message with the id's code names we found
-                            error_msg += "Subplan code: '" + subplan['code'] + "' of year: " + str(subplan['year']) + \
-                                        " is used by Program code: '" + program['code'] + "' of year: " + \
-                                         str(subplan['year']) + ".\n"
+                # check if ids key exists (fixes bug where there isn't any ids in rules)
+                if 'ids' in subplans:
+                    # if we find a subplan in a program then its not safe to delete
+                    if int(id_to_delete) in subplans['ids']:
+                        safe_to_delete = False
+                        # Find the subplan code for the id to delete
+                        for subplan in subplan_ids:
+                            if int(id_to_delete) == subplan['id']:
+                                # Populate the error message with the id's code names we found
+                                error_msg += "Subplan code: '" + subplan['code'] + "' of year: " + str(subplan['year'])\
+                                             + " is used by Program code: '" + program['code'] + "' of year: " + \
+                                             str(subplan['year']) + ".\n"
 
         # Only delete if its safe to delete, otherwise notify the user of the dependencies
         if safe_to_delete:
