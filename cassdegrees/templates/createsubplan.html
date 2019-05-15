@@ -20,7 +20,7 @@
          <p class="msg-error">{{ error }}</p>
     {% endfor %}
 
-    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return handleRules()">
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;">
         {% csrf_token %}
 
         <fieldset>
