@@ -56,7 +56,7 @@
                     {# Add title row based on what was in the dictionary #}
                     <tr>
                         {% for key in content.0 %}
-                            {% if key != "id" %}
+                            {% if key != "Id" %}
                                 <th>{{ key }}</th>
                             {% else %}
                                 <th class="text-center">
@@ -73,7 +73,7 @@
                             {% for key, item in row.items %}
 
                                     {# If the item is in the ID column, generate a link to it instead #}
-                                    {% if key != "id" %}
+                                    {% if key != "Id" %}
                                         <td>{{ item }}</td>
                                     {% else %}
                                         <td><p class="text-center"><input title="Select" type="checkbox" class="select_{{ title }}" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>

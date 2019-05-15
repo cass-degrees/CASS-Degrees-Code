@@ -3,6 +3,39 @@ from django.db.models import Q
 from django.shortcuts import render
 
 
+def data_dict_as_displayable(data):
+    """
+    Rename and drop elements of a data dictionary ("Program", "Subplan", "Course") such that they are human
+    readable.
+
+    :return: A readable data dictionary.
+    """
+
+    new_dict = {}
+
+    # Columns that are needed
+    desired_columns = {
+        'Program': ['id', 'code', 'year', 'name', 'units'],
+        'Subplan': ['id', 'code', 'year', 'name', 'planType'],
+        'Course': ['id', 'code', 'year', 'name', 'units']
+    }
+
+    for key, value in data.items():
+        # List containing dicts - explicit cast
+        value_dict_lists = list(value)
+        desired_sub_columns = desired_columns[key]
+
+        output_list = []
+        for value_dict in value_dict_lists:
+            # https://stackoverflow.com/questions/5352546/extract-subset-of-key-value-pairs-from-python-dictionary-object
+            new_sub_dict = {k.title(): value_dict[k] for k in desired_sub_columns}
+            output_list.append(new_sub_dict)
+
+        new_dict[key] = output_list
+
+    return new_dict
+
+
 def data_list(request):
     """ Generates a table based on the JSON objects stored in 'data'
 
@@ -19,13 +52,19 @@ def data_list(request):
         'msg': request.GET.get('msg'),
         'error': request.GET.get('error')
     }
-
     # No search, render default page
     if not query:
-        return render(request, 'list.html', context={'data': {'Program': ProgramModel.objects.values(),
-                                                              'Subplan': SubplanModel.objects.values(),
-                                                              'Course': CourseModel.objects.values()},
-                                                     'render': render_properties})
+        return render(request, 'list.html',
+                      context={
+                          'data': data_dict_as_displayable(
+                              {
+                                  'Program': ProgramModel.objects.values(),
+                                  'Subplan': SubplanModel.objects.values(),
+                                  'Course': CourseModel.objects.values()
+                              }
+                          ),
+                          'render': render_properties})
+
     # User search, render results
     else:
         # Remove common words and make the query set unique and uppercase
@@ -85,5 +124,5 @@ def data_list(request):
         data = {k: v for k, v in data.items() if v}
 
         # Render the requested data and autofill the query in the search
-        return render(request, 'list.html', context={'autofill': query, 'data': data,
+        return render(request, 'list.html', context={'autofill': query, 'data': data_dict_as_displayable(data),
                                                      'render': render_properties})
