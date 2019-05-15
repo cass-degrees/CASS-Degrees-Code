@@ -66,6 +66,8 @@ def delete_program(request):
     instances = []
 
     ids_to_delete = data.getlist('id')
+    if not ids_to_delete:
+        return redirect('/list/?view=Program&error=Please select a Program to delete!')
     for id_to_delete in ids_to_delete:
         instances.append(ProgramModel.objects.get(id=int(id_to_delete)))
 

@@ -71,6 +71,9 @@ def delete_subplan(request):
 
     # Get the ids to delete and check if they're used by any programs
     ids_to_delete = data.getlist('id')
+    # Notify the user that nothing was selected.
+    if not ids_to_delete:
+        return redirect('/list/?view=Subplan&error=Please select a Subplan to delete!')
     safe_to_delete = True
     error_msg = ""
     for id_to_delete in ids_to_delete:
