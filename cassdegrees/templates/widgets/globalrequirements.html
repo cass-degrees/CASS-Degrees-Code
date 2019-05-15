@@ -16,7 +16,7 @@
                 <label>
                     Unit Count:
                 </label>
-                <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+                <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
             </p>
 
             <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>

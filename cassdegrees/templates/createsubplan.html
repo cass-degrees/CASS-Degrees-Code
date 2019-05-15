@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load breadcrumbs %}
 
 {% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Subplan{% endblock %}
@@ -52,4 +53,6 @@
         <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
                onclick="if (handleRules()) document.getElementById('mainForm').submit()">
     </p>
+
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
 {% endblock %}

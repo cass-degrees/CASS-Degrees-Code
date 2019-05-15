@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load breadcrumbs %}
 
 {% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Course{% endblock %}
@@ -67,4 +68,5 @@
         </p>
     </form>
 
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
 {% endblock %}

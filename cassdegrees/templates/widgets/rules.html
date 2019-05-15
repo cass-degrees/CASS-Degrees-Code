@@ -35,7 +35,7 @@
             <label>
                 Students must select...
             </label>
-            <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
             units
         </p>
 
@@ -64,7 +64,7 @@
             <label>
                 Students must complete...
             </label>
-            <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
             units
         </p>
 
@@ -89,7 +89,7 @@
             <label>
                 Students must complete...
             </label>
-            <input class="text" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
             units
         </p>
 
@@ -122,7 +122,7 @@
 
         <p class="form-group">
             <label>Unit value for this item:</label>
-            <input class="text" type="number" min="0" max="1000" v-model="details.units" aria-required="true" required>
+            <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" min="0" max="1000" v-model="details.units" aria-required="true" required>
         </p>
 
         <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>

@@ -32,9 +32,13 @@ class EditProgramFormSnippet(ModelForm):
                   'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
+            'year': forms.NumberInput(attrs={'class': "text tfull",
+                                             'onkeydown': "javascript: return checkKeys(event)",
+                                             'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
-            'units': forms.NumberInput(attrs={'class': "text tfull", 'step': 6, 'max': 512}),
+            'units': forms.NumberInput(attrs={'class': "text tfull",
+                                              'onkeydown': "javascript: return checkKeys(event)",
+                                              'step': 6, 'max': 512}),
             'staffNotes': forms.Textarea(attrs={
                 'class': "tfull",
                 'placeholder': "Notes for other CASS staff - these will not be displayed on the final template"}),
@@ -83,7 +87,9 @@ class EditSubplanFormSnippet(ModelForm):
         fields = ('code', 'year', 'name', 'units', 'planType', 'rules', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull", 'min': 2000, 'max': 3000}),
+            'year': forms.NumberInput(attrs={'class': "text tfull",
+                                             'onkeydown': "javascript: return checkKeys(event)",
+                                             'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History Minor"}),
             'publish': forms.CheckboxInput()
             # See units above
@@ -134,10 +140,14 @@ class EditCourseFormSnippet(ModelForm):
         fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
+            'year': forms.NumberInput(attrs={'class': "text tfull",
+                                             'onkeydown': "javascript: return checkKeys(event)",
+                                             'type': "number"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
-            'units': forms.NumberInput(attrs={'class': "text tfull", 'type': "number"}),
+            'units': forms.NumberInput(attrs={'class': "text tfull",
+                                              'onkeydown': "javascript: return checkKeys(event)",
+                                              'type': "number"}),
         }
         labels = {
             'offeredSem1': "Offered in Semester 1",
