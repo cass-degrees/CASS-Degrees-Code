@@ -86,9 +86,9 @@ def delete_subplan(request):
                         for subplan in subplan_ids:
                             if int(id_to_delete) == subplan['id']:
                                 # Populate the error message with the id's code names we found
-                                error_msg += "Subplan code: '" + subplan['code'] + "' of year: " + str(subplan['year'])\
-                                             + " is used by Program code: '" + program['code'] + "' of year: " + \
-                                             str(subplan['year']) + ".\n"
+                                error_msg += "Subplan Code: '" + subplan['code'] + "'(" + str(subplan['year']) + \
+                                             ") is used by Program Code: '" + program['code'] \
+                                             + "'(" + str(subplan['year']) + ").\n"
 
         # Only delete if its safe to delete, otherwise notify the user of the dependencies
         if safe_to_delete:

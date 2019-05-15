@@ -80,18 +80,21 @@ def delete_course(request):
             if len(subplans) > 0 or len(programs) > 0:
                 # compose error message
                 if len(subplans) > 0:
-                    error_msg += course['code'] + " is used in " + \
-                                 ", ".join(["{} ({})".format(sp['code'], sp['year']) for sp in subplans]) + \
-                                 ", and therefore cannot be deleted.\n"
+                    for subplan in subplans:
+                        error_msg += "Course Code: '" + course['code'] + "'(" + str(course['year']) + \
+                                     ") is used by Subplan Code: '" + subplan['code'] + "'(" + \
+                                     str(subplan['year']) + ").\n"
                 if len(programs) > 0:
-                    error_msg += course['code'] + " is used in " + \
-                                 ", ".join(["{} ({})".format(sp['code'], sp['year']) for sp in programs]) + \
-                                 ", and therefore cannot be deleted.\n"
+                    for program in programs:
+                        error_msg += "Course Code: '" + course['code'] + "'(" + str(course['year']) + \
+                                         ") is used by Program Code: '" + program['code'] + "'(" + \
+                                         str(program['year']) + ").\n"
                 continue  # dont append course to the list instances
         instances.append(CourseModel.objects.get(id=course['id']))
 
     if len(error_msg) > 0:
-        return redirect('/list/?view=Course&error=Failed to Delete Course(s)!\n' + error_msg)
+        return redirect('/list/?view=Course&error=Failed to Delete Course(s)!\n' + error_msg +
+                        '\nPlease check dependencies!')
 
     if "confirm" in data:
         for instance in instances:

@@ -6,6 +6,12 @@ from django.core.exceptions import NON_FIELD_ERRORS
 from django.forms import ModelForm
 
 
+# fast and easy way to check if a word separated by spaces is in a sentence
+# From: https://stackoverflow.com/questions/5319922/python-check-if-word-is-in-a-string
+def contains_word(s, w):
+    return f' {w} ' in f' {s} '
+
+
 class JSONField(forms.CharField):
 
     def __init__(self, *args, field_id, **kwargs):
@@ -62,7 +68,7 @@ class EditProgramFormSnippet(ModelForm):
         data = self.cleaned_data['code']
         if len(data) < 3:
             raise forms.ValidationError("This should be at least 3 characters!")
-        return data
+        return data.upper()
 
     def clean_year(self):
         data = self.cleaned_data['year']
@@ -75,6 +81,13 @@ class EditProgramFormSnippet(ModelForm):
         if len(data) < 5:
             raise forms.ValidationError("This should be at least 5 characters!")
         return data
+
+    def clean_units(self):
+        data = self.cleaned_data['units']
+        if int(data) % 6 != 0:
+            raise forms.ValidationError("Units should be a multiple of 6!")
+        return data
+
 
 
 class EditSubplanFormSnippet(ModelForm):
@@ -96,7 +109,7 @@ class EditSubplanFormSnippet(ModelForm):
             # planType auto generated
         }
         labels = {
-            'planType': "Plan Type",
+            'planType': "Subplan Type",
         }
         error_messages = {
             NON_FIELD_ERRORS: {
@@ -106,8 +119,18 @@ class EditSubplanFormSnippet(ModelForm):
 
     def clean_code(self):
         data = self.cleaned_data['code']
+        data = data.upper()
         if len(data) < 3:
             raise forms.ValidationError("This should be at least 3 characters!")
+        if "-" not in data:
+            raise forms.ValidationError("Code should have '-' to split its plan type! E.g. ANTH-MAJ")
+        try:
+            plan = self.data['planType']
+            subdata = data.split("-")
+            if plan not in subdata and len(plan) > 0:
+                raise forms.ValidationError("Code should have " + plan + " at the end of its code!")
+        except KeyError:
+            return data
         return data
 
     def clean_year(self):
@@ -120,18 +143,28 @@ class EditSubplanFormSnippet(ModelForm):
         data = self.cleaned_data['name']
         if len(data) < 5:
             raise forms.ValidationError("This should be at least 5 characters!")
+        if contains_word(str(data).lower(), 'major'):
+            raise forms.ValidationError("Subplan Name should not include the word 'Major'!")
+        if contains_word(str(data).lower(), 'minor'):
+            raise forms.ValidationError("Subplan Name should not include the word 'Minor'!")
+        if contains_word(str(data).lower(), 'specialisation'):
+            raise forms.ValidationError("Subplan Name should not include the word 'Specialisation'!")
         return data
 
     def clean_units(self):
-        # Generate units from subtype plan selected
-        subplanUnits = \
-            {
-                'MAJ': 48,
-                'MIN': 24,
-                'SPEC': 24
-            }
+        # try and except fixes the issue of no plan type being selected throwing an Key Error
+        try:
+            # Generate units from subtype plan selected
+            subplanUnits = \
+                {
+                    'MAJ': 48,
+                    'MIN': 24,
+                    'SPEC': 24
+                }
 
-        return subplanUnits[self.data["planType"]]
+            return subplanUnits[self.data["planType"]]
+        except KeyError:
+            raise forms.ValidationError("Please fill in all fields!")
 
 
 class EditCourseFormSnippet(ModelForm):
@@ -139,7 +172,7 @@ class EditCourseFormSnippet(ModelForm):
         model = CourseModel
         fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
         widgets = {
-            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006"}),
+            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100A"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'type': "number"}),
@@ -161,9 +194,16 @@ class EditCourseFormSnippet(ModelForm):
 
     def clean_code(self):
         data = self.cleaned_data['code']
-        if len(data) < 4:
-            raise forms.ValidationError("This should be at least 4 characters!")
-        return data
+        if len(data) != 8 and len(data) != 9:
+            raise forms.ValidationError("This should be at least 8-9 characters  (4 Letters, 4 Numbers "
+                                        "+ 1 Optional Letter)!")
+        if not data[:4].isalpha():
+            raise forms.ValidationError("Course Code should start with 4 letters!")
+        if not data[4:8].isdigit():
+            raise forms.ValidationError("Course Code should end with 4 numbers!")
+        if len(data) == 9 and not data[-1:].isalpha():
+            raise forms.ValidationError("Extra Key should be a letter e.g. A, B, C")
+        return data.upper()
 
     def clean_year(self):
         data = self.cleaned_data['year']
@@ -175,4 +215,10 @@ class EditCourseFormSnippet(ModelForm):
         data = self.cleaned_data['name']
         if len(data) < 5:
             raise forms.ValidationError("This should be at least 5 characters!")
+        return data
+
+    def clean_units(self):
+        data = self.cleaned_data['units']
+        if int(data) % 6 != 0:
+            raise forms.ValidationError("Units should be a multiple of 6!")
         return data
