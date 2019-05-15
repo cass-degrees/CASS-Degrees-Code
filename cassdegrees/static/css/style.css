@@ -121,3 +121,12 @@ select.text{
 .no-left-margin {
     margin-left: 0 !important;
 }
+
+.align-center {
+    text-align: center;
+}
+
+.homepage-button {
+    display: block;
+    text-decoration: none;
+}

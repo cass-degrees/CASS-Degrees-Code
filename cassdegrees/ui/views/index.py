@@ -10,9 +10,9 @@ def index(request):
     buttons = [
         {'url': "/create/program/", 'img': "../static/img/create_plan_img.png", 'label': "Create Program Template"},
         {'url': "/create/subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
-        {'url': "", 'img': "../static/img/create_list_img.png", 'label': "Create List"},
-        {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label': "Open Existing"},
-        {'url': "/list/?view=Course", 'img': "../static/img/manage_courses_img.png", 'label': "Manage Courses"}
+        {'url': "/create/course/", 'img': "../static/img/create_course_img.png", 'label': "Create Course"},
+        {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label':
+            "Manage Existing Programs, Subplans & Courses"}
     ]
 
     # Dynamically calculate expected width for buttons
