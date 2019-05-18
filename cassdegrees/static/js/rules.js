@@ -20,6 +20,10 @@ Vue.component('rule_subplan', {
                     value.ids = [-1];
                 }
 
+                if (!value.hasOwnProperty("kind")) {
+                    value.kind = "";
+                }
+
                 return true;
             }
         }
@@ -326,6 +330,10 @@ Vue.component('rule_custom_text', {
 
                 if (!value.hasOwnProperty("units")) {
                     value.units = 0;
+                }
+
+                if (!value.hasOwnProperty("show_course_boxes")) {
+                    value.show_course_boxes = false;
                 }
 
                 return true;

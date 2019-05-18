@@ -81,6 +81,7 @@
                                             <a class="btn-uni-grad" href="/create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}&duplicate=true">Duplicate</a>
                                             <a class="btn-uni-grad" href="/edit/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">Edit</a>
                                             <a class="btn-uni-grad" href="/view/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">View</a>
+                                            <a class="btn-uni-grad" href="/pdf/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">PDF</a>
                                         </td>
                                     {% endif %}
 

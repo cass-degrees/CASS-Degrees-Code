@@ -77,8 +77,8 @@
         {% for rule in data.rules %}
             {% if rule.type == "subplan" %}
                 <p style="margin-left: 40px">Completion of one subplan from the following list:</p>
-                {% for id, name in rule.ids.items %}
-                    <a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" style="margin-left: 80px">{{ name }}</a>
+                {% for id, value in rule.contents.items %}
+                    <a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" style="margin-left: 80px">{{ value.name }}</a>
                 {% endfor %}
             {% endif %}
 

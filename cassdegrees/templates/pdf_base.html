@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block page-title %}No title defined{% endblock %}</title>
+
+    <!-- We don't have access to static resources here -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        html, head, body, div, span {
+            font-family: "Roboto", sans-serif;
+        }
+
+        @page {
+            size: A4 landscape;
+            margin: 1cm;
+        }
+
+        /* Basic column rules */
+        .columns-2 {
+            column-count: 2;
+            column-fill: auto;
+        }
+
+        .columns-3 {
+            column-count: 3;
+            column-fill: auto;
+        }
+
+        .columns-no-gap {
+            column-gap: 0;
+        }
+
+        /* Other simple tweaks */
+        .box {
+            border: 1px solid black;
+            padding: 0.25cm;
+        }
+
+        .box p {
+            margin: 0;
+        }
+
+        .break-column {
+            break-after: right;
+        }
+
+        .no-bottom-margin {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .grey-text {
+            color: grey;
+        }
+
+        .grey-box {
+            border-color: grey;
+        }
+
+        .small-text {
+            font-size: 60%;
+        }
+    </style>
+
+</head>
+<body>
+    {% block content %}No page content defined{% endblock %}
+</body>
+</html>

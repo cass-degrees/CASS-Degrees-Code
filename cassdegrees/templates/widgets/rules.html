@@ -15,7 +15,13 @@
         <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
 
         <p>
-            Students must pick one from the following:
+            Students must pick
+            <input class="text" v-model="details.kind" aria-required="true" placeholder="e.g. Arts Major - brief description for students here"
+                   style="margin-left: 0; width: 400px" required>
+            from the following:
+        </p>
+
+        <p>
         </p>
 
         <div v-for="(id, index) in details.ids">
@@ -126,6 +132,11 @@
         </p>
 
         <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>
+
+        <p class="form-group">
+            <label>Show 6-unit course boxes in plans (e.g. PDF):</label>
+            <input class="text" type="checkbox" v-model="details.show_course_boxes">
+        </p>
     </fieldset>
 </script>
 

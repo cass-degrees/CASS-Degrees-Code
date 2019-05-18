@@ -19,6 +19,7 @@ from .views.bulk_data_upload import *
 from .views.courses import *
 from .views.index import *
 from .views.listings import *
+from .views.pdf import *
 from .views.programs import *
 from .views.sampleform import *
 from .views.subplans import *
@@ -41,4 +42,5 @@ urlpatterns = [
     path('view/program/', view_),
     path('view/subplan/', view_),
     path('view/course/', view_),
+    path('pdf/program/', view_program_pdf),
 ]

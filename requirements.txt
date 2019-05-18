@@ -3,3 +3,4 @@ djangorestframework==3.9.2
 flake8==3.7.7
 psycopg2==2.7.7
 requests==2.21.0
+django-weasyprint==0.5.4
