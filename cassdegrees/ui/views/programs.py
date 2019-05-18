@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, reverse
 
 from ui.forms import EditProgramFormSnippet
 from ui.views.subplans import create_subplan
+from django.utils import timezone
 
 
 def create_program(request):
@@ -100,6 +101,8 @@ def edit_program(request):
         form = EditProgramFormSnippet(request.POST, instance=instance)
 
         if form.is_valid():
+            instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
+            instance.save(update_fields=['lastUpdated'])
             form.save()
             return redirect('/list/?view=Program&msg=Successfully Edited Program!')
 

@@ -15,9 +15,9 @@ def data_dict_as_displayable(data):
 
     # Columns that are needed
     desired_columns = {
-        'Program': ['id', 'code', 'year', 'name', 'units'],
-        'Subplan': ['id', 'code', 'year', 'name', 'planType'],
-        'Course': ['id', 'code', 'year', 'name', 'units']
+        'Program': ['id', 'code', 'year', 'name', 'units', 'lastUpdated'],
+        'Subplan': ['id', 'code', 'year', 'name', 'planType', 'lastUpdated'],
+        'Course': ['id', 'code', 'year', 'name', 'units', 'lastUpdated']
     }
 
     for key, value in data.items():

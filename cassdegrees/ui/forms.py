@@ -172,7 +172,7 @@ class EditCourseFormSnippet(ModelForm):
         model = CourseModel
         fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
         widgets = {
-            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100A"}),
+            'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'type': "number"}),
@@ -180,7 +180,7 @@ class EditCourseFormSnippet(ModelForm):
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
             'units': forms.NumberInput(attrs={'class': "text tfull",
                                               'onkeydown': "javascript: return checkKeys(event)",
-                                              'type': "number"}),
+                                              'type': "number"})
         }
         labels = {
             'offeredSem1': "Offered in Semester 1",

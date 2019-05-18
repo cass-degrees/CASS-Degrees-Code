@@ -6,6 +6,7 @@ from ui.forms import EditSubplanFormSnippet
 from api.models import SubplanModel
 from api.views import search
 import json
+from django.utils import timezone
 
 
 # Using sampleform template and #59 - basic program creation workflow as it's inspirations
@@ -124,6 +125,8 @@ def edit_subplan(request):
         form = EditSubplanFormSnippet(request.POST, instance=instance)
 
         if form.is_valid():
+            instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
+            instance.save(update_fields=['lastUpdated'])
             form.save()
             return redirect('/list/?view=Subplan&msg=Successfully Edited Subplan!')
 
