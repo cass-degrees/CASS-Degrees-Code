@@ -6,6 +6,16 @@ const COMPONENT_NAMES = {
     'year_level': 'Level-Specific Units',
     'subject_area': "Subject-Area Units",
     'course': "Course",
+    'custom_text': "Custom (Text)",
+    'either_or': "Either Or"
+};
+
+// For either rule, list everything in the drop down menu except the "Either" option, or recursion will occur.
+const EITHER_OR_COMPONENT_NAMES = {
+    'subplan': "Subplan",
+    'year_level': 'Level-Specific Units',
+    'subject_area': "Subject-Area Units",
+    'course': "Course",
     'custom_text': "Custom (Text)"
 };
 
@@ -351,6 +361,66 @@ Vue.component('rule_custom_text', {
         }
     },
     template: '#customTextRuleTemplate'
+});
+
+Vue.component('rule_either_or', {
+    props: {
+        "details": {
+            type: Object,
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("either_or")) {
+                    value.either_or = [];
+                }
+
+                return true;
+            }
+        },
+        // Message inserted between rules
+        "separator": {
+            type: String,
+            default: ""
+        }
+    },
+    data: function() {
+        return {
+            show_add_a_rule_modal: false,
+            which_or: 0,
+            add_a_rule_modal_option: 'subplan',
+
+            component_names: EITHER_OR_COMPONENT_NAMES,
+
+            // Forces the element to re-render, if mutable events occurred
+            redraw: false
+        }
+    },
+    methods: {
+        add_or: function() {
+            this.details.either_or.push([]);
+            this.do_redraw();
+        },
+        add_rule: function() {
+            this.show_add_a_rule_modal = false;
+            // Add chosen rule to the right or group (based on the button clicked).
+            this.details.either_or[this.which_or].push({
+                type: this.add_a_rule_modal_option,
+            });
+            this.do_redraw();
+        },
+        remove: function(index, group) {
+            this.details.either_or[group].splice(index, 1);
+            this.do_redraw();
+        },
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#eitherOrTemplate'
 });
 
 // Handler for different Vue components, redirecting to the right component
