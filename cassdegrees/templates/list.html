@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% load breadcrumbs %}
 
 {% block page-title %}Program/Subplan/Course List{% endblock %}
@@ -42,10 +44,11 @@
         </ul>
     </div>
 
+    <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
     {# Generates table instances for each table in 'data', as well as the appropriate settings to keep it hidden #}
     {% for title, content in data.items %}
         <div id="{{ title }}Table" hidden>
-            <form method="post">
+            <form id="{{ title }}Sorter" method="post">
                 {% csrf_token %}
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
@@ -54,10 +57,11 @@
                 </p>
                 <table class="fullwidth tbl-cell-bdr">
                     {# Add title row based on what was in the dictionary #}
-                    <tr>
+                    <thead>
+                        <tr>
                         {% for key in content.0 %}
                             {% if key != "Id" %}
-                                <th>{{ key }}</th>
+                                <th class="sort" data-sort="{{ title }}{{ key }}">{{ key }}</th>
                             {% else %}
                                 <th class="text-center">
                                     Select All </br>
@@ -66,15 +70,17 @@
                                 <th>{{ title }}</th>
                             {% endif %}
                         {% endfor %}
-                    </tr>
+                        </tr>
+                    </thead>
                     {# Add rows containing the contents of each json data instance #}
+                    <tbody class="list">
                     {% for row in content %}
                         <tr>
                             {% for key, item in row.items %}
 
                                     {# If the item is in the ID column, generate a link to it instead #}
                                     {% if key != "Id" %}
-                                        <td>{{ item }}</td>
+                                        <td class="{{ title }}{{ key }}">{{ item }}</td>
                                     {% else %}
                                         <td><p class="text-center"><input title="Select" type="checkbox" class="select_{{ title }}" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
                                         <td>
@@ -88,6 +94,7 @@
                             {% endfor %}
                         </tr>
                     {% endfor %}
+                    </tbody>
                 </table>
                 {# If there is no data available, notify the user #}
                 {% if not content %}
@@ -102,6 +109,16 @@
                 {% endif %}
             </form>
         </div>
+
+        <script>
+            // Creates a list object to be used by list.js for sorting
+            // Should result in something like `CourseOptions = { valueNames: ['Code', 'Year', 'Name', 'Units'] }`
+            var {{ title }}Options = {
+                valueNames: [{% for k,v in content.0.items %}'{{ title }}{{ k }}',{% endfor %}]
+            };
+
+            var {{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
+        </script>
     {% endfor %}
 
     {# Function to hide the previous tab while opening a new one #}

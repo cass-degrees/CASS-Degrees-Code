@@ -49,6 +49,28 @@
     float:right;
 }
 
+/* Adds carets to list sorting options */
+table th {}
+.sort:after{
+  content: ' ';
+  border: 4px solid transparent;
+  position: relative;
+  left: 2px;
+}
+.sort:not(.desc):not(.asc):hover:after{
+  top: 10px;
+  border-top-color: silver;
+}
+.asc:after {
+  top: 10px;
+  border-top-color: inherit;
+}
+
+.desc:after {
+  bottom: 10px;
+  border-bottom-color: inherit;
+}
+
 select.tfull {
     width: 70.25%;
 }
