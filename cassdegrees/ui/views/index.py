@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 
 # Create your views here.
 # I added a very simple sample request handler, this is very simple and all it does is load index.html from templates.
+@login_required
 def index(request):
 
     # add button parameters to be rendered on the main menu

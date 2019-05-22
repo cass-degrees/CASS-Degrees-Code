@@ -2,6 +2,7 @@ import csv
 from io import TextIOWrapper
 
 import requests
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 
@@ -17,6 +18,7 @@ from django.shortcuts import render
 # code%year%name%units%planType
 # ARTI-SPEC%2016%Artificial Intelligence%24%SPEC
 # ...
+@login_required
 def bulk_data_upload(request):
     context = {}
     context['upload_type'] = ['Courses', 'Subplans']

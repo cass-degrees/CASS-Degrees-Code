@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound, HttpRequest
 from django.shortcuts import render, redirect
 
@@ -10,6 +11,7 @@ from django.utils import timezone
 
 
 # Using sampleform template and #59 - basic program creation workflow as it's inspirations
+@login_required
 def create_subplan(request):
     duplicate = request.GET.get('duplicate', 'false')
     if duplicate == 'true':
@@ -52,6 +54,7 @@ def create_subplan(request):
     })
 
 
+@login_required
 def delete_subplan(request):
     data = request.POST
     instances = []
@@ -113,6 +116,7 @@ def delete_subplan(request):
         })
 
 
+@login_required
 def edit_subplan(request):
     id = request.GET.get('id')
     if not id:

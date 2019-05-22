@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from api.models import ProgramModel, SubplanModel, CourseModel
 from django.db.models import Q
 from django.shortcuts import render
@@ -36,6 +38,7 @@ def data_dict_as_displayable(data):
     return new_dict
 
 
+@login_required
 def data_list(request):
     """ Generates a table based on the JSON objects stored in 'data'
 

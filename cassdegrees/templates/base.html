@@ -38,17 +38,17 @@
                 <div class="left">
                     <img src="//style.anu.edu.au/_anu/4/images/logos/pipe_logo_small.png" alt="" class="anu-logo-pipe left" width="66" height="51">
                 </div>
-                
+
                 <div class="left" id="bnr-h-lines">
                     <div class="bnr-line-1 bnr-1line">
                         <h1><a href="/">CASS Program Planner</a></h1>
                     </div>
                 </div>
-            
+
                 <div id="bnr-right">
                     {% block right-nav %}&nbsp;{% endblock %}
                 </div>
-                
+
                 <div id="bnr-low">
                     <div id="utility-menu" class="bnr-gw-util-wrap" role="navigation">
                         <!-- Non-breaking space, as we want this to force correct layout even if nothing specified -->
@@ -56,16 +56,30 @@
                     </div>
                 </div>
             </div>
+            <div id="bnr-right">
+                <div class="bnr-line-1 bnr-1line">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown-menu">
+                            <p class="large">{{ user.username }}</p>
+                            <div class="dropdown-content">
+                                {% if user.is_staff %}<a href="/admin/">Admin Site</a>{% endif %}
+                                <a href="/accounts/password_change/">Change Password</a>
+                                <a href="/accounts/logout/">Logout</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
-    
+
     <div id="body-wrap" role="main">
         <div id="body">
             <div id="content-main" class="margintop clearfix">
                 <div id="content-header" class="full nomargintop nomarginbottom">
                     <div id="breadcrumb" class="breadcrumbs">
-                        <a href="/"><img src="//style.anu.edu.au/_anu/images/icons/web/home.png" class="w16px absmiddle" alt="Home"></a>
-                        {% block breadcrumb-trail %} No breadcrumb trail specified {% endblock %}
+                        {% block no-breadcrumbs %}<a href="/"><img src="//style.anu.edu.au/_anu/images/icons/web/home.png" class="w16px absmiddle" alt="Home"></a>
+                        {% block breadcrumb-trail %} No breadcrumb trail specified {% endblock %}{% endblock %}
                     </div>
                     <h1 class="title" id="page-title">{% block subtitle %}No title defined{% endblock %}</h1>
                 </div>

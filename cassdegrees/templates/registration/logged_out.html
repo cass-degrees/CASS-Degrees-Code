@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load breadcrumbs %}
+
+{% block page-title %}Logout{% endblock %}
+
+{% block subtitle %}CASS Staff Logout{% endblock %}
+
+{% block no-breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <div class="msg-success">You have successfully logged out</div>
+    <br />
+    <a href="/">Log back in</a>
+{% endblock %}

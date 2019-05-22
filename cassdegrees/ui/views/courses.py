@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from api.models import CourseModel, SubplanModel, ProgramModel
 from api.views import search
 
@@ -9,6 +11,7 @@ import json
 from django.utils import timezone
 
 
+@login_required
 def create_course(request):
     duplicate = request.GET.get('duplicate', 'false')
     if duplicate == 'true':
@@ -48,6 +51,7 @@ def create_course(request):
     })
 
 
+@login_required
 def delete_course(request):
     data = request.POST
     instances = []
@@ -110,6 +114,7 @@ def delete_course(request):
         })
 
 
+@login_required
 def edit_course(request):
     id = request.GET.get('id')
     if not id:

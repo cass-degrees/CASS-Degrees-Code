@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load breadcrumbs %}
+
+{% block page-title %}Login{% endblock %}
+
+{% block subtitle %}CASS Staff Login{% endblock %}
+
+{% block no-breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <form class="anuform" action="" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Login Details</legend>
+            {# Render form errors #}
+            {% if form.errors %}
+                <br />
+                <div class="msg-error">
+                    {% for x in form.errors.values %}{{ x }}{% endfor %}
+                </div>
+            {% endif %}
+            {# Render form fields #}
+            {% for field in form.visible_fields %}
+                <p>{{ field.label_tag }} {{ field }}</p>
+            {% endfor %}
+        </fieldset>
+
+        <p class="text-right">
+            <a class="left" href="javascript:alert('Please contact CASS administrators to change your password')">Forgot Password?</a>
+            <input class="btn-uni-grad btn-large" type="submit" value="Login">
+        </p>
+    </form>
+{% endblock %}
