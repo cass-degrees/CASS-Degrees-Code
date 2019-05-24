@@ -17,7 +17,8 @@
     <!--[if !IE]>--><link href="//style.anu.edu.au/_anu/4/min/cass.min.css?1" rel="stylesheet" type="text/css" media="screen"/><!--<![endif]-->
     <!--[if lt IE 8]><link href="//style.anu.edu.au/_anu/4/min/cass.ie7.min.css?1" rel="stylesheet" type="text/css" media="screen"/><![endif]-->
     <!--[if gt IE 7]><link href="//style.anu.edu.au/_anu/4/min/cass.ie8.min.css?1" rel="stylesheet" type="text/css" media="screen"/><![endif]-->
-    
+
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -36,7 +37,7 @@
             </div>
             <div id="bnr-mid">
                 <div class="left">
-                    <img src="//style.anu.edu.au/_anu/4/images/logos/pipe_logo_small.png" alt="" class="anu-logo-pipe left" width="66" height="51">
+                    <div class="menu-divider"></div>
                 </div>
 
                 <div class="left" id="bnr-h-lines">
@@ -60,7 +61,11 @@
                 <div class="bnr-line-1 bnr-1line">
                     {% if user.is_authenticated %}
                         <div class="dropdown-menu">
-                            <p class="large">{{ user.username }}</p>
+                            <p class="large">
+                                <i class="fas fa-user"></i>
+                                {{ user.username }}
+                                <i class="fas fa-caret-down"></i>
+                            </p>
                             <div class="dropdown-content">
                                 {% if user.is_staff %}<a href="/admin/">Admin Site</a>{% endif %}
                                 <a href="/accounts/password_change/">Change Password</a>
@@ -78,7 +83,7 @@
             <div id="content-main" class="margintop clearfix">
                 <div id="content-header" class="full nomargintop nomarginbottom">
                     <div id="breadcrumb" class="breadcrumbs">
-                        {% block no-breadcrumbs %}<a href="/"><img src="//style.anu.edu.au/_anu/images/icons/web/home.png" class="w24px absmiddle" alt="Home"></a>
+                        {% block no-breadcrumbs %}<a href="/" style="font-size: 18px"><i class="fas fa-home"></i></a>
                         {% block breadcrumb-trail %} No breadcrumb trail specified {% endblock %}{% endblock %}
                     </div>
                     <h1 class="title" id="page-title">{% block subtitle %}No title defined{% endblock %}</h1>

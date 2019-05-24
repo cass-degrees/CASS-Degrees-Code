@@ -8,13 +8,11 @@ from django.shortcuts import render
 def index(request):
 
     # add button parameters to be rendered on the main menu
-    # TODO: Update URLs once initial page views are created
     buttons = [
-        {'url': "/create/program/", 'img': "../static/img/create_plan_img.png", 'label': "Create Program Template"},
-        {'url': "/create/subplan/", 'img': "../static/img/create_subplan_img.png", 'label': "Create Subplan"},
-        {'url': "/create/course/", 'img': "../static/img/create_course_img.png", 'label': "Create Course"},
-        {'url': "/list/", 'img': "../static/img/open_existing_img.png", 'label':
-            "Manage Existing Programs, Subplans & Courses"}
+        {'url': "/create/program/", 'kind': "fas fa-file-medical", 'label': "Create Program Template"},
+        {'url': "/create/subplan/", 'kind': "fas fa-clipboard-list", 'label': "Create Subplan"},
+        {'url': "/create/course/", 'kind': "fas fa-th", 'label': "Create Course"},
+        {'url': "/list/", 'kind': "fas fa-edit", 'label': "Manage Existing Programs, Subplans & Courses"}
     ]
 
     # Dynamically calculate expected width for buttons

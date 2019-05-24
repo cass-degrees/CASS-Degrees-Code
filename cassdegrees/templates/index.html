@@ -15,10 +15,10 @@
 
     {# generate splash menu based on buttons defined in ui/views.py   #}
     {% for button in buttons %}
-        <a href={{ button.url }} class="homepage-button" style="width: {{ element_width }}">
+        <a href="{{ button.url }}" class="homepage-button" style="width: {{ element_width }}">
             <div class="img_btn_container">
-                <div class="align-center">
-                    <img src={{ button.img }} alt={{ button.label }}>
+                <div class="icon-btn">
+                    <i class="{{ button.kind }}"></i>
                 </div>
 
                 <div class="btn_label"><h3>{{ button.label }}</h3></div>
