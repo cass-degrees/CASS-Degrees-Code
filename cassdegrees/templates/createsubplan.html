@@ -50,6 +50,8 @@
     </form>
 
     <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+               onclick="{% if edit %}returnToList('Subplan'){% else %}goBack(){% endif %}">
         <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
                onclick="if (handleRules()) document.getElementById('mainForm').submit()">
     </p>

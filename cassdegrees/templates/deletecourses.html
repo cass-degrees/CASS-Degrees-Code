@@ -29,8 +29,10 @@
         <input type="hidden" value="confirm" name="confirm" />
 
         <p class="text-right">
+            <input class="btn-uni-grad btn-large" type="button" value="Cancel" onclick="returnToList('Course')">
             <input class="btn-uni-grad btn-large" type="submit" value="Delete">
         </p>
     </form>
 
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
 {% endblock %}

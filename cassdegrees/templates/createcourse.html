@@ -63,6 +63,8 @@
         </fieldset>
 
         <p class="text-right">
+            <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+                   onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
             <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
                 onclick="document.getElementById('mainForm').submit()">
         </p>
