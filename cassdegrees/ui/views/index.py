@@ -12,7 +12,8 @@ def index(request):
         {'url': "/create/program/", 'kind': "fas fa-file-medical", 'label': "Create Program Template"},
         {'url': "/create/subplan/", 'kind': "fas fa-clipboard-list", 'label': "Create Subplan"},
         {'url': "/create/course/", 'kind': "fas fa-th", 'label': "Create Course"},
-        {'url': "/list/", 'kind': "fas fa-edit", 'label': "Manage Existing Programs, Subplans & Courses"}
+        {'url': "/list/", 'kind': "fas fa-edit", 'label': "Manage Existing Programs, Subplans & Courses"},
+        {'url': "/bulk_upload/", 'kind': "fas fa-sign-in-alt", 'label': "Bulk Upload"}
     ]
 
     # Dynamically calculate expected width for buttons
