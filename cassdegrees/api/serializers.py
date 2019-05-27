@@ -12,7 +12,7 @@ class SampleSerializer(serializers.HyperlinkedModelSerializer):
 class CourseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CourseModel
-        fields = ('id', 'code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2')
+        fields = ('id', 'code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2', 'rules')
 
 
 class SubplanSerializer(serializers.HyperlinkedModelSerializer):

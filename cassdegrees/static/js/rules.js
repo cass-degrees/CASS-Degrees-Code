@@ -1,5 +1,19 @@
 //! Vue.js based means of adding/removing rules. Excludes serialization (see programmanagement.js)
 
+// Stores a JSON of all rule names, for internal reference only.
+const ALL_COMPONENT_NAMES = {
+    'incompatibility': "Incompatibility",
+    'program': 'Program',
+    'subplan': "Subplan",
+    'year_level': 'Level-Specific Units',
+    'subject_area': "Subject-Area Units",
+    'course': "Course",
+    'course_requisite': "Course",
+    'custom_text': "Custom (Text)",
+    'custom_text_req': "Custom (Text)",
+    'either_or': "Either Or"
+};
+
 // Translation table between internal names for components and human readable ones.
 const COMPONENT_NAMES = {
     'subplan': "Subplan",
@@ -18,6 +32,163 @@ const EITHER_OR_COMPONENT_NAMES = {
     'course': "Course",
     'custom_text': "Custom (Text)"
 };
+
+//
+const REQUISITE_COMPONENT_NAMES = {
+    'incompatibility': "Incompatibility",
+    'program': 'Program',
+    'year_level': 'Level-Specific Units',
+    'subject_area': "Subject-Area Units",
+    'course_requisite': "Course",
+    'custom_text_req': "Custom (Text)",
+    'either_or': "Either Or"
+};
+
+const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
+    'program': 'Program',
+    'year_level': 'Level-Specific Units',
+    'subject_area': "Subject-Area Units",
+    'course_requisite': "Course",
+    'custom_text_req': "Custom (Text)"
+};
+
+Vue.component('rule_incompatibility', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("incompatible_courses")) {
+                    value.incompatible_courses = [""];
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            "courses": [],
+
+            // Display related warnings if true
+            "non_unique_options": false,
+            "inconsistent_units": false,
+
+            "redraw": false
+        }
+    },
+    created: function() {
+        // Javascript has the best indirection...
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.courses = JSON.parse(request.response);
+
+            rule.check_options();
+        });
+        request.open("GET", "/api/search/?select=code,name&from=course");
+        request.send();
+    },
+    methods: {
+        add_course: function() {
+            // Mutable modification - redraw needed
+            this.details.incompatible_courses.push(-1);
+            this.check_options();
+            this.do_redraw();
+        },
+        remove_course: function(index) {
+            // Mutable modification - redraw needed
+            this.details.incompatible_courses.splice(index, 1);
+            this.check_options();
+            this.do_redraw();
+        },
+        check_options: function() {
+            // Check for duplicates
+            this.non_unique_options = false;
+            var found = [];
+
+            for (var index in this.details.incompatible_courses) {
+                var value = this.details.incompatible_courses[index];
+                if (found.includes(value)) {
+                    this.non_unique_options = true;
+                    break;
+                }
+                found.push(value);
+            }
+
+            // Ensure Unit Count is valid:
+            if (this.details.unit_count != null) {
+                this.invalid_units = this.details.unit_count <= 0;
+                this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            }
+        },
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#incompatibilityRuleTemplate'
+});
+
+Vue.component('rule_program', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("program")) {
+                    value.program = "";
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            "programs": [],
+
+            // Display related warnings if true
+            "non_unique_options": false,
+            "inconsistent_units": false,
+
+            "redraw": false
+        }
+    },
+    created: function() {
+        // Javascript has the best indirection...
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.programs = JSON.parse(request.response);
+
+            rule.check_options();
+        });
+        request.open("GET", "/api/model/program/?format=json");
+        request.send();
+    },
+    methods: {
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#programRuleTemplate'
+});
 
 Vue.component('rule_subplan', {
     props: {
@@ -210,6 +381,84 @@ Vue.component('rule_course', {
     template: '#courseRequirementTemplate'
 });
 
+Vue.component('rule_course_requisite', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("codes")) {
+                    value.codes = [""];
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+            "courses": [],
+
+            // Display related warnings if true
+            "non_unique_options": false,
+
+            "redraw": false
+        }
+    },
+    created: function() {
+        // Javascript has the best indirection...
+        var rule = this;
+
+        var request = new XMLHttpRequest();
+
+        request.addEventListener("load", function() {
+            rule.courses = JSON.parse(request.response);
+
+            rule.check_options();
+        });
+        request.open("GET", "/api/search/?select=code,name&from=course");
+        request.send();
+    },
+    methods: {
+        add_course: function() {
+            // Mutable modification - redraw needed
+            this.details.codes.push(-1);
+            this.check_options();
+            this.do_redraw();
+        },
+        remove_course: function(index) {
+            // Mutable modification - redraw needed
+            this.details.codes.splice(index, 1);
+            this.check_options();
+            this.do_redraw();
+        },
+        check_options: function() {
+            // Check for duplicates
+            this.non_unique_options = false;
+            var found = [];
+
+            for (var index in this.details.codes) {
+                var value = this.details.codes[index];
+                if (found.includes(value)) {
+                    this.non_unique_options = true;
+                    break;
+                }
+                found.push(value);
+            }
+        },
+        // https://michaelnthiessen.com/force-re-render/
+        do_redraw: function() {
+            this.redraw = true;
+
+            this.$nextTick(() => {
+                this.redraw = false;
+            });
+        }
+    },
+    template: '#courseRequisiteTemplate'
+});
+
 Vue.component('rule_subject_area', {
     props: {
         "details": {
@@ -221,12 +470,17 @@ Vue.component('rule_subject_area', {
                     value.subject = "";
                 }
 
+                if (!value.hasOwnProperty("year_level")) {
+                    value.year_level = null;
+                }
+
                 return true;
             }
         }
     },
     data: function() {
         return {
+            "number_of_year_levels": 9,
             "subject_areas": [],
 
             // Display related warnings if true
@@ -363,6 +617,32 @@ Vue.component('rule_custom_text', {
     template: '#customTextRuleTemplate'
 });
 
+Vue.component('rule_custom_text_req', {
+    props: {
+        "details": {
+            type: Object,
+
+            validator: function (value) {
+                // Ensure that the object has all the attributes we need
+                if (!value.hasOwnProperty("text")) {
+                    value.text = "";
+                }
+
+                return true;
+            }
+        }
+    },
+    data: function() {
+        return {
+        }
+    },
+    methods: {
+        check_options: function() {
+        }
+    },
+    template: '#customTextReqRuleTemplate'
+});
+
 Vue.component('rule_either_or', {
     props: {
         "details": {
@@ -386,8 +666,9 @@ Vue.component('rule_either_or', {
         return {
             show_add_a_rule_modal: false,
             which_or: 0,
-            add_a_rule_modal_option: 'subplan',
+            add_a_rule_modal_option: 'course',
 
+            component_groups: { 'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
 
             // Forces the element to re-render, if mutable events occurred
@@ -432,7 +713,7 @@ Vue.component('rule', {
     },
     data: function() {
         return {
-            component_names: COMPONENT_NAMES
+            component_names: ALL_COMPONENT_NAMES
         }
     },
     template: '#ruleTemplate'
@@ -453,9 +734,10 @@ Vue.component('rule_container', {
     data: function() {
         return {
             show_add_a_rule_modal: false,
-            add_a_rule_modal_option: 'subplan',
+            add_a_rule_modal_option: 'course',
 
-            component_names: COMPONENT_NAMES,
+            component_groups: { 'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES},
+            component_names: null,
 
             // Forces the element to re-render, if mutable events occurred
             redraw: false

@@ -1,7 +1,7 @@
 {% load static %}
 
 <fieldset id="rulesContainer">
-    <legend>Add Rules</legend>
+    <legend>Add Requisites/Incompatibilities</legend>
 
     <br />
 
@@ -21,7 +21,7 @@
                     <div v-if="j < details.either_or[i].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
                 </div>
 
-                <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = i; component_names = component_groups.rules" value="Add New Rule to Group" />
+                <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = i; component_names = component_groups.requisites" value="Add New Rule to Group" />
 
             </fieldset>
         </div>
@@ -33,10 +33,10 @@
             <div class="modal-card">
                 <div class="card">
                     <header class="box-header">
-                        Add a rule...
+                        Add a requisite...
                     </header>
                     <div class="box-solid box-has-footer">
-                        <p>Select a kind of rule to add:</p>
+                        <p>Select a kind of requisite to add:</p>
                         <div class="select">
                             <select v-model="add_a_rule_modal_option">
                                 <option v-for="(option, index) in component_names" v-bind:value="index">
@@ -63,17 +63,17 @@
         </div>
 
 
-        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; component_names = component_groups.rules" value="Add New Rule" />
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; component_names = component_groups.requisites" value="Add New Requisite/Incompatibility" />
 
         <div class="modal" v-if="show_add_a_rule_modal">
             <div class="modal-background" v-on:click="show_add_a_rule_modal = false"></div>
             <div class="modal-card">
                 <div class="card">
                     <header class="box-header">
-                        Add a rule...
+                        Add a requisite/incompatibility...
                     </header>
                     <div class="box-solid box-has-footer">
-                        <p>Select a kind of rule to add:</p>
+                        <p>Select a kind of requisite/incompatibility to add:</p>
                         <div class="select">
                             <select v-model="add_a_rule_modal_option">
                                 <option v-for="(option, index) in component_names" v-bind:value="index">

@@ -16,6 +16,7 @@ class CourseModel(models.Model):
     units = models.PositiveIntegerField()
     offeredSem1 = models.BooleanField()
     offeredSem2 = models.BooleanField()
+    rules = psql.JSONField(default=list)
     lastUpdated = models.DateField(default=timezone.now)
 
     class Meta:
@@ -29,14 +30,13 @@ class SubplanModel(models.Model):
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
     lastUpdated = models.DateField(default=timezone.now)
-    rules = psql.JSONField(default=list)
     publish = models.BooleanField(default=False)
 
     subplanChoices = (("MAJ", "Major"), ("MIN", "Minor"), ("SPEC", "Specialisation"))
 
-    planType = models.CharField(max_length=4, choices=subplanChoices)
-
     rules = psql.JSONField(default=list)
+
+    planType = models.CharField(max_length=4, choices=subplanChoices)
 
     class Meta:
         unique_together = (("code", "year"), ("year", "name", "planType"),)

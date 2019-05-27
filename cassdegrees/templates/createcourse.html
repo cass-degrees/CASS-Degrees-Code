@@ -13,7 +13,6 @@
     {% else %}
         {% finalcrumb 'Create Course' %}
     {% endif %}
-
 {% endblock %}
 
 {% block content %}
@@ -41,34 +40,29 @@
                      <div class="msg-error inline-error">{{ error }}</div>
                 {% endfor %}
             {% endfor %}
-
-            <!-- TODO: Unhandled so far -->
-            <p>
-                <label for="text">Requisite Course(s)</label>
-                <select class="text tfull" name="requisites[]" size="5" multiple>
-                    {% for course in courses %}
-                        <option value="{{ course.code }}">{{ course.code }}</option>
-                    {% endfor %}
-                </select>
-            </p>
-
-            <p>
-                <label for="text">Incompatible Course(s)</label>
-                <select class="text tfull" name="incompatibles[]" size="5" multiple>
-                    {% for course in courses %}
-                        <option value="{{ course.code }}">{{ course.code }}</option>
-                    {% endfor %}
-                </select>
-            </p>
         </fieldset>
-
-        <p class="text-right">
-            <input class="btn-uni-grad btn-large" type="button" value="Cancel"
-                   onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
-            <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
-                onclick="document.getElementById('mainForm').submit()">
-        </p>
     </form>
+
+    <form class="anuform">
+        {% include "widgets/courserequisites.html" %}
+    </form>
+
+    <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
+               onclick="submit_form(this.value)">
+    </p>
+
+    <script>
+        function submit_form(form_action) {
+            if (handleRules()) {
+                document.getElementById('mainForm').action.value = form_action;
+                document.getElementById('mainForm').submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
 
     <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
 {% endblock %}
