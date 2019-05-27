@@ -89,7 +89,6 @@ class EditProgramFormSnippet(ModelForm):
         return data
 
 
-
 class EditSubplanFormSnippet(ModelForm):
     # Automatically injected by default
     units = forms.IntegerField(widget=forms.HiddenInput(), required=False)

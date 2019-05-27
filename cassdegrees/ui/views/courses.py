@@ -123,9 +123,27 @@ def edit_course(request):
     # Find the program to specifically edit
     instance = CourseModel.objects.get(id=int(id))
 
+    dependencies = dict()  # programs/subplans that are dependent on this course instance {'code': 'name'}
+
+    # Generate an internal request to search api made by Jack
+    gen_request = HttpRequest()
+
+    # Grab all the courses in the database
+    gen_request.GET = {'select': 'id,code,name,rules', 'from': 'program', 'rules': instance.code}
+    programs = json.loads(search(gen_request).content.decode())
+    gen_request.GET = {'select': 'id,code,name,rules', 'from': 'subplan', 'rules': instance.code}
+    subplans = json.loads(search(gen_request).content.decode())
+
+    # if there are programs/subplans that depend on the course code
+    if len(programs) + len(subplans) > 0:
+        for program in programs:
+            dependencies[program['code']] = program['name']
+        for subplan in subplans:
+            dependencies[subplan['code']] = subplan['name']
+
     if request.method == 'POST':
         form = EditCourseFormSnippet(request.POST, instance=instance)
-
+        form.fields['code'].disabled = len(programs) + len(subplans) > 0
         if form.is_valid():
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
@@ -134,9 +152,11 @@ def edit_course(request):
 
     else:
         form = EditCourseFormSnippet(instance=instance)
+        form.fields['code'].disabled = len(programs) + len(subplans) > 0
 
     return render(request, 'createcourse.html', context={
         "edit": True,
         "form": form,
-        "courses": CourseModel.objects.values()
+        "courses": CourseModel.objects.values(),
+        "dependencies": dependencies
     })

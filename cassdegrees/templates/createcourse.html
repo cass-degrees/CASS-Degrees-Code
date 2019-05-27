@@ -35,6 +35,14 @@
                         {{ field.label_tag }}
                     {% endif %}
                     {{ field }}
+                    {% if edit and 'code' in field.label_tag and dependencies|length > 0 %}
+                        <div class="instruction msg-info inline-error">
+                            You cannot edit the Code. Please check dependencies:
+                            {% for code, name in dependencies.items %}
+                                {{ code }} {{ name }}{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </p>
                 {% for error in field.errors %}
                      <div class="msg-error inline-error">{{ error }}</div>
