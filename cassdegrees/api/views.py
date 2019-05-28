@@ -4,7 +4,6 @@ from django.http import JsonResponse
 from .serializers import *
 from rest_framework import generics
 from django.db.models import Q
-import requests
 
 
 # Create view for browsing contents of the 'Sample' model

@@ -1,7 +1,7 @@
 from django.shortcuts import render
-import requests
+from django.forms.models import model_to_dict
 
-from api.models import SubplanModel
+from api.models import CourseModel, ProgramModel, SubplanModel
 
 
 def pretty_print_reqs(program):
@@ -38,7 +38,6 @@ def pretty_print_rules(program):
             rule["units"] = units
 
 
-
 def view_(request):
     """
     Upon navigating to the view page for a given course, subplan, or program,
@@ -53,15 +52,15 @@ def view_(request):
     url = request.build_absolute_uri()
 
     if "course" in url:
-        course = requests.get(request.build_absolute_uri('/api/model/course/' + id_to_edit + '/?format=json')).json()
+        course = model_to_dict(CourseModel.objects.get(id=int(id_to_edit)))
         return render(request, 'viewcourse.html', context={'data': course})
 
     elif "subplan" in url:
-        subplan = requests.get(request.build_absolute_uri('/api/model/subplan/' + id_to_edit + '/?format=json')).json()
+        subplan = model_to_dict(SubplanModel.objects.get(id=int(id_to_edit)))
         return render(request, 'viewsubplan.html', context={'data': subplan})
 
     elif "program" in url:
-        program = requests.get(request.build_absolute_uri('/api/model/program/' + id_to_edit + '/?format=json')).json()
+        program = model_to_dict(ProgramModel.objects.get(id=int(id_to_edit)))
 
         pretty_print_reqs(program)
         pretty_print_rules(program)
