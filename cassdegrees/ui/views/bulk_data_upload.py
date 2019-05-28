@@ -1,7 +1,7 @@
 import csv
 from io import TextIOWrapper
 
-import requests
+from api.models import CourseModel, SubplanModel
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
@@ -60,21 +60,19 @@ def bulk_data_upload(request):
                         any_error = True
                         break
 
-                    course_instance = \
-                        {
-                            'code': row[map['code']],
-                            'year': int(row[map['year']]),
-                            'name': row[map['name']],
-                            'units': int(row[map['units']]),
-                            'offeredSem1': bool(row[map['offeredSem1']]),
-                            'offeredSem2': bool(row[map['offeredSem2']])
-                        }
+                    course_instance = CourseModel()
+                    course_instance.code = row[map['code']]
+                    course_instance.year = int(row[map['year']])
+                    course_instance.name = row[map['name']]
+                    course_instance.units = int(row[map['units']])
+                    course_instance.offeredSem1 = bool(row[map['offeredSem1']])
+                    course_instance.offeredSem2 = bool(row[map['offeredSem2']])
 
-                    # Submit a POST request to the course API with course_instance as data
-                    rest_api = requests.post(base_model_url + 'course/', data=course_instance)
-                    if rest_api.status_code == 201:
+                    # Save the course instance
+                    try:
+                        course_instance.save()
                         any_success = True
-                    else:
+                    except:
                         any_error = True
 
                 elif content_type == 'Subplans':
@@ -82,18 +80,18 @@ def bulk_data_upload(request):
                         any_error = True
                         break
 
-                    subplan_instance = \
-                        {
-                            'code': row[map['code']],
-                            'year': int(row[map['year']]),
-                            'name': row[map['name']],
-                            'units': int(row[map['units']]),
-                            'planType': str(row[map['planType']])
-                        }
-                    rest_api = requests.post(base_model_url + 'subplan/', data=subplan_instance)
-                    if rest_api.status_code == 201:
+                    subplan_instance = SubplanModel()
+                    subplan_instance.code = row[map['code']]
+                    subplan_instance.year = int(row[map['year']])
+                    subplan_instance.name = row[map['name']]
+                    subplan_instance.units = int(row[map['units']])
+                    subplan_instance.planType = str(row[map['planType']])
+
+                    # Save the subplan instance
+                    try:
+                        subplan_instance.save()
                         any_success = True
-                    else:
+                    except:
                         any_error = True
 
             else:
