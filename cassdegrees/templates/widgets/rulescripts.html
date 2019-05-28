@@ -43,6 +43,7 @@
     <fieldset v-if="!redraw">
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
         <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
+        <div class="msg-error" v-if="wrong_year_selected">Selected subplans must have same year as program!</div>
 
         <p>
             Students must pick
@@ -56,7 +57,7 @@
 
         <div v-for="(id, index) in details.ids">
             <select v-model="details.ids[index]" v-on:change="check_options" required>
-                <option v-for="subplan in subplans" v-bind:value="subplan.id">{{ subplan.name }} {{ subplan.year }} ({{ subplan.units }} units)</option>
+                <option v-for="subplan in subplans" v-if="!program_year || subplan.year==program_year" v-bind:value="subplan.id">{{ subplan.name }} {{ subplan.year }} ({{ subplan.units }} units)</option>
             </select>
             <input v-if="index != 0" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>
