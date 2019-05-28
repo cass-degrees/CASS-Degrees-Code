@@ -87,6 +87,10 @@
 
     <script>
         function submit_form(form_action) {
+            if(document.querySelector('.msg-error') !== null) {
+                return false;
+            }
+
             if (handleProgram() && handleRules()) {
                 document.getElementById('mainForm').action.value = form_action;
                 document.getElementById('mainForm').submit();

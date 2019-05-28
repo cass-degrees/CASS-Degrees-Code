@@ -34,8 +34,8 @@ class EditProgramFormSnippet(ModelForm):
 
     class Meta:
         model = ProgramModel
-        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules', 'staffNotes',
-                  'studentNotes')
+        fields = ('code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules', 'publish',
+                  'staffNotes', 'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
             'year': forms.NumberInput(attrs={'class': "text tfull",
@@ -45,6 +45,7 @@ class EditProgramFormSnippet(ModelForm):
             'units': forms.NumberInput(attrs={'class': "text tfull",
                                               'onkeydown': "javascript: return checkKeys(event)",
                                               'step': 6, 'max': 512}),
+            'publish': forms.CheckboxInput(),
             'staffNotes': forms.Textarea(attrs={
                 'class': "tfull",
                 'placeholder': "Notes for other CASS staff - these will not be displayed on the final template"}),

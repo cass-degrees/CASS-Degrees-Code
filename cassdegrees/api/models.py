@@ -51,6 +51,7 @@ class ProgramModel(models.Model):
     lastUpdated = models.DateField(default=timezone.now)
     staffNotes = models.TextField(blank=True, default='')
     studentNotes = models.TextField(blank=True, default='')
+    publish = models.BooleanField(default=False)
 
     degreeChoices = (("ugrad-sing", "Undergraduate Single Pass Degree"),
                      ("ugrad-doub", "Undergraduate Flexible Double Degree"),
