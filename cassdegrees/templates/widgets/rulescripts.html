@@ -8,6 +8,7 @@
         </p>
 
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
         <div v-for="(code, index) in details.incompatible_courses">
             <select v-model="details.incompatible_courses[index]" v-on:change="check_options" required>
@@ -29,8 +30,10 @@
             </label>
         </p>
 
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
          <div>
-            <select v-model="details.program" required>
+            <select v-model="details.program" v-on:change="check_options" required>
                 <option v-for="program in programs" v-bind:value="program">{{ program.code }} {{ program.name }}</option>
             </select>
         </div>
@@ -44,10 +47,11 @@
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
         <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
         <div class="msg-error" v-if="wrong_year_selected">Selected subplans must have same year as program!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
         <p>
             Students must pick
-            <input class="text" v-model="details.kind" aria-required="true" placeholder="e.g. Arts Major - brief description for students here"
+            <input class="text" v-model="details.kind" v-on:change="check_options" aria-required="true" placeholder="e.g. Arts Major - brief description for students here"
                    style="margin-left: 0; width: 400px" required>
             from the following:
         </p>
@@ -79,6 +83,7 @@
         <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
         <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
         <p>
             from the following courses:
@@ -98,6 +103,7 @@
 <script type="text/x-template" id="courseRequisiteTemplate">
     <fieldset v-if="!redraw">
         <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
         <p>
             Students must have completed the following courses:
@@ -116,6 +122,10 @@
 
 <script type="text/x-template" id="subjectAreaRuleTemplate">
     <fieldset v-if="!redraw">
+        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
         <p class="form-group">
             <label>
                 Students must complete...
@@ -124,8 +134,6 @@
             units
         </p>
 
-        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
-        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
 
         <p>
             from the following subject area:
@@ -133,7 +141,7 @@
 
         <div>
             <select v-model="details.subject" required>
-                <option v-for="subject_area in subject_areas" v-bind:value="subject_area">{{ subject_area }}</option>
+                <option v-for="subject_area in subject_areas" v-on:change="check_options" v-bind:value="subject_area">{{ subject_area }}</option>
             </select>
         </div>
 
@@ -152,6 +160,10 @@
 
 <script type="text/x-template" id="yearSpecificRuleTemplate">
     <fieldset v-if="!redraw">
+        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
         <p class="form-group">
             <label>
                 Students must complete...
@@ -159,9 +171,6 @@
             <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
             units
         </p>
-
-        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
-        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
 
         <p>
             from the following course year-level:
@@ -183,8 +192,10 @@
             Students must complete the following:
         </p>
 
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
         <p>
-            <textarea v-model="details.text" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
+            <textarea v-model="details.text" v-on:change="check_options" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
         </p>
 
         <p class="form-group">
@@ -207,8 +218,10 @@
             Students must meet the following requirements:
         </p>
 
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
         <p>
-            <textarea v-model="details.text" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
+            <textarea v-model="details.text" v-on:change="check_options" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
         </p>
 
     </fieldset>

@@ -73,7 +73,7 @@ Vue.component('rule_incompatibility', {
 
             // Display related warnings if true
             "non_unique_options": false,
-            "inconsistent_units": false,
+            "is_blank": false,
 
             "redraw": false
         }
@@ -119,11 +119,17 @@ Vue.component('rule_incompatibility', {
                 found.push(value);
             }
 
-            // Ensure Unit Count is valid:
-            if (this.details.unit_count != null) {
-                this.invalid_units = this.details.unit_count <= 0;
-                this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            // Ensure all data has been filled in
+            this.is_blank = false;
+            for (var index in this.details.incompatible_courses) {
+                var value = this.details.incompatible_courses[index];
+                if (value === -1 || value === "") {
+                    this.is_blank = true;
+                    break;
+                }
             }
+
+            return !this.non_unique_options && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -157,8 +163,7 @@ Vue.component('rule_program', {
             "programs": [],
 
             // Display related warnings if true
-            "non_unique_options": false,
-            "inconsistent_units": false,
+            "is_blank": false,
 
             "redraw": false
         }
@@ -178,6 +183,12 @@ Vue.component('rule_program', {
         request.send();
     },
     methods: {
+        check_options: function() {
+            // Ensure all data has been filled in
+            this.is_blank = this.details.program === "";
+
+            return !this.is_blank;
+        },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
             this.redraw = true;
@@ -218,6 +229,7 @@ Vue.component('rule_subplan', {
             "non_unique_options": false,
             "inconsistent_units": false,
             "wrong_year_selected": false,
+            "is_blank": false,
 
             "redraw": false
         }
@@ -255,6 +267,16 @@ Vue.component('rule_subplan', {
             this.do_redraw();
         },
         check_options: function() {
+            // Ensure all data has been filled in
+            this.is_blank = this.details.kind === "";
+            for (var index in this.details.ids) {
+                var value = this.details.ids[index];
+                if (value === -1 || value === "") {
+                    this.is_blank = true;
+                    break;
+                }
+            }
+
             // Check if invalid subplan year
             this.wrong_year_selected = false;
             year_check:
@@ -304,6 +326,8 @@ Vue.component('rule_subplan', {
                     }
                 }
             }
+
+            return !this.wrong_year_selected && !this.non_unique_options && !this.inconsistent_units &&  !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -342,6 +366,7 @@ Vue.component('rule_course', {
 
             "invalid_units": false,
             "invalid_units_step": false,
+            "is_blank": false,
 
             "redraw": false
         }
@@ -374,6 +399,16 @@ Vue.component('rule_course', {
             this.do_redraw();
         },
         check_options: function() {
+            // Ensure all data has been filled in
+            this.is_blank = this.details.unit_count == null;
+            for (var index in this.details.codes) {
+                var value = this.details.codes[index];
+                if (value === -1 || value === "") {
+                    this.is_blank = true;
+                    break;
+                }
+            }
+
             // Check for duplicates
             this.non_unique_options = false;
             var found = [];
@@ -392,6 +427,8 @@ Vue.component('rule_course', {
                 this.invalid_units = this.details.unit_count <= 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
             }
+
+            return !this.non_unique_options && !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -426,6 +463,7 @@ Vue.component('rule_course_requisite', {
 
             // Display related warnings if true
             "non_unique_options": false,
+            "is_blank": false,
 
             "redraw": false
         }
@@ -458,6 +496,16 @@ Vue.component('rule_course_requisite', {
             this.do_redraw();
         },
         check_options: function() {
+            // Ensure all data has been filled in
+            this.is_blank = false;
+            for (var index in this.details.codes) {
+                var value = this.details.codes[index];
+                if (value === -1 || value === "") {
+                    this.is_blank = true;
+                    break;
+                }
+            }
+
             // Check for duplicates
             this.non_unique_options = false;
             var found = [];
@@ -470,6 +518,8 @@ Vue.component('rule_course_requisite', {
                 }
                 found.push(value);
             }
+
+            return !this.non_unique_options && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -510,6 +560,7 @@ Vue.component('rule_subject_area', {
             // Display related warnings if true
             "invalid_units": false,
             "invalid_units_step": false,
+            "is_blank": false,
           
             "redraw": false
         }
@@ -536,11 +587,18 @@ Vue.component('rule_subject_area', {
     },
     methods: {
         check_options: function() {
+            // Ensure all data has been filled in
+            this.is_blank = this.details.unit_count == null;
+            this.is_blank = this.is_blank || this.details.subject === "";
+            this.is_blank = this.is_blank || this.details.year_level == null;
+
             // Ensure Unit Count is valid:
             if (this.details.unit_count != null) {
                 this.invalid_units = this.details.unit_count <= 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
             }
+
+            return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -577,12 +635,20 @@ Vue.component('rule_year_level', {
             "invalid_units": false,
             "invalid_units_step": false,
             "invalid_course_year_level": false,
+            "is_blank": false,
 
             "redraw": false
         }
     },
+    created: function() {
+        this.check_options();
+    },
     methods: {
         check_options: function() {
+            // Ensure all data has been filled in
+            this.is_blank = this.details.unit_count == null;
+            this.is_blank = this.is_blank || this.details.year_level == null;
+
             // Ensure Unit Count is valid:
             if (this.details.unit_count != null) {
                 this.invalid_units = this.details.unit_count <= 0;
@@ -592,6 +658,8 @@ Vue.component('rule_year_level', {
             if (this.details.year_level != null) {
                 this.invalid_course_year_level = this.details.year_level % 1000 !== 0;
             }
+
+            return !this.invalid_units && !this.invalid_units_step && !this.invalid_course_year_level && !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -630,12 +698,20 @@ Vue.component('rule_custom_text', {
     },
     data: function() {
         return {
-            "not_divisible": false
+            "not_divisible": false,
+            "is_blank": false
         }
+    },
+    created: function() {
+        this.check_options();
     },
     methods: {
         check_options: function() {
+            this.is_blank = this.details.text === "";
+
             this.not_divisible = this.details.units % 6 !== 0;
+
+            return !this.not_divisible && !this.is_blank;
         }
     },
     template: '#customTextRuleTemplate'
@@ -658,10 +734,17 @@ Vue.component('rule_custom_text_req', {
     },
     data: function() {
         return {
+            "is_blank": false
         }
+    },
+    created: function() {
+        this.check_options();
     },
     methods: {
         check_options: function() {
+            this.is_blank = this.details.text === "";
+
+            return !this.is_blank;
         }
     },
     template: '#customTextReqRuleTemplate'
@@ -716,6 +799,14 @@ Vue.component('rule_either_or', {
             this.details.either_or[group].splice(index, 1);
             this.do_redraw();
         },
+        check_options: function() {
+            var valid = true;
+            for (var index in this.$children){
+                valid = valid && this.$children[index].check_options();
+            }
+
+            return valid;
+        },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
             this.redraw = true;
@@ -738,6 +829,16 @@ Vue.component('rule', {
     data: function() {
         return {
             component_names: ALL_COMPONENT_NAMES
+        }
+    },
+    methods:{
+        check_options: function() {
+            var valid = true;
+            for (var index in this.$children){
+                valid = valid && this.$children[index].check_options();
+            }
+
+            return valid;
         }
     },
     template: '#ruleTemplate'
@@ -779,6 +880,14 @@ Vue.component('rule_container', {
             this.rules.splice(index, 1);
             this.do_redraw();
         },
+        check_options: function() {
+            var valid = true;
+            for (var index in this.$children){
+                valid = valid && this.$children[index].check_options();
+            }
+
+            return valid;
+        },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
             this.redraw = true;
@@ -795,10 +904,15 @@ Vue.component('rule_container', {
  * Submits the rules form.
  */
 function handleRules() {
+    var valid = true;
+    for (var index in app.$children){
+        valid = valid && app.$children[index].check_options();
+    }
+
     // Serialize list structures - this doesn't translate well over POST requests normally.
     document.getElementById("rules").value = JSON.stringify(app.rules);
 
-    return true;
+    return valid;
 }
 
 var app = new Vue({
