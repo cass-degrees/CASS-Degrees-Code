@@ -18,26 +18,19 @@
             <li>
                 {% if data.programType == 'ugrad-sing' %}
                     Undergraduate Single Pass Degree
-                {% endif %}
-                {% if data.programType == 'ugrad-doub' %}
+                {% elif data.programType == 'ugrad-doub' %}
                     Undergraduate Flexible Double Degree
-                {% endif %}
-                {% if data.programType == 'hon' %}
+                {% elif data.programType == 'hon' %}
                     Honours Degree
-                {% endif %}
-                {% if data.programType == 'mast-sing' %}
+                {% elif data.programType == 'mast-sing' %}
                     Masters Single Degree
-                {% endif %}
-                {% if data.programType == 'mast-adv' %}
+                {% elif data.programType == 'mast-adv' %}
                     Masters (Advanced) Degree
-                {% endif %}
-                {% if data.programType == 'mast-doub' %}
+                {% elif data.programType == 'mast-doub' %}
                     Masters Flexible Double Degree
-                {% endif %}
-                {% if data.programType == 'vert-doub' %}
+                {% elif data.programType == 'vert-doub' %}
                     Vertical Flexible Double Degree
-                {% endif %}
-                {% if data.programType == 'other' %}
+                {% elif data.programType == 'other' %}
                     Other Degree
                 {% endif %}
             </li>
@@ -74,19 +67,102 @@
         {% endfor %}
 
         <p>The {{ data.units }} units must include:</p>
-        {% for rule in data.rules %}
-            {% if rule.type == "subplan" %}
-                <p style="margin-left: 40px">Completion of one subplan from the following list:</p>
-                {% for id, value in rule.contents.items %}
-                    <a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" style="margin-left: 80px">{{ value.name }}</a>
-                {% endfor %}
-            {% endif %}
-
-            {% if rule.type == "custom_text" %}
-                <p style="margin-left: 40px">For {{ rule.units }} units:</p>
-                <p style="margin-left: 80px">{{ rule.text }}</p>
-            {% endif %}
-        {% endfor %}
+        <div style="margin-left: 40px">
+            {% for rule in data.rules %}
+                {# Subplan Rules #}
+                {% if rule.type == 'subplan' %}
+                    <p>
+                        Completion of one subplan from the following list:
+                        <ul>
+                            {% for id, value in rule.contents.items %}
+                                <li><a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" >{{ value.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                {# Course Rules #}
+                {% elif rule.type == 'course' %}
+                    <p>
+                        {{ rule.unit_count }} units from the completion of the following courses:
+                        <ul>
+                            {% for course in rule.courses %}
+                                <li>{{ course.code }} - {{ course.name }} ({{ course.units }} units)</li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                {# Year-level Rules #}
+                {% elif rule.type == 'year_level' %}
+                    <p>{{ rule.unit_count }} units from completion of {{ rule.year_level }}-level courses</p>
+                {# Subject-area Rules #}
+                {% elif rule.type == 'subject_area' %}
+                    <p>
+                        {{ rule.unit_count }} units from completion of
+                        {% if rule.year_level != 'Any year-level' %}
+                            {{ rule.year_level }}-level
+                        {% endif %}
+                        {{ rule.subject }} courses
+                    </p>
+                {# Custom-text Rules #}
+                {% elif rule.type == "custom_text" %}
+                    <p>{{ rule.units }} units from {{ rule.text }}</p>
+                {# Either-or Rules #}
+                {% elif rule.type == 'either_or' %}
+                    Either:
+                    {% for or_rule in rule.either_or %}
+                        <div style="margin-left: 40px">
+                            {% for sub_rule in or_rule %}
+                                {# Subplan Or Rule #}
+                                {% if sub_rule.type == 'subplan' %}
+                                    <p>
+                                        Completion of one subplan from the following list:
+                                        <ul>
+                                            {% for id, value in sub_rule.contents.items %}
+                                                <li>
+                                                    <a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" >
+                                                        {{ value.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </p>
+                                {# Course Or Rule #}
+                                {% elif sub_rule.type == 'course' %}
+                                    <p>
+                                        {{ sub_rule.unit_count }} units from the completion of the following courses:
+                                        <ul>
+                                            {% for course in sub_rule.courses %}
+                                                <li>
+                                                    {{ course.code }} - {{ course.name }} ({{ course.units }} units)
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </p>
+                                {# Year-level Or Rule #}
+                                {% elif sub_rule.type == 'year_level' %}
+                                    <p>
+                                        {{ sub_rule.unit_count }} units from completion of
+                                        {{ sub_rule.year_level }}-level courses
+                                    </p>
+                                {# Subject-area Or Rule #}
+                                {% elif sub_rule.type == 'subject_area' %}
+                                    <p>
+                                        {{ sub_rule.unit_count }} units from completion of
+                                        {% if sub_rule.year_level != 'Any year-level' %}
+                                            {{ sub_rule.year_level }}-level
+                                        {% endif %}
+                                        {{ sub_rule.subject }} courses
+                                    </p>
+                                {# Custom-text Or Rule #}
+                                {% elif sub_rule.type == "custom_text" %}
+                                    <p>{{ sub_rule.units }} units from {{ sub_rule.text }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if not forloop.last %}OR{% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br />
+            {% endfor %}
+        </p>
 
         {% if data.studentNotes != "" %}
             <p></p>

@@ -174,7 +174,7 @@ Vue.component('rule_program', {
 
             rule.check_options();
         });
-        request.open("GET", "/api/model/program/?format=json");
+        request.open("GET", "/api/search/?select=code,name&from=program");
         request.send();
     },
     methods: {

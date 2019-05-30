@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.forms.models import model_to_dict
+from django.http import HttpRequest
 
 from api.models import CourseModel, ProgramModel, SubplanModel
+from api.views import search
+import json
 
 
 def pretty_print_reqs(program):
@@ -25,17 +28,29 @@ def pretty_print_reqs(program):
 
 
 def pretty_print_rules(program):
-    for rule in program["rules"]:
-        # For a subplan rule, GET the name of the subplan for display
-        if rule["type"] == "subplan":
-            subplans = {}
-            units = 0
-            for id in rule["ids"]:
-                object = SubplanModel.objects.get(id=int(id))
-                units = object.units
-                subplans[id] = object
-            rule["contents"] = subplans
-            rule["units"] = units
+    for original_rule in program["rules"]:
+        # If the rule is an either_or rule, iterate over that, otherwise use the original rule
+        for or_rule in original_rule["either_or"] if original_rule["type"] == "either_or" else [[original_rule]]:
+            for rule in or_rule:
+                # For a subplan rule, GET the name of the subplan for display
+                if rule["type"] == "subplan":
+                    subplans = {}
+                    units = 0
+                    for id in rule["ids"]:
+                        object = SubplanModel.objects.get(id=int(id))
+                        units = object.units
+                        subplans[id] = object
+                    rule["contents"] = subplans
+                    rule["units"] = units
+                if rule["type"] == "course":
+                    gen_request = HttpRequest()
+                    gen_request.GET = {'select': 'code,name,units', 'from': 'course'}
+                    rule['courses'] = []
+                    for code in rule['codes']:
+                        # Add a new field containing the courses that match the given code
+                        gen_request.GET['code_exact'] = code
+                        courses = json.loads(search(gen_request).content.decode())
+                        rule['courses'] += courses
 
 
 def view_(request):
@@ -56,7 +71,19 @@ def view_(request):
         return render(request, 'viewcourse.html', context={'data': course})
 
     elif "subplan" in url:
+        # Create a request template to use for getting each course
+        gen_request = HttpRequest()
+        gen_request.GET = {'select': 'code,name,units', 'from': 'course'}
+
         subplan = model_to_dict(SubplanModel.objects.get(id=int(id_to_edit)))
+        for rule in subplan['rules']:
+            # Add a new field containing the courses that match the given code
+            rule['courses'] = []
+            for code in rule['codes']:
+                gen_request.GET['code_exact'] = code
+                courses = json.loads(search(gen_request).content.decode())
+                rule['courses'] += courses
+
         return render(request, 'viewsubplan.html', context={'data': subplan})
 
     elif "program" in url:
