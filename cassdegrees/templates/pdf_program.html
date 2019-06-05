@@ -1,6 +1,5 @@
 {% extends "pdf_base.html" %}
 {% load course_boxes %}
-{% load math %}
 
 {% block page-title %}{{ program.name }} ({{ program.year }}){% endblock %}
 
@@ -17,70 +16,7 @@
     <div class="columns-3 columns-no-gap">
 
         {% for rule in program.rules %}
-            <div class="box">
-                {% if rule.type == "subplan" %}
-                    <p>Completion of {{ rule.kind }} for {{ rule.units }} units:</p>
-                {% elif rule.type == "subject_area" %}
-                    {# https://stackoverflow.com/questions/4831306/need-to-convert-a-string-to-int-in-a-django-template #}
-                    {# add:"0" needed to cast units to int #}
-                    <p>Complete {{ rule.unit_count }} units from {% if rule.unit_count|add:"0" <= 6 %}a{% endif %}
-                        {{ rule.subject }} course{% if rule.unit_count|add:"0" > 6 %}s{% endif %}:</p>
-                {% elif rule.type == "year_level" %}
-                    <p>Complete {{ rule.unit_count }} units from {% if rule.unit_count|add:"0" <= 6 %}a{% endif %}
-                        {{ rule.year_level }}-level course{% if rule.unit_count|add:"0" > 6 %}s{% endif %}:</p>
-                {% elif rule.type == "course" %}
-                    {# Find out if all courses are required #}
-                    {% with courses_provided=rule.codes|length %}
-                        {% with courses_needed=rule.unit_count|divide:6 %}
-                            {% if courses_provided == courses_needed %}
-                                {# All courses specified are required - render all #}
-                                <p>Complete {{ rule.unit_count }} units from the following
-                                    {% if rule.unit_count|add:"0" <= 6 %}course{% else %}set of courses{% endif %}:</p>
-                            {% else %}
-                                {# Not all required courses - give descriptions #}
-                                <p>Complete {{ rule.unit_count }} units from a selection of:</p>
-                                {% for code in rule.codes %}
-                                    {{ code }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}
-                    {% endwith %}
-
-                {% elif rule.type == "custom_text" %}
-                    <p>For {{ rule.units }} units:</p>
-                    <p>{{ rule.text }}</p>
-                {% else %}
-                <!-- TODO: courseRequirementTemplate -->
-                    ERROR: Unknown rule type "{{ rule.type }}"!
-                {% endif %}
-            </div>
-
-
-            {% if rule.type == "subplan" %}
-                {% course_box rule.units %}
-            {% elif rule.type == "subject_area" %}
-                {% course_box rule.unit_count %}
-            {% elif rule.type == "year_level" %}
-                {% course_box rule.unit_count %}
-            {% elif rule.type == "course" %}
-                {% with courses_provided=rule.codes|length %}
-                    {% with courses_needed=rule.unit_count|divide:6 %}
-                        {% if courses_provided == courses_needed %}
-                            {# All courses specified are required - render all #}
-                            {% course_box_with_values rule.unit_count rule.codes %}
-                        {% else %}
-                            {# Not all required courses - map them out as blanks #}
-                            {% course_box rule.unit_count %}
-                        {% endif %}
-                    {% endwith %}
-                {% endwith %}
-            {% elif rule.type == "custom_text" %}
-                {% if rule.show_course_boxes %}
-                    {% course_box rule.units %}
-                {% endif %}
-            {% endif %}
-
-            {% if forloop.last %}<div class="break-box"></div>{% endif %}
+            {% include "widgets/pdf_rules.html" %}
         {% endfor %}
 
         <div class="break-column"></div>
