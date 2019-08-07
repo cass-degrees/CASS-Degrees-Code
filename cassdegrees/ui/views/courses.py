@@ -134,6 +134,9 @@ def edit_course(request):
     gen_request.GET = {'select': 'id,code,name,rules', 'from': 'subplan', 'rules': instance.code}
     subplans = json.loads(search(gen_request).content.decode())
 
+    # Set message to user if needed. Setting it to 'None' will not display the message box.
+    message = None
+
     # if there are programs/subplans that depend on the course code
     if len(programs) + len(subplans) > 0:
         for program in programs:
@@ -148,13 +151,20 @@ def edit_course(request):
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
-            return redirect('/list/?view=Course&msg=Successfully Edited Course!')
+            # POST Requests only carry boolean values over as string
+            # Only redirect the user to the list page if the user presses "Save and Exit".
+            # Otherwise, simply display a success message on the same page.
+            if request.POST.get('redirect') == 'true':
+                return redirect('/list/?view=Course&msg=Successfully Edited Course!')
+            else:
+                message = "Successfully Edited Course!"
 
     else:
         form = EditCourseFormSnippet(instance=instance)
         form.fields['code'].disabled = len(programs) + len(subplans) > 0
 
     return render(request, 'createcourse.html', context={
+        'render': {'msg': message},
         "edit": True,
         "form": form,
         "courses": CourseModel.objects.values(),

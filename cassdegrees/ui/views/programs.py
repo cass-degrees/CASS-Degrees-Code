@@ -96,9 +96,12 @@ def edit_program(request):
     # Find the program to specifically edit
     instance = ProgramModel.objects.get(id=int(id))
 
+    # Set message to user if needed. Setting it to 'None' will not display the message box.
+    message = None
+
     if request.method == 'POST':
         # If the user clicked the 'Create New Subplan' button, cache the form and start creating a new subplan
-        if (request.POST['action'] == 'Create New Subplan'):
+        if request.POST['action'] == 'Create New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.build_absolute_uri()
             return redirect('/create/subplan/')
@@ -109,7 +112,13 @@ def edit_program(request):
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
-            return redirect('/list/?view=Program&msg=Successfully Edited Program!')
+            # POST Requests only carry boolean values over as string
+            # Only redirect the user to the list page if the user presses "Save and Exit".
+            # Otherwise, simply display a success message on the same page.
+            if request.POST.get('redirect') == 'true':
+                return redirect('/list/?view=Course&msg=Successfully Edited Program!')
+            else:
+                message = "Successfully Edited Program!"
 
     else:
         # If the cached path matches the current path, load the cached form and then clear the cache
@@ -125,6 +134,7 @@ def edit_program(request):
             form = EditProgramFormSnippet(instance=instance)
 
     return render(request, 'createprogram.html', context={
+        'render': {'msg': message},
         "edit": True,
         "form": form,
         "render_separately": ["staffNotes", "studentNotes"]

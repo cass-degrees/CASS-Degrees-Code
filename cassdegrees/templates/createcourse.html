@@ -16,6 +16,9 @@
 {% endblock %}
 
 {% block content %}
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
 
     {% for error in form.non_field_errors %}
          <p class="msg-error">{{ error }}</p>
@@ -23,6 +26,8 @@
 
     <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;">
         {% csrf_token %}
+
+        <input type="hidden" id="redirect" name="redirect">
 
         <fieldset>
             <legend>Course details</legend>
@@ -56,14 +61,21 @@
     </form>
 
     <p class="text-right">
-        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save{% else %}Create{% endif %}"
-               onclick="submit_form(this.value)">
+        <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+               onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
+        {% if edit %}
+            <input class="btn-uni-grad btn-large" type="submit" value="Save"
+               onclick="submit_form(this.value, false)">
+        {% endif %}
+        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save and Exit{% else %}Create{% endif %}"
+               onclick="submit_form(this.value, true)">
     </p>
 
     <script>
-        function submit_form(form_action) {
+        function submit_form(form_action, redirect) {
             if (handleRules()) {
                 document.getElementById('mainForm').action.value = form_action;
+                document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();
                 return true;
             } else {
