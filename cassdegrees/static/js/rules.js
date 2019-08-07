@@ -14,6 +14,30 @@ const ALL_COMPONENT_NAMES = {
     'either_or': "Either Or"
 };
 
+// Help for all components
+const ALL_COMPONENT_HELP = {
+    'incompatibility': "A rule which notes that students must not have picked any of the set of courses specified.",
+    'program': 'A rule which enforces that only students from a particular course can take this option.',
+    'subplan': "A rule which gives students a choice from a particular set of majors, minors, specialisations or " +
+               "other subplans. The description here is used to describe the rule when displaying this rule to " +
+               "students.",
+    'year_level': 'A rule which specifies that students must complete a number of units from a particular year level.',
+    'subject_area': "A rule which specifies that students must complete a number of units from a particular field.",
+    'course': "A rule which specifies that students should pick a certain amount of units from a set of available " +
+              "courses.",
+    'course_requisite': "A rule which specifies that students should have taken a set of courses before taking this " +
+                        "one.",
+    'custom_text': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
+                   "for the specification of other program content. Note that this isn't enforced in student-facing " +
+                   "tools.",
+    'custom_text_req': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
+                       "for the specification of other program content. Note that this isn't enforced in student-facing " +
+                       "tools.",
+    'either_or': "A rule which allows for the specification of sets of different paths that students can take. Each " +
+                 "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
+                 "group."
+};
+
 // Translation table between internal names for components and human readable ones.
 const COMPONENT_NAMES = {
     'subplan': "Subplan",
@@ -828,7 +852,9 @@ Vue.component('rule', {
     },
     data: function() {
         return {
-            component_names: ALL_COMPONENT_NAMES
+            component_names: ALL_COMPONENT_NAMES,
+            component_help: ALL_COMPONENT_HELP,
+            show_help: false
         }
     },
     methods:{

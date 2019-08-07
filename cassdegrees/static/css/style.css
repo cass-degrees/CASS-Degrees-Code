@@ -205,3 +205,13 @@ select.text{
     color: #ffffff;
     background: #707070;
 }
+
+/* Vertically aligns text to the middle */
+.vertical-middle {
+    vertical-align: middle;
+}
+
+/* Indicates that an element is clickable */
+.clickable {
+    cursor: pointer;
+}

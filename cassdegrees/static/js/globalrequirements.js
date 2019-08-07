@@ -78,7 +78,9 @@ Vue.component('global_requirement', {
     },
     data: function() {
         return {
-            component_names: GLOBAL_REQUIREMENT_NAMES
+            component_names: GLOBAL_REQUIREMENT_NAMES,
+            component_help: GLOBAL_REQUIREMENT_HELP,
+            show_help: false
         }
     },
     template: '#globalRequirementTemplate'
@@ -145,6 +147,16 @@ function handleProgram() {
 const GLOBAL_REQUIREMENT_NAMES = {
     'min': "Minimum Units from Year(s)",
     'max': "Maximum Units from Year(s)",
+};
+
+const GLOBAL_REQUIREMENT_HELP = {
+    'min': "Enforces for an entire degree that a minimum amount of units *must* come from a particular " +
+           "set of course levels - e.g. a minimum of 6 units of 1000-level courses over an entire program, " +
+           "and 12 from 2000-level. Multiple of these global requirements may exist (e.g. if different unit counts " +
+           "are needed).",
+    'max': "Enforces for an entire degree that a maximum amount of units from a particular set of course levels " +
+           "will exist - e.g. a maximum of 6 units of 1000-level courses over an entire program, and 12 from " +
+           "2000-level. Multiple of these global requirements may exist (e.g. if different unit counts are needed).",
 };
 
 var globalRequirementsApp = new Vue({
