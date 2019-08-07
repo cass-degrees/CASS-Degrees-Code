@@ -18,6 +18,8 @@ from django.shortcuts import render
 # code%year%name%units%planType
 # ARTI-SPEC%2016%Artificial Intelligence%24%SPEC
 # ...
+
+
 @login_required
 def bulk_data_upload(request):
     context = {}
@@ -47,6 +49,8 @@ def bulk_data_upload(request):
         # Used for determining type of message to show to the user on the progress of their file upload.
         any_error = False
         any_success = False
+        failed_to_upload = []
+        correctly_uploaded = []
 
         # Stores the index of the column containing the data type of each row,
         # so that the right data is stored in the right column
@@ -67,12 +71,15 @@ def bulk_data_upload(request):
                     course_instance.units = int(row[map['units']])
                     course_instance.offeredSem1 = bool(row[map['offeredSem1']])
                     course_instance.offeredSem2 = bool(row[map['offeredSem2']])
+                    course_str = course_instance.code + " - " + course_instance.name
 
                     # Save the course instance
                     try:
                         course_instance.save()
                         any_success = True
+                        correctly_uploaded.append(course_str)
                     except:
+                        failed_to_upload.append(course_str)
                         any_error = True
 
                 elif content_type == 'Subplans':
@@ -86,13 +93,17 @@ def bulk_data_upload(request):
                     subplan_instance.name = row[map['name']]
                     subplan_instance.units = int(row[map['units']])
                     subplan_instance.planType = str(row[map['planType']])
+                    subplan_str = str(subplan_instance.year) + " - " + subplan_instance.code + " - " + \
+                        subplan_instance.name
 
                     # Save the subplan instance
                     try:
                         subplan_instance.save()
                         any_success = True
+                        correctly_uploaded.append(subplan_str)
                     except:
                         any_error = True
+                        failed_to_upload.append(subplan_str)
 
             else:
                 i = 0
@@ -108,9 +119,23 @@ def bulk_data_upload(request):
             context['err_type'] = "success"
 
         elif any_success and any_error:
-            context['user_msg'] = "Some items could not be added. Have you added them already? Please check the " \
+            # for course in failed_to_upload:
+            failed_str = ""
+            correct_str = ""
+
+            for record in failed_to_upload:
+                failed_str = failed_str + "<br> - " + record
+
+            for record in correctly_uploaded:
+                correct_str = correct_str + "<br> - " + record
+
+            context['user_msg'] = "Some items could not be added. They may already be present in the database" \
+                                  " or the data may not be in the correct format. Please check the " \
                                   + content_type + \
-                                  " list and try manually adding ones that failed through the dedicated forms."
+                                  " list and try manually adding ones that failed through the dedicated " \
+                                  "forms. <br><br>The following " + content_type + " could not be added: " + \
+                                  failed_str + "<br><br> " \
+                                  "The following " + content_type + " uploaded successfully: " + correct_str
             context['err_type'] = "warn"
 
         elif not any_success and any_error:

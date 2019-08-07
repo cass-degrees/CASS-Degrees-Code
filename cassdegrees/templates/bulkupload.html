@@ -20,7 +20,7 @@
     </div>
 
     {% if err_type != None %}
-        <p class="{% if err_type == 'error' %}msg-error{% elif err_type == 'warn' %}msg-warn{% elif err_type == 'success' %}msg-success{% endif %}">{{ user_msg }}</p>
+        <p class="{% if err_type == 'error' %}msg-error{% elif err_type == 'warn' %}msg-warn{% elif err_type == 'success' %}msg-success{% endif %}">{{ user_msg|safe }}</p>
     {% endif %}
 
     {% for type in upload_type %}
