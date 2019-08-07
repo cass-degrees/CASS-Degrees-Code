@@ -4,12 +4,89 @@ from api.models import ProgramModel, SubplanModel, CourseModel
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.forms import ModelForm
-
+from django.urls import reverse
 
 # fast and easy way to check if a word separated by spaces is in a sentence
 # From: https://stackoverflow.com/questions/5319922/python-check-if-word-is-in-a-string
+from django.utils.html import format_html
+
+
 def contains_word(s, w):
     return f' {w} ' in f' {s} '
+
+
+# For a given model check constraints c1 and c2 and raise link to conflicting record if applicable
+# url resolution using
+# https://stackoverflow.com/questions/9585491/how-do-i-pass-get-parameters-using-django-urlresolvers-reverse
+# https://stackoverflow.com/questions/40886048/how-to-put-a-link-into-a-django-error-message
+def raise_unique_error(view_str, conflictID):
+    url = ("%s?id=" + str(conflictID)) % reverse(view_str)
+    msg = format_html('An existing record (<a href="{}" target="_blank">view in new tab</a>) '
+                      'with the same attributes is stopping the creation of this record. To fix this '
+                      'ensure the fields flagged below are unique, continue working on the existing record or '
+                      'delete the existing record.',
+                      url)
+    raise forms.ValidationError([
+        forms.ValidationError(msg, code='testError')
+    ])
+
+
+# for any constraints c1 c2
+# https://stackoverflow.com/questions/4659360/get-django-object-id-based-on-model-attribute
+def check_constraint(model, data, c1, c2, view_str):
+    # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
+    try:
+        draft_c1 = data[c1]
+    except KeyError:
+        draft_c1 = None
+    try:
+        draft_c2 = data[c2]
+    except KeyError:
+        draft_c2 = None
+
+    # check that input has been received for the fields and then check for duplicate
+    if draft_c1 is not None and draft_c2 is not None:
+        try:
+            conflict_id = model.objects.only('id').get(**{c1: draft_c1, c2: draft_c2}).id
+        except model.DoesNotExist:
+            conflict_id = None
+    else:
+        conflict_id = None
+
+    if conflict_id is not None:
+        raise_unique_error(view_str, conflict_id)
+
+
+# for any constraints c1 c2 c3
+def check_three_constraint(model, data, c1, c2, c3, view_str):
+    # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
+    try:
+        draft_c1 = data[c1]
+    except KeyError:
+        draft_c1 = None
+    try:
+        draft_c2 = data[c2]
+    except KeyError:
+        draft_c2 = None
+    try:
+        draft_c3 = data[c3]
+    except KeyError:
+        draft_c3 = None
+
+    # check constraint and return conflicting ID if present
+    if draft_c1 is not None and draft_c2 is not None and draft_c3 is not None:
+        try:
+            conflict_id = model.objects.only('id').get(**{
+                c1: draft_c1,
+                c2: draft_c2,
+                c3: draft_c3}).id
+        except model.DoesNotExist:
+            conflict_id = None
+    else:
+        conflict_id = None
+
+    if conflict_id is not None:
+        raise_unique_error(view_str, conflict_id)
 
 
 class JSONField(forms.CharField):
@@ -89,6 +166,15 @@ class EditProgramFormSnippet(ModelForm):
             raise forms.ValidationError("Units should be a multiple of 6!")
         return data
 
+    # Override clean to return links to existing content if unique_together constraint fails
+    def clean(self):
+        cleaned_data = super().clean()
+
+        check_constraint(ProgramModel, cleaned_data, 'code', 'year', 'edit_program')
+        check_constraint(ProgramModel, cleaned_data, 'name', 'year', 'edit_program')
+
+        return cleaned_data
+
 
 class EditSubplanFormSnippet(ModelForm):
     # Automatically injected by default
@@ -166,6 +252,15 @@ class EditSubplanFormSnippet(ModelForm):
         except KeyError:
             raise forms.ValidationError("Please fill in all fields!")
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # relevant constraints are (code, year) and (name, year, planType)
+        check_constraint(SubplanModel, cleaned_data, 'code', 'year', 'edit_subplan')
+        check_three_constraint(SubplanModel, cleaned_data, 'name', 'year', 'planType', 'edit_subplan')
+
+        return cleaned_data
+
 
 class EditCourseFormSnippet(ModelForm):
     rules = JSONField(field_id='rules', required=False)
@@ -224,3 +319,10 @@ class EditCourseFormSnippet(ModelForm):
         if int(data) % 6 != 0:
             raise forms.ValidationError("Units should be a multiple of 6!")
         return data
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        check_constraint(CourseModel, cleaned_data, 'code', 'year', 'edit_course')
+
+        return cleaned_data
