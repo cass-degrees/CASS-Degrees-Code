@@ -64,20 +64,22 @@ https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
         9. Click “install packages”
     9. Tick “Run browser” if you want a new window to automatically pop up.
 
-10. At some point, a prompt will appear that requests connection to the database. Fill in the required fields (e.g. passwords), test connection and if successful, press OK.
+10. You will need to install extra dependencies for WeasyPrint, the framework that enables PDF generation. Follow the instructions on the WeasyPrint installation guide to install the GTK+ libraries: https://weasyprint.readthedocs.io/en/stable/install.html
 
-11. If your models for the database has been altered (code in models.py), make sure you perform the migrations. This is necessary for the tables in our PostgreSQL database to be updated.
+11. At some point, a prompt will appear that requests connection to the database. Fill in the required fields (e.g. passwords), test connection and if successful, press OK.
+
+12. If your models for the database has been altered (code in models.py), make sure you perform the migrations. This is necessary for the tables in our PostgreSQL database to be updated.
 Go to terminal in PyCharm at bottom left ish, change directory so that manage.py is in your working directory, then run:
 python manage.py makemigrations
 python manage.py migrate
 
-12. Now, try running the Django app by clicking the green triangle on the top right.
+13. Now, try running the Django app by clicking the green triangle on the top right.
 
-13. Now, you should be greeted with Django’s main page (with a flying rocket) which says that your installation is successful. From this point on, all you need to do is to switch branches as necessary and then click the green arrow.
+14. Now, you should be greeted with Django’s main page (with a flying rocket) which says that your installation is successful. From this point on, all you need to do is to switch branches as necessary and then click the green arrow.
 
-14. To use the administrator page (127.0.0.1:8000/admin/), add yourself as the superuser:
-    14. python manage.py createsuperuser
-    14. You can set any value for username, email or password. Remember it though so you can log into the admin website. I did u: admin and pw: admin.
+15. To use the administrator page (127.0.0.1:8000/admin/), add yourself as the superuser:
+    15. python manage.py createsuperuser
+    15. You can set any value for username, email or password. Remember it though so you can log into the admin website. I did u: admin and pw: admin.
 
 **If you made it this far then *CONGRATULATIONS!***     
 **You now have a working local environment to play with!**
