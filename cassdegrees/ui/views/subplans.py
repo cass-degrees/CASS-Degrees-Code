@@ -9,6 +9,10 @@ from api.views import search
 import json
 from django.utils import timezone
 
+admin_url_prefix = "/admin/"
+
+list_subplan_url = admin_url_prefix + "list/?view=Subplan"
+
 
 # Using sampleform template and #59 - basic program creation workflow as it's inspirations
 @login_required
@@ -41,7 +45,7 @@ def create_subplan(request):
             if request.session.get('cached_program_form_data', ''):
                 return redirect(request.session.get('cached_program_form_source', '/'))
             else:
-                return redirect('/list/?view=Subplan&msg=Successfully Added Subplan!')
+                return redirect(list_subplan_url + '&msg=Successfully Added Subplan!')
 
     else:
         if duplicate:
@@ -77,7 +81,7 @@ def delete_subplan(request):
     ids_to_delete = data.getlist('id')
     # Notify the user that nothing was selected.
     if not ids_to_delete:
-        return redirect('/list/?view=Subplan&error=Please select a Subplan to delete!')
+        return redirect(list_subplan_url + '&error=Please select a Subplan to delete!')
     safe_to_delete = True
     error_msg = ""
     for id_to_delete in ids_to_delete:
@@ -102,14 +106,14 @@ def delete_subplan(request):
             instances.append(SubplanModel.objects.get(id=int(id_to_delete)))
 
     if error_msg != "":
-        return redirect('/list/?view=Subplan&error=Failed to Delete Subplan(s)!\n\n' + error_msg +
-                        '\nPlease check dependencies!')
+        return redirect(list_subplan_url + '&error=Failed to Delete Subplan(s)!'
+                                           '\n' + error_msg + '\nPlease check dependencies!')
 
     if "confirm" in data:
         for instance in instances:
             instance.delete()
 
-        return redirect('/list/?view=Subplan&msg=Successfully Deleted Subplan(s)!')
+        return redirect(list_subplan_url + '&msg=Successfully Deleted Subplan(s)!')
     else:
         return render(request, 'deletesubplans.html', context={
             "instances": instances
@@ -139,7 +143,7 @@ def edit_subplan(request):
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
             if request.POST.get('redirect') == 'true':
-                return redirect('/list/?view=Course&msg=Successfully Edited Subplan!')
+                return redirect(list_subplan_url + '&msg=Successfully Edited Subplan!')
             else:
                 message = "Successfully Edited Subplan!"
 

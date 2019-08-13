@@ -5,6 +5,9 @@ from django.db.models import Q
 from django.shortcuts import render
 
 
+admin_url_prefix = "/admin/"
+
+
 def data_dict_as_displayable(data):
     """
     Rename and drop elements of a data dictionary ("Program", "Subplan", "Course") such that they are human
@@ -53,7 +56,8 @@ def data_list(request):
 
     render_properties = {
         'msg': request.GET.get('msg'),
-        'error': request.GET.get('error')
+        'error': request.GET.get('error'),
+        'admin_url_prefix': admin_url_prefix
     }
     # No search, render default page
     if not query:

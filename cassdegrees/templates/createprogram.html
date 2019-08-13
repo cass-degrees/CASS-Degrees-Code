@@ -7,7 +7,8 @@
 {% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} Program Template{% endblock %}
 
 {% block breadcrumb-trail %}
-    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% breadcrumb '/admin/home' 'Admin Home'%}
+    {% breadcrumb '/admin/list/?view=Program' 'Programs/Subplans/Courses' %}
     {% if edit %}
         {% finalcrumb 'Edit Program' %}
     {% else %}

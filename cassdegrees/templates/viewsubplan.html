@@ -7,7 +7,8 @@
 {% block subtitle %}{{ data.name }}{% endblock %}
 
 {% block breadcrumb-trail %}
-    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% breadcrumb '/admin/home' 'Admin Home'%}
+    {% breadcrumb '/admin/list/?view=Program' 'Programs/Subplans/Courses' %}
     {% finalcrumb 'View Subplan' %}
 {% endblock %}
 

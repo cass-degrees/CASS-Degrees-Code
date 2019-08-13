@@ -8,6 +8,10 @@ from ui.forms import EditProgramFormSnippet
 from ui.views.subplans import create_subplan
 from django.utils import timezone
 
+admin_url_prefix = "/admin/"
+
+list_program_url = admin_url_prefix + "list/?view=Program"
+
 
 @login_required
 def create_program(request):
@@ -34,13 +38,13 @@ def create_program(request):
         if request.POST['action'] == 'Create New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.path
-            return redirect('/create/subplan/')
+            return redirect(admin_url_prefix + 'create/subplan/')
 
         form = EditProgramFormSnippet(request.POST)
 
         if form.is_valid():
             form.save()
-            return redirect('/list/?view=Program&msg=Successfully Added Program!')
+            return redirect(list_program_url + '&msg=Successfully Added Program!')
 
     else:
         if duplicate:
@@ -72,7 +76,7 @@ def delete_program(request):
 
     ids_to_delete = data.getlist('id')
     if not ids_to_delete:
-        return redirect('/list/?view=Program&error=Please select a Program to delete!')
+        return redirect(list_program_url + '&error=Please select a Program to delete!')
     for id_to_delete in ids_to_delete:
         instances.append(ProgramModel.objects.get(id=int(id_to_delete)))
 
@@ -80,7 +84,7 @@ def delete_program(request):
         for instance in instances:
             instance.delete()
 
-        return redirect('/list/?view=Program&msg=Successfully Deleted Program(s)!')
+        return redirect(list_program_url + '&msg=Successfully Deleted Program(s)!')
     else:
         return render(request, 'deleteprograms.html', context={
             "instances": instances
@@ -104,7 +108,7 @@ def edit_program(request):
         if request.POST['action'] == 'Create New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.build_absolute_uri()
-            return redirect('/create/subplan/')
+            return redirect(admin_url_prefix + 'create/subplan/')
 
         form = EditProgramFormSnippet(request.POST, instance=instance)
 
@@ -116,7 +120,7 @@ def edit_program(request):
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
             if request.POST.get('redirect') == 'true':
-                return redirect('/list/?view=Course&msg=Successfully Edited Program!')
+                return redirect(list_program_url + '&msg=Successfully Edited Program!')
             else:
                 message = "Successfully Edited Program!"
 

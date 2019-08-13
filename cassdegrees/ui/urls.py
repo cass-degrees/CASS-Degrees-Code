@@ -24,23 +24,26 @@ from .views.programs import *
 from .views.sampleform import *
 from .views.subplans import *
 from .views.view_ import *
+from .views.student import *
 
 urlpatterns = [
-    path('', index),
-    path('sampleform/', sampleform),
-    path('create/course/', create_course),
-    path('create/program/', create_program),
-    path('create/subplan/', create_subplan),
-    path('delete/courses/', delete_course),
-    path('delete/programs/', delete_program),
-    path('delete/subplans/', delete_subplan),
-    path('edit/course/', edit_course, name='edit_course'),
-    path('edit/program/', edit_program, name='edit_program'),
-    path('edit/subplan/', edit_subplan, name='edit_subplan'),
-    path('list/', data_list),
-    path('bulk_upload/', bulk_data_upload),
-    path('view/program/', view_),
-    path('view/subplan/', view_),
-    path('view/course/', view_),
-    path('pdf/program/', view_program_pdf),
+    path('admin/home/', index),
+    path('admin/sampleform/', sampleform),
+    path('admin/create/course/', create_course),
+    path('admin/create/program/', create_program),
+    path('admin/create/subplan/', create_subplan),
+    path('admin/delete/courses/', delete_course),
+    path('admin/delete/programs/', delete_program),
+    path('admin/delete/subplans/', delete_subplan),
+    path('admin/edit/course/', edit_course, name='edit_course'),
+    path('admin/edit/program/', edit_program, name='edit_program'),
+    path('admin/edit/subplan/', edit_subplan, name='edit_subplan'),
+    path('admin/list/', data_list),
+    path('admin/bulk_upload/', bulk_data_upload),
+    path('admin/view/program/', view_),
+    path('admin/view/subplan/', view_),
+    path('admin/view/course/', view_),
+    path('admin/pdf/program/', view_program_pdf),
+
+    path('', student_index)
 ]

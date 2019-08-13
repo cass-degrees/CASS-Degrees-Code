@@ -11,6 +11,11 @@ import json
 from django.utils import timezone
 
 
+admin_url_prefix = "/admin/"
+
+list_course_url = admin_url_prefix + "list/?view=Course"
+
+
 @login_required
 def create_course(request):
     duplicate = request.GET.get('duplicate', 'false')
@@ -36,7 +41,7 @@ def create_course(request):
 
         if form.is_valid():
             form.save()
-            return redirect('/list/?view=Course&msg=Successfully Added Course!')
+            return redirect(list_course_url + '&msg=Successfully Added Course!')
 
     else:
         if duplicate:
@@ -66,7 +71,7 @@ def delete_course(request):
     # ids of all the courses that were selected to be deleted
     ids_to_delete = [int(course_id) for course_id in data.getlist('id')]
     if not ids_to_delete:
-        return redirect('/list/?view=Course&error=Please select a Course to delete!')
+        return redirect(list_course_url + '&error=Please select a Course to delete!')
     courses_to_delete = [c for c in courses if c['id'] in ids_to_delete]
 
     error_msg = ""
@@ -100,14 +105,14 @@ def delete_course(request):
         instances.append(CourseModel.objects.get(id=course['id']))
 
     if len(error_msg) > 0:
-        return redirect('/list/?view=Course&error=Failed to Delete Course(s)!\n' + error_msg + 
-                        '\nPlease check dependencies!')
+        return redirect(list_course_url + '&error=Failed to Delete Course(s)!'
+                                          '\n' + error_msg + '\nPlease check dependencies!')
 
     if "confirm" in data:
         for instance in instances:
             instance.delete()
 
-        return redirect('/list/?view=Course&msg=Successfully Deleted Course(s)!')
+        return redirect(list_course_url + '&msg=Successfully Deleted Course(s)!')
     else:
         return render(request, 'deletecourses.html', context={
             "instances": instances
@@ -155,7 +160,7 @@ def edit_course(request):
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
             if request.POST.get('redirect') == 'true':
-                return redirect('/list/?view=Course&msg=Successfully Edited Course!')
+                return redirect(list_course_url + '&msg=Successfully Edited Course!')
             else:
                 message = "Successfully Edited Course!"
 
