@@ -20,12 +20,33 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@+xqva1f8_gb_srx&kv&70v@ffzzyio8#_p)swcva3ee6ajglf'
+# Please generate at least 16 character long random string with special characters and numbers
+# in the /etc/secret_key.txt file before running (create one before proceeding).
+with open('/etc/secret_key.txt') as f:
+    SECRET_KEY = f.read().strip()
+
+# When username and password for the PSQL database is being set, please update them here or db connection will fail.
+# Also, for better security purposes, please configure your PSQL to only allow local connections (i.e. 127.0.0.1).
+psql_username = ""
+psql_password = ""
+
+if psql_username == "" or psql_password == "":
+    raise NotImplementedError("Please configure your PSQL database username and password!")
+
+# https://docs.djangoproject.com/en/2.2/ref/settings/#std:setting-STATIC_ROOT
+STATIC_ROOT = ""
+
+if STATIC_ROOT == "":
+    raise NotImplementedError("Please specify STATIC_ROOT in settings.py before proceeding.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # TODO: Change this before we go into production
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# Please configure ALLOWED_HOSTS before deployment.
+# Look at https://docs.djangoproject.com/en/2.2/ref/settings/#std:setting-ALLOWED_HOSTS for more information.
+ALLOWED_HOSTS = [
+
+]
 
 
 # Application definition
@@ -90,8 +111,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'cassdegrees',
-        'USER': 'postgres',  # TODO: Change this before we go into production
-        'PASSWORD': 'postgres',  # TODO: Change this before we go into production
+        'USER': psql_username,
+        'PASSWORD': psql_password,
         'HOST': 'localhost',
         'PORT': '5432',
     }
