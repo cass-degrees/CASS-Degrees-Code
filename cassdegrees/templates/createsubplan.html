@@ -24,7 +24,7 @@
          <p class="msg-error">{{ error }}</p>
     {% endfor %}
 
-    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;">
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;" autocomplete="off">
         {% csrf_token %}
 
         <input type="hidden" id="redirect" name="redirect">
