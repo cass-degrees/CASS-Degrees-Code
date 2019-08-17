@@ -17,7 +17,7 @@ For the main readme please go to go to README.md file located in this repository
 
 3. Install the extra dependencies for WeasyPrint, the framework that enables PDF generation. Follow the instructions on the WeasyPrint installation guide to install the GTK+ libraries: https://weasyprint.readthedocs.io/en/stable/install.html
 
-4. Pip install everything in the requirements.txt file
+4. Pip install everything in the requirements.txt file.
 
 5. Setup and configure all your platform-specific software (e.g. Nginx, Gunicorn) so that it is ready to work with Django.
 
