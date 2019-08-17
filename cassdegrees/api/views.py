@@ -48,6 +48,7 @@ class ProgramRecord(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProgramModel.objects.all()
     serializer_class = ProgramSerializer
 
+
 def search(request):
     """ Queries the database based on the URL parameters
 
@@ -81,13 +82,14 @@ def search(request):
     columns = columns.split(',') if columns else []
 
     # Generates a query mapping for "title":"containing text" relationships
-    include = {x+"__icontains": request.GET.get(x, None) for x in columns if request.GET.get(x, None)}
+    include = {x + "__icontains": request.GET.get(x, None) for x in columns if request.GET.get(x, None)}
     include.update(
-        {x + "__iexact": request.GET.get(x+"_exact", None) for x in columns if request.GET.get(x+"_exact", None)}
+        {x + "__iexact": request.GET.get(x + "_exact", None) for x in columns if request.GET.get(x + "_exact", None)}
     )
     query = Q(**include)
 
-    # If the model is valid and all parameters are valid, returns the response, otherwise returning ["Invalid parameter given"]
+    # If the model is valid and all parameters are valid, returns the response,
+    # otherwise returning ["Invalid parameter given"]
     if model:
         for parameter in columns:
             if parameter not in [f.name for f in model._meta.fields]:

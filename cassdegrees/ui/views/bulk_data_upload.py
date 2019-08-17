@@ -30,7 +30,7 @@ def bulk_data_upload(request):
         context['current_tab'] = content_type
 
     if request.method == 'POST':
-        base_model_url = request.build_absolute_uri('/api/model/')
+        # base_model_url = request.build_absolute_uri('/api/model/')
 
         # Open file in text mode:
         # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
