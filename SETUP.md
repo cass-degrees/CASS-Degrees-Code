@@ -3,8 +3,28 @@ This document will guide you through the steps to setup your own local environme
 
 For the main readme please go to go to README.md file located in this repository. 
 
-## How to run our Django app (Windows)
 *Created by Daniel Jang*
+
+## Requirements and configuration checklist for server deployment
+
+**INFO: This is a non-exhaustive checklist for server deployment - programs not related to this repository will not be mentioned and configurations for them will have to be done by you.**
+
+
+1. Ensure Python 3 is being used. To ensure best compatibility, use Python version 3.7.2 and up.
+
+2. Install a PostgreSQL server, and create a database with username and password of your choice. Remember this information for step 6.
+   - Django recommends allowing database access only from the internal server itself, and to reject/drop all connections coming from the outside. This is for database security.
+
+3. Install the extra dependencies for WeasyPrint, the framework that enables PDF generation. Follow the instructions on the WeasyPrint installation guide to install the GTK+ libraries: https://weasyprint.readthedocs.io/en/stable/install.html
+
+4. Pip install everything in the requirements.txt file
+
+5. Setup and configure all your platform-specific software (e.g. Nginx, Gunicorn) so that it is ready to work with Django.
+
+6. Go to /cassdegrees/cassdegrees/settings.py and follow further instructions on server configuration, which is written in the script itself.
+
+
+## How to run our Django app (Windows)
 
 **NOTE: This guide is focused for Windows users, but the basic steps for other OS is similar (Install Python -> install PostgreSQL -> Create DB -> set up PyCharm -> run)**
 
