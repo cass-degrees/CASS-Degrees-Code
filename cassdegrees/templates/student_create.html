@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}Create New Plan{% endblock %}
+
+{% block subtitle %}Create new student plan{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% finalcrumb 'Create new student plan' %}
+{% endblock %}
+
+{% block content %}
+    <p>
+        Firstly, select the program that you are completing/intend to complete. Make sure you pick the year
+        that your degree is (typically, the year you started) - if unsure, check your student record on
+        ISIS.
+    </p>
+
+    <div id="courses">
+        <div class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar custom_search_bar_full_length">
+            <input class="text fuzzy-search" size="24" maxlength="75" type="text"
+                   placeholder="Search for your program here...">
+        </div>
+
+        <div class="list">
+            {% for degree in programs %}
+                <a href="/edit/?id={{ degree.id }}" class="hide-link-underline">
+                    <div class="course-details hide">
+                        {{ degree.name }}
+                        {{ degree.year }}
+                        {% if degree.programType == 'ugrad-sing' %}
+                            Undergraduate Single Pass Degree
+                        {% elif degree.programType == 'ugrad-doub' %}
+                            Undergraduate Flexible Double Degree
+                        {% elif degree.programType == 'hon' %}
+                            Honours Degree
+                        {% elif degree.programType == 'mast-sing' %}
+                            Masters Single Degree
+                        {% elif degree.programType == 'mast-adv' %}
+                            Masters (Advanced) Degree
+                        {% elif degree.programType == 'mast-doub' %}
+                            Masters Flexible Double Degree
+                        {% elif degree.programType == 'vert-doub' %}
+                            Vertical Flexible Double Degree
+                        {% elif degree.programType == 'other' %}
+                            Other Degree
+                        {% endif %}
+                        {{ degree.units }}
+                    </div>
+
+                    <div class="card selectable-card">
+                        <div class="box-solid">
+                            <div class="card-content">
+                                <b class="course-title">
+                                    {{ degree.name }}
+                                </b>
+                                -
+                                <b class="course-year">
+                                    {{ degree.year }}
+                                </b>
+                                <br />
+                                <span class="course-type">
+                                    {% if degree.programType == 'ugrad-sing' %}
+                                        Undergraduate Single Pass Degree
+                                    {% elif degree.programType == 'ugrad-doub' %}
+                                        Undergraduate Flexible Double Degree
+                                    {% elif degree.programType == 'hon' %}
+                                        Honours Degree
+                                    {% elif degree.programType == 'mast-sing' %}
+                                        Masters Single Degree
+                                    {% elif degree.programType == 'mast-adv' %}
+                                        Masters (Advanced) Degree
+                                    {% elif degree.programType == 'mast-doub' %}
+                                        Masters Flexible Double Degree
+                                    {% elif degree.programType == 'vert-doub' %}
+                                        Vertical Flexible Double Degree
+                                    {% elif degree.programType == 'other' %}
+                                        Other Degree
+                                    {% endif %}
+                                </span>
+                                /
+                                <span class="course-units">
+                                    {{ degree.units }} units
+                                </span>
+
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/student_create.js' %}" type="application/javascript"></script>
+{% endblock %}

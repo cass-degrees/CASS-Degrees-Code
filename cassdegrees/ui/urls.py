@@ -27,6 +27,10 @@ from .views.view_ import *
 from .views.student import *
 
 urlpatterns = [
+    path('', student_index),
+    path('create/', student_create),
+    path('edit/', student_edit),
+
     path('admin/home/', index),
     path('admin/sampleform/', sampleform),
     path('admin/create/course/', create_course),
@@ -44,6 +48,4 @@ urlpatterns = [
     path('admin/view/subplan/', view_),
     path('admin/view/course/', view_),
     path('admin/pdf/program/', view_program_pdf),
-
-    path('', student_index)
 ]

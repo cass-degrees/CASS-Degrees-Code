@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}Edit Plan ({{ program.name }} - {{ program.year }}){% endblock %}
+
+{% block subtitle %}Edit plan ({{ program.name }} - {{ program.year }}){% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/create/' 'Create new student plan' %}
+    {% finalcrumb 'Edit plan' %}
+{% endblock %}
+
+{% block content %}
+    {# program is the full program object as selected by the user, superuser is if an authenticated #}
+    {# user is logged in #}
+    <div class="box bdr-solid bdr-uni">
+        <label for="plan-name">Name:</label>
+        <input id="plan-name" type="text" placeholder="e.g. {{ program.name }}" />
+        &nbsp;|&nbsp;
+        <span>Last Edited: 01/01/2000</span>
+
+        <div class="float-right">
+            <input type="button" class="btn-uni-grad btn-small" value="Save...">
+            {% if superuser %}
+                <input type="button" class="btn-uni-grad btn-small" value="Save & Approve...">
+            {% endif %}
+        </div>
+    </div>
+
+    {% for rule in program.rules %}
+        {{ rule.type }}
+    {% endfor %}
+
+{% endblock %}

@@ -1,15 +1,37 @@
 {% extends "base.html" %}
-{% load static %}
 {% load breadcrumbs %}
 
-{% block page-title %}Student Home{% endblock %}
+{% block page-title %}Home{% endblock %}
 
-{% block subtitle %}Student Home{% endblock %}
+{% block subtitle %}Welcome to the CASS Student Planner!{% endblock %}
 
 {% block breadcrumb-trail %}
-    {% finalcrumb 'Student Home' %}
+    {% finalcrumb 'Homepage' %}
 {% endblock %}
 
 {% block content %}
+    <p>
+        The CASS student planner tool is designed to help you plan out your degree, either
+        at the beginning or throughout. This tool will check for common issues that you may
+        encounter in planning out your degree, helping you to graduate on time.
+    </p>
+
+    <a href="create/">
+        <input class="btn-uni-grad btn-large" type="button" value="Create New Degree Plan" />
+    </a>
+
+    <hr />
+
+    <!-- TODO: Relies on persistence (e.g. cookies) -->
+    <div>
+        <a href="#" class="hide-link-underline">
+            <input class="btn-uni-grad btn-large" type="button"
+                   value="Continue previous plan: 'Bachelor of Arts', last updated 27th of April, 2019" />
+        </a>
+        &nbsp;
+        <a href="#">
+            <input type="button" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </a>
+    </div>
 
 {% endblock %}

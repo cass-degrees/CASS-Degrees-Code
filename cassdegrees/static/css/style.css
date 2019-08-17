@@ -49,6 +49,10 @@
     float:right;
 }
 
+.custom_search_bar_full_length input[type=text]{
+    width: 100%;
+}
+
 /* Adds carets to list sorting options */
 table th {}
 .sort:after{
@@ -214,4 +218,28 @@ select.text{
 /* Indicates that an element is clickable */
 .clickable {
     cursor: pointer;
+}
+
+/* Hides the underline for a generic link (e.g. if link is a button */
+.hide-link-underline {
+    text-decoration: none;
+}
+
+.hide-link-underline :hover {
+    text-decoration: none;
+}
+
+/* Gives a little hover animation to course cards */
+.selectable-card :hover {
+    background: #E3EEF3;
+}
+
+/* Hides an element */
+.hide {
+    display: none;
+}
+
+/* Pushes content to the right of the parent container */
+.float-right {
+    float: right;
 }
