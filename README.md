@@ -4,7 +4,7 @@ Primary Codebase for the TechLauncher CASS Degrees project
 For our landing page please go to: https://github.com/cass-degrees/CASS-Degrees
 
 ## Our Git Branching Structure
-In this project we will have two main branches: **Master** and **Develop**
+In this project we will have two main branches: **Master** and **Develop**.
 
 The **Master** branch will only contain completed and working releases that have addressed all the user stories of the relevant release. 
 Merges to this branch will only come from the develop branch once a release in develop has been completed and finalised.
@@ -27,7 +27,10 @@ Follow the steps in the guide and you should be able to setup the environment on
 
 If there are any issues with the setup process, please create an issue and we will address it as soon as possible.
 
-## User Stories and Acceptance Criteria (MVP)
-The user stories and acceptance criteria for the MVP can be found here: https://docs.google.com/document/d/1nj0gj3BS6XL3B7XeQXr2or4Vxlh1Ah5AFw33DN0ZuBs/edit?usp=sharing
+## User Stories and Acceptance Criteria
+The user stories and acceptance criteria can be found here:
+1. Semester 1 (MVP): https://docs.google.com/document/d/1nj0gj3BS6XL3B7XeQXr2or4Vxlh1Ah5AFw33DN0ZuBs/edit?usp=sharing
+2. Semester 2 (Release 1): https://docs.google.com/document/d/1XCDb8kEl__PzUXI8XVuVpFSuyJ6SXc0zBBnqSY-9d-Y/edit
 
-These stories have been converted into issues which have been assigned to members of the project team
+These stories have been converted into issues which have been assigned to members of the project team.
+To trace each member's progress throughout the project, please see the Status Reports folder (_as closed git issues do not give a 100% representation of everyone's contribution_): https://drive.google.com/open?id=1GuVAxwuIDZ3gFAZFIvEV_wut6_rlMRC8 
