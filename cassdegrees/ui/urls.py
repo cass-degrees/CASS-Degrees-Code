@@ -21,13 +21,11 @@ from .views.index import *
 from .views.listings import *
 from .views.pdf import *
 from .views.programs import *
-from .views.sampleform import *
 from .views.subplans import *
 from .views.view_ import *
 
 urlpatterns = [
     path('', index),
-    path('sampleform/', sampleform),
     path('create/course/', create_course),
     path('create/program/', create_program),
     path('create/subplan/', create_subplan),
