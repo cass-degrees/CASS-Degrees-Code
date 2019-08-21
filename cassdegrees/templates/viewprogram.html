@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
+
+{% block subtitle %}{{ data.name }}{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'View Program' %}
+{% endblock %}
+
+{% block content %}
+    <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px">
+        <div>
+            <h4>Program Type</h4>
+            <li>
+                {% if data.programType == 'ugrad-sing' %}
+                    Undergraduate Single Pass Degree
+                {% elif data.programType == 'ugrad-doub' %}
+                    Undergraduate Flexible Double Degree
+                {% elif data.programType == 'hon' %}
+                    Honours Degree
+                {% elif data.programType == 'mast-sing' %}
+                    Masters Single Degree
+                {% elif data.programType == 'mast-adv' %}
+                    Masters (Advanced) Degree
+                {% elif data.programType == 'mast-doub' %}
+                    Masters Flexible Double Degree
+                {% elif data.programType == 'vert-doub' %}
+                    Vertical Flexible Double Degree
+                {% elif data.programType == 'other' %}
+                    Other Degree
+                {% endif %}
+            </li>
+        </br>
+            <div class="left">
+                <h4>Academic Plan</h4>
+                <li>{{ data.code }}</li>
+            </div>
+            <div class="right">
+                <h4>Year</h4>
+                <li>{{ data.year }}</li>
+            </div>
+
+        </div>
+    </div>
+
+    </br>
+
+    <div>
+        <h3>Program Requirements</h3>
+        <p>The {{ data.name }} requires completion of {{ data.units }} units, of which:</p>
+
+        {% for rule in data.globalRequirements %}
+            {% if rule.type == "min" %}
+                <p style="margin-left: 40px">
+                    A minimum of {{ rule.unit_count }} units must come from completion of {{ rule.prettyList }} courses.
+                </p>
+            {% endif %}
+            {% if rule.type == "max" %}
+                <p style="margin-left: 40px">
+                    A maximum of {{ rule.unit_count }} units may come from completion of {{ rule.prettyList }} courses.
+                </p>
+            {% endif %}
+        {% endfor %}
+
+        <p>The {{ data.units }} units must include:</p>
+        <div style="margin-left: 40px">
+            {% for rule in data.rules %}
+                {# Subplan Rules #}
+                {% if rule.type == 'subplan' %}
+                    <p>
+                        Completion of one subplan from the following list:
+                        <ul>
+                            {% for id, value in rule.contents.items %}
+                                <li><a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" >{{ value.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                {# Course Rules #}
+                {% elif rule.type == 'course' %}
+                    <p>
+                        {{ rule.unit_count }} units from the completion of the following courses:
+                        <ul>
+                            {% for course in rule.courses %}
+                                <li>{{ course.code }} - {{ course.name }} ({{ course.units }} units)</li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                {# Year-level Rules #}
+                {% elif rule.type == 'year_level' %}
+                    <p>{{ rule.unit_count }} units from completion of {{ rule.year_level }}-level courses</p>
+                {# Subject-area Rules #}
+                {% elif rule.type == 'subject_area' %}
+                    <p>
+                        {{ rule.unit_count }} units from completion of
+                        {% if rule.year_level != 'Any year-level' %}
+                            {{ rule.year_level }}-level
+                        {% endif %}
+                        {{ rule.subject }} courses
+                    </p>
+                {# Custom-text Rules #}
+                {% elif rule.type == "custom_text" %}
+                    <p>{{ rule.units }} units from {{ rule.text }}</p>
+                {# Either-or Rules #}
+                {% elif rule.type == 'either_or' %}
+                    Either:
+                    {% for or_rule in rule.either_or %}
+                        <div style="margin-left: 40px">
+                            {% for sub_rule in or_rule %}
+                                {# Subplan Or Rule #}
+                                {% if sub_rule.type == 'subplan' %}
+                                    <p>
+                                        Completion of one subplan from the following list:
+                                        <ul>
+                                            {% for id, value in sub_rule.contents.items %}
+                                                <li>
+                                                    <a class="btn-uni-grad" href="/view/subplan/?id={{ id }}" >
+                                                        {{ value.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </p>
+                                {# Course Or Rule #}
+                                {% elif sub_rule.type == 'course' %}
+                                    <p>
+                                        {{ sub_rule.unit_count }} units from the completion of the following courses:
+                                        <ul>
+                                            {% for course in sub_rule.courses %}
+                                                <li>
+                                                    {{ course.code }} - {{ course.name }} ({{ course.units }} units)
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </p>
+                                {# Year-level Or Rule #}
+                                {% elif sub_rule.type == 'year_level' %}
+                                    <p>
+                                        {{ sub_rule.unit_count }} units from completion of
+                                        {{ sub_rule.year_level }}-level courses
+                                    </p>
+                                {# Subject-area Or Rule #}
+                                {% elif sub_rule.type == 'subject_area' %}
+                                    <p>
+                                        {{ sub_rule.unit_count }} units from completion of
+                                        {% if sub_rule.year_level != 'Any year-level' %}
+                                            {{ sub_rule.year_level }}-level
+                                        {% endif %}
+                                        {{ sub_rule.subject }} courses
+                                    </p>
+                                {# Custom-text Or Rule #}
+                                {% elif sub_rule.type == "custom_text" %}
+                                    <p>{{ sub_rule.units }} units from {{ sub_rule.text }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if not forloop.last %}OR{% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br />
+            {% endfor %}
+        </p>
+
+        {% if data.studentNotes != "" %}
+            <p></p>
+            <h3>Notes for students</h3>
+            <p>
+                {# use linebreaks to render <br> from \n #}
+                {{ data.studentNotes|linebreaks }}
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

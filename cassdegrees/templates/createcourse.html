@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Course{% endblock %}
+
+{% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} Course{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Course' 'Programs/Subplans/Courses' %}
+    {% if edit %}
+        {% finalcrumb 'Edit Course' %}
+    {% else %}
+        {% finalcrumb 'Create Course' %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
+
+    {% for error in form.non_field_errors %}
+         <p class="msg-error">{{ error }}</p>
+    {% endfor %}
+
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;">
+        {% csrf_token %}
+
+        <input type="hidden" id="redirect" name="redirect">
+
+        <fieldset>
+            <legend>Course details</legend>
+
+            {{ form.management_form }}
+
+            {% for field in form %}
+                <p class="form-group">
+                    {% if not field.is_hidden %}
+                        {{ field.label_tag }}
+                    {% endif %}
+                    {{ field }}
+                    {% if edit and 'code' in field.label_tag and dependencies|length > 0 %}
+                        <div class="instruction msg-info inline-error">
+                            You cannot edit the Code. Please check dependencies:
+                            {% for code, name in dependencies.items %}
+                                {{ code }} {{ name }}{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </p>
+                {% for error in field.errors %}
+                     <div class="msg-error inline-error">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+        </fieldset>
+    </form>
+
+    <form class="anuform">
+        {% include "widgets/courserequisites.html" %}
+    </form>
+
+    <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+               onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
+        {% if edit %}
+            <input class="btn-uni-grad btn-large" type="submit" value="Save"
+               onclick="submit_form(this.value, false)">
+        {% endif %}
+        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save and Exit{% else %}Create{% endif %}"
+               onclick="submit_form(this.value, true)">
+    </p>
+
+    <script>
+        function submit_form(form_action, redirect) {
+            if (handleRules()) {
+                document.getElementById('mainForm').action.value = form_action;
+                document.getElementById('redirect').value = redirect;
+                document.getElementById('mainForm').submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
+{% endblock %}

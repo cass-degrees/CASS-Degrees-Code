@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load breadcrumbs %}
+
+{% block page-title %}Home{% endblock %}
+
+{% block subtitle %}Welcome{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% finalcrumb 'Homepage' %}
+{% endblock %}
+
+{% block content %}
+
+<div class = "splash_menu_container">
+
+    {# generate splash menu based on buttons defined in ui/views.py   #}
+    {% for button in buttons %}
+        <a href="{{ button.url }}" class="homepage-button" style="width: {{ element_width }}">
+            <div class="img_btn_container">
+                <div class="icon-btn">
+                    <i class="{{ button.kind }}"></i>
+                </div>
+
+                <div class="btn_label"><h3>{{ button.label }}</h3></div>
+            </div>
+        </a>
+    {%  endfor %}
+
+</div>
+
+{% endblock %}

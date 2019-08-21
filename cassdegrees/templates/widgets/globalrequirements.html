@@ -1,0 +1,172 @@
+{% load static %}
+
+<fieldset id="globalRequirementsContainer">
+    <legend>Add Global Requirements</legend>
+
+    <br />
+
+    <global_requirement_container v-bind:global_requirements="global_requirements" />
+</fieldset>
+
+{% verbatim %}
+<script type="text/x-template" id="minMaxUnitsTemplate">
+    <div>
+        <fieldset>
+            <p class="form-group">
+                <label>
+                    Unit Count:
+                </label>
+                <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            </p>
+
+            <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+            <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+
+            <p>
+                <label>
+                    Year Options:
+                </label>
+            </p>
+
+            <br />
+
+            <table class="tbl-row-bdr">
+                <thead>
+                    <tr>
+                        <th>
+                            1000-level
+                        </th>
+                        <th>
+                            2000-level
+                        </th>
+                        <th>
+                            3000-level
+                        </th>
+                        <th>
+                            4000-level
+                        </th>
+                        <th>
+                            5000-level
+                        </th>
+                        <th>
+                            6000-level
+                        </th>
+                        <th>
+                            7000-level
+                        </th>
+                        <th>
+                            8000-level
+                        </th>
+                        <th>
+                            9000-level
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="checkbox" v-model="details.courses1000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses2000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses3000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses4000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses5000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses6000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses7000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses8000Level">
+                        </td>
+                        <td>
+                            <input type="checkbox" v-model="details.courses9000Level">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </div>
+</script>
+
+<script type="text/x-template" id="globalRequirementTemplate">
+    <div class="card">
+        <header class="box-header">
+            <p class="card-header-title">
+                {{ component_names[details.type] }}
+            </p>
+            <img src="//style.anu.edu.au/_anu/images/icons/web/question.png" class="btn-snall no-left-margin vertical-middle clickable"
+                 alt="Help button" v-on:click="show_help = true" />
+            <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </header>
+        <div class="box-solid">
+            <div class="card-content" v-bind:is="'global_requirement_' + details.type" v-bind:details="details"></div>
+        </div>
+
+        <div class="modal" v-if="show_help">
+            <div class="modal-background" v-on:click="show_help = false"></div>
+            <div class="modal-card">
+                <div class="card">
+                    <header class="box-header">
+                        Help for {{ component_names[details.type] }}
+                    </header>
+                    <div class="box-solid box-has-footer">
+                        <p>{{ component_help[details.type] }}</p>
+                    </div>
+                    <footer class="box-solid">
+                        <button class="button" v-on:click="show_help = false">OK</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="globalRequirementContainerTemplate">
+    <div v-if="!redraw">
+        <div v-for="(item, index) in global_requirements" :key="index" >
+            <global_requirement class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></global_requirement>
+            <div v-if="index < global_requirements.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+        </div>
+
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_global_requirement_modal = true" value="Add New Global Requirement" />
+
+        <div class="modal" v-if="show_add_a_global_requirement_modal">
+            <div class="modal-background" v-on:click="show_add_a_global_requirement_modal = false"></div>
+            <div class="modal-card">
+                <div class="card">
+                    <header class="box-header">
+                        Add a global requirement...
+                    </header>
+                    <div class="box-solid box-has-footer">
+                        <p>Select a kind of global requirement to add:</p>
+                        <div class="select">
+                            <select v-model="add_a_global_requirement_modal_option">
+                                <option v-for="(option, index) in component_names" v-bind:value="index">
+                                    {{ option }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <footer class="box-solid">
+                        <button class="button is-success" v-on:click="add_global_requirement">Add</button>
+                        <button class="button" v-on:click="show_add_a_global_requirement_modal = false">Cancel</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+{% endverbatim %}
+
+<script src="{% static 'js/vue.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/globalrequirements.js' %}" type="application/javascript"></script>

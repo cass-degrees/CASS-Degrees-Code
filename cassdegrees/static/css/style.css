@@ -1,0 +1,217 @@
+@charset "UTF-8";
+
+#body {
+    min-height: 600px;
+}
+
+.btn_label {
+    text-align: center;
+}
+
+.btn_label h3 {
+    padding-top: 12px;
+    vertical-align: center;
+}
+
+.splash_menu_container {
+    display: flex;
+    padding-top: 20px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+}
+
+.img_btn_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 12px;
+}
+
+.custom_search_bar input[type=text]{
+    height: 30px;
+    width: 78%;
+    padding-left: 5px;
+    margin-right: 2%;
+    box-sizing: border-box;
+    display:inline-block;
+    font-size:1.0em;
+    border-radius: 5px;
+}
+.custom_search_bar input[type=submit]{
+    height: 30px;
+    margin: 0;
+    width: 20%;
+    min-width: 80px;
+    box-sizing: border-box;
+    display:inline-block;
+    border-radius: 5px;
+    float:right;
+}
+
+/* Adds carets to list sorting options */
+table th {}
+.sort:after{
+  content: ' ';
+  border: 4px solid transparent;
+  position: relative;
+  left: 2px;
+}
+.sort:not(.desc):not(.asc):hover:after{
+  top: 10px;
+  border-top-color: silver;
+}
+.asc:after {
+  top: 10px;
+  border-top-color: inherit;
+}
+
+.desc:after {
+  bottom: 10px;
+  border-bottom-color: inherit;
+}
+
+select.tfull {
+    width: 70.25%;
+}
+
+select.text{
+    border-radius: 3px;
+}
+
+/* Fixes an issue with ANU styling where buttons cannot be included in legends */
+.anuform fieldset legend input {
+    float: none;
+    margin-left: 0;
+}
+
+/* Fix padding around inline form errors */
+.anuform .form-group .msg-error {
+    margin-top: 5px;
+}
+
+/* Allow for inline errors */
+.anuform .inline-error {
+    clear: none;
+
+    margin: 4px 25px 4px calc(20.8333% + 20px);
+    min-width: 70%;
+
+    box-sizing: border-box;
+
+    padding: 4px 25px 4px 25px;
+}
+
+/* ANU doesn't provide modal systems */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.modal-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-card {
+    position: absolute;
+    left: 35%;
+    width: 30%;
+    top: 35%;
+}
+
+.box-has-footer {
+    margin-bottom: 0;
+}
+
+.card-header-title {
+    display: inline;
+}
+
+/* Fix off-center fieldsets */
+.anuform fieldset {
+    padding-right: 3%;
+}
+
+.no-left-margin {
+    margin-left: 0 !important;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.homepage-button {
+    display: block;
+    text-decoration: none;
+}
+
+.dropdown-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    right: 0;
+    left: auto;
+    min-width: 160px;
+    border: 1px solid rgba(0,0,0,.15);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: lightgray;}
+
+.dropdown-menu:hover .dropdown-content {display: block;}
+
+/* Vector replication of separator bar in top navigation area */
+.menu-divider {
+    margin: 0 32.5px 0 31px;
+    width: 1px;
+    border-right: 1px solid #7C7C7C;
+    height: 51px;
+}
+
+/* Icon buttons for homepage */
+.icon-btn {
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 160px;
+    height: 160px;
+
+    border-radius: 80px;
+    line-height: 160px;
+    vertical-align: middle;
+    text-align: center;
+
+    font-size: 80px;
+
+    color: #ffffff;
+    background: #707070;
+}
+
+/* Vertically aligns text to the middle */
+.vertical-middle {
+    vertical-align: middle;
+}
+
+/* Indicates that an element is clickable */
+.clickable {
+    cursor: pointer;
+}

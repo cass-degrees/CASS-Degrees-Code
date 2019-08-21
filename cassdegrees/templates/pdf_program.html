@@ -1,0 +1,50 @@
+{% extends "pdf_base.html" %}
+{% load course_boxes %}
+
+{% block page-title %}{{ program.name }} ({{ program.year }}){% endblock %}
+
+{% block content %}
+    <div class="box" style="float: right">
+        Student name & ID number: <br />
+        <br />
+    </div>
+
+    <h1 class="no-bottom-margin">{{ program.name }} ({{ program.year }}, {{ program.units }} units)</h1>
+
+    <br />
+
+    <div class="columns-3 columns-no-gap">
+
+        {% for rule in program.rules %}
+            {% include "widgets/pdf_rules.html" %}
+        {% endfor %}
+
+        <div class="break-column"></div>
+
+        <div class="box small-text">
+            <p>
+                Instructions for filling in:
+            </p>
+
+            {{ program.studentNotes | linebreaks }}
+        </div>
+
+        {% for rule in program.globalRequirements %}
+            <div class="box {% if forloop.last %} break-column{% endif %}">
+                {% if rule.type == "min" %}
+                    <p>
+                        {{rule.prettyList}} courses: <br/>
+                        <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> units ({{ rule.unit_count }} <b>minimum</b>)
+                    </p>
+                {% elif rule.type == "max" %}
+                    <p>
+                        {{rule.prettyList}} courses: <br/>
+                        <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> units ({{ rule.unit_count }} <b>maximum</b>)
+                    </p>
+                {% else %}
+                    ERROR: Unknown global requirement type "{{ rule.type }}"!
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

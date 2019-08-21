@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Subplan{% endblock %}
+
+{% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} Subplan{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Subplan' 'Programs/Subplans/Courses' %}
+    {% if edit %}
+        {% finalcrumb 'Edit Subplan' %}
+    {% else %}
+        {% finalcrumb 'Create Subplan' %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
+
+    {% for error in form.non_field_errors %}
+         <p class="msg-error">{{ error }}</p>
+    {% endfor %}
+
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;">
+        {% csrf_token %}
+
+        <input type="hidden" id="redirect" name="redirect">
+
+        <fieldset>
+            <legend>Subplan details</legend>
+
+            {{ form.management_form }}
+
+            {% for field in form %}
+                <p class="form-group">
+                    {% if not field.is_hidden %}
+                        {{ field.label_tag }}
+                    {% endif %}
+                    {{ field }}
+                </p>
+                {% for error in field.errors %}
+                     <div class="msg-error inline-error">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+        </fieldset>
+    </form>
+
+    <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
+         structure -->
+    <form class="anuform">
+        {% include "widgets/subplanrules.html" %}
+    </form>
+
+    <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+               onclick="{% if edit %}returnToList('Subplan'){% else %}goBack(){% endif %}">
+        {% if edit %}
+            <input class="btn-uni-grad btn-large" type="submit" value="Save"
+               onclick="submit_form(false)">
+        {% endif %}
+        <input class="btn-uni-grad btn-large" type="submit" value="{% if edit %}Save and Exit{% else %}Create{% endif %}"
+               onclick="submit_form(true)">
+    </p>
+
+    <script>
+        function submit_form(redirect) {
+            if (handleRules()) {
+                document.getElementById('redirect').value = redirect;
+                document.getElementById('mainForm').submit();
+            }
+        }
+    </script>
+
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
+
+{% block subtitle %}{{ data.name }}{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'View Course' %}
+{% endblock %}
+
+{% block content %}
+    <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px;">
+        <div>
+            <div class="left">
+                <h4>Code</h4>
+                <li>{{ data.code }}</li>
+            </div>
+            <div class="right">
+                <h4>Year</h4>
+                <li>{{ data.year }}</li>
+            </div>
+
+            </br>
+            </br>
+            </br>
+
+            <h4>Offered in</h4>
+            {% if data.offeredSem1 %}
+                <li>
+                    First Semester {{ data.year }}
+                </li>
+            {% endif %}
+            {% if data.offeredSem2 %}
+                <li>
+                    Second Semester {{ data.year }}
+                </li>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <h3>Requisite and Incompatibility</h3>
+        <p>
+            {% for rule in data.rules %}
+                {# Incompatibility Rule #}
+                {% if rule.type == 'incompatibility' %}
+                    <p>
+                        Incompatible with
+                        {% for course in rule.incompatible_courses %}
+                            {% if forloop.revcounter == 1 %}{# Last #}
+                                {{ course }}
+                            {% elif forloop.revcounter == 2 %}{# Second-Last #}
+                                {{ course }} and
+                            {% else %}{# Otherwise #}
+                                {{ course }},
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {# Program Rule #}
+                {% elif rule.type == 'program' %}
+                    <p>Students must be studying a {{ rule.program.name }}</p>
+                {# Year-level Rule #}
+                {% elif rule.type == 'year_level' %}
+                    <p>
+                        Students must have completed {{ rule.unit_count }} units from
+                        {{ rule.year_level }}-level courses
+                    </p>
+                {# Subject-area Rule #}
+                {% elif rule.type == 'subject_area' %}
+                    <p>
+                        Students must have completed {{ rule.unit_count }} units of
+                        {% if rule.year_level != 'Any year-level' %}
+                            {{ rule.year_level }}-level
+                        {% endif %}
+                        {{ rule.subject }} courses
+                    </p>
+                {# Course-requisite Rule #}
+                {% elif rule.type == 'course_requisite' %}
+                    <p>
+                        Students must have completed
+                        {% for course in rule.codes %}
+                            {% if forloop.revcounter == 1 %}{# Last #}
+                                {{ course }}
+                            {% elif forloop.revcounter == 2 %}{# Second-Last #}
+                                {{ course }} and
+                            {% else %}{# Otherwise #}
+                                {{ course }},
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {# Custom-Text requisite Rule #}
+                {% elif rule.type == 'custom_text_req' %}
+                    <p>{{ rule.text }}</p>
+                {# Or Rule #}
+                {% elif rule.type == 'either_or' %}
+                    Either:
+                    {% for or_rule in rule.either_or %}
+                        <ul>
+                            {% for sub_rule in or_rule %}
+                                {# Program Or Rule #}
+                                {% if sub_rule.type == 'program' %}
+                                    <li>Students must be studying a {{ sub_rule.program.name }}</li>
+                                {# Year-level Or Rule #}
+                                {% elif sub_rule.type == 'year_level' %}
+                                    <li>
+                                        Students must have completed {{ sub_rule.unit_count }} units from
+                                        {{ sub_rule.year_level }}-level courses
+                                    </li>
+                                {# Subject-area Or Rule #}
+                                {% elif sub_rule.type == 'subject_area' %}
+                                    <li>
+                                        Students must have completed {{ sub_rule.unit_count }} units of
+                                        {% if sub_rule.year_level != 'Any year-level' %}
+                                            {{ sub_rule.year_level }}-level
+                                        {% endif %}
+                                        {{ sub_rule.subject }} courses
+                                    </li>
+                                {# Course Or Rule #}
+                                {% elif sub_rule.type == 'course_requisite' %}
+                                    <li>
+                                        Students must have completed
+                                        {% for course in sub_rule.codes %}
+                                            {% if forloop.revcounter == 1 %}{# Last #}
+                                                {{ course }}
+                                            {% elif forloop.revcounter == 2 %}{# Second-Last #}
+                                                {{ course }} and
+                                            {% else %}{# Otherwise #}
+                                                {{ course }},
+                                            {% endif %}
+                                        {% endfor %}
+                                    </li>
+                                {# Custom-Text Or Rule #}
+                                {% elif sub_rule.type == 'custom_text_req' %}
+                                    <li>{{ sub_rule.text }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        {% if not forloop.last %}OR{% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br />
+            {% endfor %}
+        </p>
+    </div>
+
+{% endblock %}

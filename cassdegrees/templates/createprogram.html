@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} Program Template{% endblock %}
+
+{% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} Program Template{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% if edit %}
+        {% finalcrumb 'Edit Program' %}
+    {% else %}
+        {% finalcrumb 'Create Program' %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
+
+    {% for error in form.non_field_errors %}
+         <p class="msg-error">{{ error }}</p>
+    {% endfor %}
+
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;">
+        {% csrf_token %}
+
+        <input type="hidden" id="redirect" name="redirect">
+
+        <fieldset>
+            <legend>Configure Program Details</legend>
+
+            {{ form.management_form }}
+
+            {% for field in form %}
+                {% if field.name not in render_separately %}
+                    <p class="form-group">
+                        {% if not field.is_hidden and not field == form.staffNotes  %}
+                            {{ field.label_tag }}
+                        {% endif %}
+                        {{ field }}
+                    </p>
+                    {% for error in field.errors %}
+                         <div class="msg-error inline-error">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+            <input type="hidden" name="action" value="Save" />
+        </fieldset>
+
+        <fieldset>
+            <legend>Student Notes</legend>
+
+            <p class="form-group">
+                {{ form.studentNotes.label_tag }}
+                {{ form.studentNotes }}
+            </p>
+            {% for error in form.studentNotes.errors %}
+                <div class="msg-error inline-error">{{ error }}</div>
+            {% endfor %}
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Staff Comments</legend>
+            <p class="form-group">
+                {{ form.staffNotes.label_tag }}
+                {{ form.staffNotes }}
+            </p>
+            {% for error in form.staffNotes.errors %}
+                <div class="msg-error inline-error">{{ error }}</div>
+            {% endfor %}
+        </fieldset>
+    </form>
+
+    <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
+     structure -->
+    <div class="anuform">
+    {% include "widgets/globalrequirements.html" %}
+    {% include "widgets/rules.html" %}
+    </div>
+
+    <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+               onclick="{% if edit %}returnToList('Program'){% else %}goBack(){% endif %}">
+        <input type="submit" class="btn-uni-grad btn-large" value="Create New Subplan" onclick="submit_form(this.value)">
+        {% if edit %}
+            <input class="btn-uni-grad btn-large" type="submit" value="Save"
+               onclick="submit_form(this.value, false)">
+        {% endif %}
+        <input class="btn-uni-grad btn-large" type="submit" value="Save and Exit"
+               onclick="submit_form(this.value, true)">
+    </p>
+
+    <script>
+        function submit_form(form_action, redirect) {
+            if (handleProgram() && handleRules()) {
+                document.getElementById('mainForm').action.value = form_action;
+                document.getElementById('redirect').value = redirect;
+                document.getElementById('mainForm').submit();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
+{% endblock %}

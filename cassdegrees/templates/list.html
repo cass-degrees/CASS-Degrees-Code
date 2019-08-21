@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% load breadcrumbs %}
+
+{% block page-title %}Program/Subplan/Course List{% endblock %}
+
+{% block subtitle %}Program, Subplan, and Course List{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% finalcrumb 'Programs/Subplans/Courses' %}
+{% endblock %}
+
+{% block content %}
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
+    {# linebreaksbr adds a <br> whenever there is a \n in a string #}
+    {% if render.error != None %}
+        <p class="msg-error">{{ render.error|linebreaksbr }}</p>
+    {% endif %}
+
+    <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="/list/?action=Search" method="get">
+        <input class="text" name="q" size="24" maxlength="75" type="text"
+               placeholder="Search Programs, Subplans, or Courses..."
+               value="{{ autofill }}"
+        >
+        <input class="btn-uni-grad btn-medium" type="submit" value="Search">
+    </form>
+
+    <div class="divline-solid-uni"></div><br />
+
+    {# If no data was sent, assume the user searched and got no results #}
+    {% if not data %}
+        No search results found
+    {% endif %}
+
+    {# Generates the tabs based on the keys to 'data' #}
+    <div class="pagetabs-nav">
+        <ul>
+            {% for title in data %}
+                <li><a onClick='setActive("{{ title }}")' id="{{ title }}Link">{{ title }}s</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
+    {# Generates table instances for each table in 'data', as well as the appropriate settings to keep it hidden #}
+    {% for title, content in data.items %}
+        <div id="{{ title }}Table" hidden>
+            <form id="{{ title }}Sorter" method="post">
+                {% csrf_token %}
+                {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
+                <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
+                <p class="left">
+                    <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="/create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/" value="+ New {{ title }}">
+                </p>
+                <table class="fullwidth tbl-cell-bdr">
+                    {# Add title row based on what was in the dictionary #}
+                    <thead>
+                        <tr>
+                        {% for key in content.0 %}
+                            {% if key != "Id" %}
+                                <th class="sort" data-sort="{{ title }}{{ key }}">{{ key }}</th>
+                            {% else %}
+                                <th class="text-center">
+                                    Select All </br>
+                                    <input title="Select All" type="checkbox" name="select_all" onclick="selectAll(this, '{{ title }}')">
+                                </th>
+                                <th>{{ title }}</th>
+                            {% endif %}
+                        {% endfor %}
+                        </tr>
+                    </thead>
+                    {# Add rows containing the contents of each json data instance #}
+                    <tbody class="list">
+                    {% for row in content %}
+                        <tr>
+                            {% for key, item in row.items %}
+
+                                    {# If the item is in the ID column, generate a link to it instead #}
+                                    {% if key != "Id" %}
+                                        <td class="{{ title }}{{ key }}">{{ item }}</td>
+                                    {% else %}
+                                        <td><p class="text-center"><input title="Select" type="checkbox" class="select_{{ title }}" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
+                                        <td>
+                                            <a class="btn-uni-grad" href="/create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}&duplicate=true">Duplicate</a>
+                                            <a class="btn-uni-grad" href="/edit/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">Edit</a>
+                                            <a class="btn-uni-grad" href="/view/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">View</a>
+                                            {% if title == 'Program' %}<a class="btn-uni-grad" href="/pdf/program?id={{ item }}">PDF</a>{% endif %}
+                                        </td>
+                                    {% endif %}
+
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {# If there is no data available, notify the user #}
+                {% if not content %}
+                    <p>No {{ title }}s to display</p>
+                {# otherwise if theres content then have the delete button show #}
+                {% else %}
+                <div class="right">
+                    <p class="right">
+                       <input class="btn-uni-grad btn-large" type ="submit" formaction="/delete/{% if title == 'Program' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/" value="Delete Selected">
+                    </p>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <script>
+            // Creates a list object to be used by list.js for sorting
+            // Should result in something like `CourseOptions = { valueNames: ['Code', 'Year', 'Name', 'Units'] }`
+            var {{ title }}Options = {
+                valueNames: [{% for k,v in content.0.items %}'{{ title }}{{ k }}',{% endfor %}]
+            };
+
+            var {{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
+        </script>
+    {% endfor %}
+
+    {# Function to hide the previous tab while opening a new one #}
+    <script>
+        {# Gets the first key in the data array (Can't find a better way of doing this) #}
+        {% for title in data %}
+            {% if forloop.first %}
+                var oldLabel = "{{ title }}";
+            {% endif %}
+        {% endfor %}
+
+        function setActive(label){
+            if(document.getElementById(label+"Link") == null)
+                label = oldLabel;
+
+            document.getElementById(oldLabel+"Link").setAttribute("class", "");
+            document.getElementById(oldLabel+"Table").style.display = "none";
+
+            document.getElementById(label+"Link").setAttribute("class", "pagetabs-select");
+            document.getElementById(label+"Table").style.display = "block";
+
+            oldLabel = label;
+        }
+
+        {# https://stackoverflow.com/questions/386281/how-to-implement-select-all-check-box-in-html #}
+        function selectAll(source, title) {
+            var checkboxes = document.getElementsByClassName('select_' + title);
+            for(var i=0, n=checkboxes.length; i<n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
+        var openElement = (new URLSearchParams(window.location.search)).get("view");
+        setActive(openElement)
+    </script>
+{% endblock %}

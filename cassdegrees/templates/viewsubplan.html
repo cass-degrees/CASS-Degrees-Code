@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{{ data.name }} - {{ data.code }} ({{ data.year }}){% endblock %}
+
+{% block subtitle %}{{ data.name }}{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb  '/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'View Subplan' %}
+{% endblock %}
+
+{% block content %}
+    <div class="right box-header" style="padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; min-width: 250px;">
+        <div>
+            <h4>Subplan Type</h4>
+            <li>
+                {% if data.planType == 'MAJ' %}
+                    Major
+                {% endif %}
+                {% if data.planType == 'MIN' %}
+                    Minor
+                {% endif %}
+                {% if data.planType == 'SPEC' %}
+                    Specialisation
+                {% endif %}
+            </li>
+        </br>
+            <div class="left">
+                <h4>Code</h4>
+                <li>{{ data.code }}</li>
+            </div>
+            <div class="right">
+                <h4>Year</h4>
+                <li>{{ data.year }}</li>
+            </div>
+
+        </div>
+    </div>
+
+    <div>
+        <h3>Requirements</h3>
+        <p>This
+            {% if data.planType == "MAJ" %}
+                Major
+            {% elif data.planType == "MIN" %}
+                Minor
+            {% elif data.planType == "SPEC" %}
+                Specialisation
+            {% endif %}
+            requires completion of {{ data.units }} units, which must include:
+        </p>
+
+        {# Displays all of the required courses in a table #}
+        {% for rule in data.rules %}
+            <p>
+                <i>{{ rule.unit_count }} units from completion of the following course(s):</i>
+                <table class="tbl-cell-bdr">
+                    <tr><th>Code</th><th>Title</th><th>Units</th></tr>
+                        {% for course in rule.courses %}
+                            <tr><td>{{ course.code }}</td><td>{{ course.name }}</td><td>{{ course.units }}</td></tr>
+                        {% endfor %}
+                </table>
+
+            </p>
+            <br />
+        {% endfor %}
+    </div>
+{% endblock %}

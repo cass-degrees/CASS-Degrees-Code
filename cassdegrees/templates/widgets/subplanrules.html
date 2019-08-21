@@ -1,0 +1,94 @@
+{% load static %}
+
+<fieldset id="rulesContainer">
+    <legend>Add Rules</legend>
+
+    <br />
+
+    <rule_container v-bind:rules="rules" />
+</fieldset>
+
+{% verbatim %}
+<script type="text/x-template" id="courseRequirementTemplate">
+    <fieldset v-if="!redraw">
+        <p class="form-group">
+            <label>
+                Students must select...
+            </label>
+            <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+            units
+        </p>
+
+        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+
+        <p>
+            from the following courses:
+        </p>
+
+        <div v-for="(code, index) in details.codes">
+            <select v-model="details.codes[index]" v-on:change="check_options" required>
+                <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
+            </select>
+            <input v-if="index != 0" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </div>
+
+        <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
+    </fieldset>
+</script>
+
+<script type="text/x-template" id="ruleTemplate">
+    <div class="card">
+        <header class="box-header">
+            <p class="card-header-title">
+                Course List
+            </p>
+            <img src="//style.anu.edu.au/_anu/images/icons/web/question.png" class="btn-snall no-left-margin vertical-middle clickable"
+                 alt="Help button" v-on:click="show_help = true" />
+            <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+        </header>
+        <div class="box-solid">
+            <div class="card-content" v-bind:is="'rule_course'" v-bind:details="details"></div>
+        </div>
+        <div class="modal" v-if="show_help">
+            <div class="modal-background" v-on:click="show_help = false"></div>
+            <div class="modal-card">
+                <div class="card">
+                    <header class="box-header">
+                        Help for Course List
+                    </header>
+                    <div class="box-solid box-has-footer">
+                        <p>{{ component_help[details.type] }}</p>
+                    </div>
+                    <footer class="box-solid">
+                        <button class="button" v-on:click="show_help = false">OK</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="ruleContainerTemplate">
+    <div v-if="!redraw">
+        <div v-for="(item, index) in rules" :key="index" >
+            <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></rule>
+            <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+        </div>
+
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_rule" v-bind:add_a_rule_modal_option="'course'" value="Add New Rule" />
+
+
+    </div>
+</script>
+{% endverbatim %}
+
+<script src="{% static 'js/vue.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/rules.js' %}" type="application/javascript"></script>
+
+{% if rules != None %}
+    <script>
+        app.rules = {{ rules|safe }};
+    </script>
+{% endif %}

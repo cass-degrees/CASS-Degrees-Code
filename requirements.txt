@@ -1,0 +1,5 @@
+Django==2.1.11
+djangorestframework==3.9.2
+flake8==3.7.7
+psycopg2==2.7.7
+django-weasyprint==0.5.4
