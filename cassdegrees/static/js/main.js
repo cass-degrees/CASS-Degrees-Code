@@ -12,7 +12,7 @@
 const ADMIN_URL_PREFIX = "/admin/";
 
 function checkKeys(event) {
-    return event.keyCode === 8 || event.keyCode === 46 ? true : !isNaN(Number(event.key));
+    return event.keyCode === 9 || event.keyCode === 8 || event.keyCode === 46 ? true : !isNaN(Number(event.key));
 }
 
 /**
