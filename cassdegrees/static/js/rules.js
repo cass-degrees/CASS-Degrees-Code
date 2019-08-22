@@ -76,6 +76,12 @@ const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
     'custom_text_req': "Custom (Text)"
 };
 
+const LIST_TYPES = {
+    'min': 'At least',
+    'exact': 'Exactly',
+    'max': 'No more than'
+};
+
 Vue.component('rule_incompatibility', {
     props: {
         "details": {
@@ -377,6 +383,11 @@ Vue.component('rule_course', {
                     value.codes = [""];
                 }
 
+                if (!value.hasOwnProperty("list_type")) {
+                    // possible values = LIST_TYPES
+                    value.list_type = "";
+                }
+
                 return true;
             }
         }
@@ -384,6 +395,7 @@ Vue.component('rule_course', {
     data: function() {
         return {
             "courses": [],
+            "list_types": [],
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -403,7 +415,7 @@ Vue.component('rule_course', {
 
         request.addEventListener("load", function() {
             rule.courses = JSON.parse(request.response);
-
+            rule.list_types = LIST_TYPES;
             rule.check_options();
         });
         request.open("GET", "/api/search/?select=code,name&from=course");
@@ -500,7 +512,6 @@ Vue.component('rule_course_requisite', {
 
         request.addEventListener("load", function() {
             rule.courses = JSON.parse(request.response);
-
             rule.check_options();
         });
         request.open("GET", "/api/search/?select=code,name&from=course");
