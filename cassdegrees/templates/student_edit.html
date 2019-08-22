@@ -22,8 +22,10 @@
 
     {# program is the full program object as selected by the user, superuser is if an authenticated #}
     {# user is logged in #}
-    <form action="" method="post" class="box bdr-solid bdr-uni">
+    <form action="" id="main-form" method="post" class="box bdr-solid bdr-uni">
         {% csrf_token %}
+
+        <input type="hidden" id="plan-courses" name="plan_courses" value="{{ plan.plan_courses }}" />
         <input type="hidden" name="program_id" value="{{ plan.program_id }}" />
 
         <label for="plan-name">Name:</label>
@@ -32,15 +34,75 @@
         <span>Last Edited: {{ plan.date }}</span>
 
         <div class="float-right">
-            <input type="submit" class="btn-uni-grad btn-small" value="Save...">
+            <input type="button" onclick="prepareSubmit()" class="btn-uni-grad btn-small" value="Save...">
             {% if superuser %}
-                <input type="button" class="btn-uni-grad btn-small" value="Save & Approve...">
+                <input type="button" onclick="prepareSubmit()" class="btn-uni-grad btn-small" value="Save & Approve...">
             {% endif %}
         </div>
     </form>
 
-    {% for rule in program.rules %}
-        {{ rule.type }}
-    {% endfor %}
+
+    <div class="row">
+        <div class="col-xs-8">
+            <h3>Program</h3>
+
+            {% for rule in program.rules %}
+                {% include "widgets/student_rules.html" %}
+            {% endfor %}
+        </div>
+
+        <div class="col-xs-4" style="border-left: 1px solid black">
+            <div class="stay-on-screen">
+                <h3>Courses</h3>
+
+                <div id="courses">
+                    <div class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar custom_search_bar_full_length">
+                        <input class="text fuzzy-search" size="24" maxlength="75" type="text"
+                               placeholder="Search...">
+                    </div>
+
+                    <div class="list">
+                        {% for course in courses %}
+                            <div class="draggable draggable-course" data-course-code="{{ course.code }}">
+                                <div class="card selectable-card">
+                                    <div class="box-solid">
+                                        <div class="card-content">
+                                            <b>{{ course.code }}</b> ({{ course.units }} units)<br />
+                                            {{ course.name }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="course-details hide">
+                                    {{ course.code }} {{ course.name }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+
+                    <ul class="pagination"></ul>
+                </div>
+
+                <i>Or some other credit not here:</i>
+                <div class="draggable draggable-course">
+                    <div class="card selectable-card">
+                        <div class="box-solid">
+                            <div class="card-content">
+                                <input type="text" class="full-width course-code-entry"
+                                       placeholder="Course code or short description" />
+                                <br />
+                                <input type="number" placeholder="Value..." min="0" step="6" max="1000" /> units
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/interact.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/student_edit.js' %}" type="application/javascript"></script>
 
 {% endblock %}

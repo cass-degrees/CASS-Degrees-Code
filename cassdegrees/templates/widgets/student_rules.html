@@ -55,7 +55,7 @@
         {# Assume all subplans have equal units - else it wouldn't make sense for a complete program #}
         {% with subplan=subplans|index:rule.ids.0 %}
             {% student_course_box subplan.units %}
-        {% endwith %}
+        {%  endwith %}
     {% elif rule.type == "subject_area" %}
         {% student_course_box rule.unit_count %}
     {% elif rule.type == "year_level" %}

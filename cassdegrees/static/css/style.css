@@ -246,7 +246,11 @@ select.text{
 
 /* Gives a little hover animation to course cards */
 .selectable-card :hover {
-    background: #E3EEF3;
+    background: #E3EEF3 !important;
+}
+
+.hover {
+    background: lightgreen !important;
 }
 
 /* Hides an element */
@@ -257,4 +261,88 @@ select.text{
 /* Pushes content to the right of the parent container */
 .float-right {
     float: right;
+}
+
+/* Basic CSS columns */
+.columns-1-of-3 {
+    width: calc(33% - 10px);
+    padding: 5px;
+}
+
+.columns-2-of-3 {
+    width: calc(66% - 10px);
+    padding: 5px;
+}
+
+.grey-text {
+    color: grey;
+}
+
+/* Makes the mouse cursor behave correctly with draggable elements */
+.draggable {
+    touch-action: none;
+    user-select: none;
+    cursor: move;
+}
+
+/* Ensures course drop boxes are of the right size */
+.course-drop {
+    min-height: 60px;
+}
+
+/* Only show delete button if course is configured for a particular box: */
+/* For nulled values: */
+.course-drop:not([data-course-code]) .course-clear-button {
+    display: none;
+}
+/* For empty/cleared values: */
+.course-drop[data-course-code=""] .course-clear-button {
+    display: none;
+}
+
+/* Defines a full width element */
+.full-width {
+    width: 80%;
+}
+
+/* Simple pagination tabs */
+.pagination li {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+
+    text-align: center;
+
+    margin: 5px;
+}
+
+.pagination li:not(.disabled) {
+    cursor: pointer;
+}
+
+.pagination li:not(.disabled).active {
+    background: #E3EEF3;
+}
+
+.pagination li:not(.disabled):hover {
+    background: #E3EEF3;
+}
+
+.pagination li.disabled a {
+    cursor: default;
+}
+
+.pagination li:link {
+    text-decoration: none;
+}
+
+.pagination a {
+    text-decoration: none;
+}
+
+/* Keeps e.g. a dialog on the screen always, floating instead when it reaches the end of the viewport */
+.stay-on-screen {
+    position: sticky;
+    top: 10px;
 }

@@ -1,4 +1,4 @@
-from api.models import ProgramModel
+from api.models import ProgramModel, CourseModel, SubplanModel
 from django.forms import model_to_dict
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
@@ -107,6 +107,9 @@ def student_create(request):
 
 # Main edit page. Sends program metadata for specific course chosen.
 def student_edit(request):
+    courses = CourseModel.objects.all()
+    subplans = SubplanModel.objects.all()
+
     plan_name = request.GET.get('plan', None)
 
     # Load up the error and regular messages to render in the plan
@@ -140,6 +143,8 @@ def student_edit(request):
                     instance = {}
                 return render(request, 'student_edit.html', context={'plan': new_plan,
                                                                      'program': instance,
+                                                                     'courses': courses,
+                                                                     'subplans': subplans,
                                                                      'render': render_settings,
                                                                      'superuser': request.user.is_authenticated})
             else:
@@ -177,6 +182,8 @@ def student_edit(request):
 
             return render(request, 'student_edit.html', context={'plan': plan,
                                                                  'program': instance,
+                                                                 'courses': courses,
+                                                                 'subplans': subplans,
                                                                  'render': render_settings,
                                                                  'superuser': request.user.is_authenticated})
         else:
