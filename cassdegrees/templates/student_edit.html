@@ -12,21 +12,32 @@
 {% endblock %}
 
 {% block content %}
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
+    {# linebreaksbr adds a <br> whenever there is a \n in a string #}
+    {% if render.error != None %}
+        <p class="msg-error">{{ render.error|linebreaksbr }}</p>
+    {% endif %}
+
     {# program is the full program object as selected by the user, superuser is if an authenticated #}
     {# user is logged in #}
-    <div class="box bdr-solid bdr-uni">
+    <form action="" method="post" class="box bdr-solid bdr-uni">
+        {% csrf_token %}
+        <input type="hidden" name="program_id" value="{{ plan.program_id }}" />
+
         <label for="plan-name">Name:</label>
-        <input id="plan-name" type="text" placeholder="e.g. {{ program.name }}" />
+        <input id="plan-name" name="plan_name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
         &nbsp;|&nbsp;
-        <span>Last Edited: 01/01/2000</span>
+        <span>Last Edited: {{ plan.date }}</span>
 
         <div class="float-right">
-            <input type="button" class="btn-uni-grad btn-small" value="Save...">
+            <input type="submit" class="btn-uni-grad btn-small" value="Save...">
             {% if superuser %}
                 <input type="button" class="btn-uni-grad btn-small" value="Save & Approve...">
             {% endif %}
         </div>
-    </div>
+    </form>
 
     {% for rule in program.rules %}
         {{ rule.type }}

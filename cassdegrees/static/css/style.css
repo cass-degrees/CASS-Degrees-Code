@@ -53,6 +53,21 @@
     width: 100%;
 }
 
+.large-menu-item {
+    width:50%;
+}
+.small-menu-item {
+    width:25%;
+}
+.delete-color {
+    background-color:lightcoral;
+    color:#FFF;
+}
+.delete-color:hover {
+    background-color:indianred;
+    color:#FFF;
+}
+
 /* Adds carets to list sorting options */
 table th {}
 .sort:after{

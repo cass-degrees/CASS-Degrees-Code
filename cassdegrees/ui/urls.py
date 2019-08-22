@@ -30,6 +30,7 @@ urlpatterns = [
     path('', student_index),
     path('create/', student_create),
     path('edit/', student_edit),
+    path('delete/', student_delete),
 
     path('admin/home/', index),
     path('admin/sampleform/', sampleform),
