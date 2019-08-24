@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 
 
-admin_url_prefix = "/admin/"
+staff_url_prefix = "/staff/"
 
 
 def data_dict_as_displayable(data):
@@ -57,7 +57,7 @@ def data_list(request):
     render_properties = {
         'msg': request.GET.get('msg'),
         'error': request.GET.get('error'),
-        'admin_url_prefix': admin_url_prefix
+        'staff_url_prefix': staff_url_prefix
     }
     # No search, render default page
     if not query:

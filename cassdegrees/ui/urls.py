@@ -26,27 +26,29 @@ from .views.subplans import *
 from .views.view_ import *
 from .views.student import *
 
+staff_url_prefix = "staff/"
+
 urlpatterns = [
     path('', student_index),
     path('create/', student_create),
     path('edit/', student_edit),
     path('delete/', student_delete),
 
-    path('admin/home/', index),
-    path('admin/sampleform/', sampleform),
-    path('admin/create/course/', create_course),
-    path('admin/create/program/', create_program),
-    path('admin/create/subplan/', create_subplan),
-    path('admin/delete/courses/', delete_course),
-    path('admin/delete/programs/', delete_program),
-    path('admin/delete/subplans/', delete_subplan),
-    path('admin/edit/course/', edit_course, name='edit_course'),
-    path('admin/edit/program/', edit_program, name='edit_program'),
-    path('admin/edit/subplan/', edit_subplan, name='edit_subplan'),
-    path('admin/list/', data_list),
-    path('admin/bulk_upload/', bulk_data_upload),
-    path('admin/view/program/', view_),
-    path('admin/view/subplan/', view_),
-    path('admin/view/course/', view_),
-    path('admin/pdf/program/', view_program_pdf),
+    path(staff_url_prefix, index),
+    path(staff_url_prefix + 'sampleform/', sampleform),
+    path(staff_url_prefix + 'create/course/', create_course),
+    path(staff_url_prefix + 'create/program/', create_program),
+    path(staff_url_prefix + 'create/subplan/', create_subplan),
+    path(staff_url_prefix + 'delete/courses/', delete_course),
+    path(staff_url_prefix + 'delete/programs/', delete_program),
+    path(staff_url_prefix + 'delete/subplans/', delete_subplan),
+    path(staff_url_prefix + 'edit/course/', edit_course, name='edit_course'),
+    path(staff_url_prefix + 'edit/program/', edit_program, name='edit_program'),
+    path(staff_url_prefix + 'edit/subplan/', edit_subplan, name='edit_subplan'),
+    path(staff_url_prefix + 'list/', data_list),
+    path(staff_url_prefix + 'bulk_upload/', bulk_data_upload),
+    path(staff_url_prefix + 'view/program/', view_),
+    path(staff_url_prefix + 'view/subplan/', view_),
+    path(staff_url_prefix + 'view/course/', view_),
+    path(staff_url_prefix + 'pdf/program/', view_program_pdf),
 ]

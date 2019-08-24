@@ -8,9 +8,9 @@ from ui.forms import EditProgramFormSnippet
 from ui.views.subplans import create_subplan
 from django.utils import timezone
 
-admin_url_prefix = "/admin/"
+staff_url_prefix = "/staff/"
 
-list_program_url = admin_url_prefix + "list/?view=Program"
+list_program_url = staff_url_prefix + "list/?view=Program"
 
 
 @login_required
@@ -38,7 +38,7 @@ def create_program(request):
         if request.POST['action'] == 'Create New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.path
-            return redirect(admin_url_prefix + 'create/subplan/')
+            return redirect(staff_url_prefix + 'create/subplan/')
 
         form = EditProgramFormSnippet(request.POST)
 
@@ -108,7 +108,7 @@ def edit_program(request):
         if request.POST['action'] == 'Create New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.build_absolute_uri()
-            return redirect(admin_url_prefix + 'create/subplan/')
+            return redirect(staff_url_prefix + 'create/subplan/')
 
         form = EditProgramFormSnippet(request.POST, instance=instance)
 

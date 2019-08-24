@@ -9,7 +9,7 @@
  * @returns only backspace and space + numbers
  */
 
-const ADMIN_URL_PREFIX = "/admin/";
+const STAFF_URL_PREFIX = "/staff/";
 
 function checkKeys(event) {
     return event.keyCode === 9 || event.keyCode === 8 || event.keyCode === 46 ? true : !isNaN(Number(event.key));
@@ -19,12 +19,12 @@ function checkKeys(event) {
  * Makes the web page go back to the homepage
  */
 function goBack() {
-    window.location.href= ADMIN_URL_PREFIX + "home/";
+    window.location.href= STAFF_URL_PREFIX;
 }
 
 /**
  * Returns to the relevant list page
  */
 function returnToList(pageName) {
-    window.location.href = ADMIN_URL_PREFIX + "list/?view="+pageName;
+    window.location.href = STAFF_URL_PREFIX + "list/?view="+pageName;
 }

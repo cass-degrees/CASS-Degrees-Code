@@ -11,9 +11,9 @@ import json
 from django.utils import timezone
 
 
-admin_url_prefix = "/admin/"
+staff_url_prefix = "/staff/"
 
-list_course_url = admin_url_prefix + "list/?view=Course"
+list_course_url = staff_url_prefix + "list/?view=Course"
 
 
 @login_required
