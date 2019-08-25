@@ -15,7 +15,7 @@ var options = {
 var courseSearch = new List('courses', options);
 
 // Gets metadata from all applied courses and stores it
-function prepareSubmit() {
+function prepareSubmit(action) {
     var elements = document.getElementsByClassName("course-drop");
     var course_codes = [];
 
@@ -25,6 +25,7 @@ function prepareSubmit() {
     }
 
     document.getElementById("plan-courses").value = JSON.stringify(course_codes);
+    document.getElementById("action_to_perform").value = action;
 
     document.getElementById("main-form").submit();
 }

@@ -120,6 +120,9 @@ select.text{
 
     padding: 4px 25px 4px 25px;
 }
+.anuform .no-overflow {
+    box-sizing: border-box;
+}
 
 /* ANU doesn't provide modal systems */
 .modal {

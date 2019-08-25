@@ -49,6 +49,13 @@ def load_messages(cookies):
             del cookies['message']
         except KeyError:
             pass
+    popup = cookies.get('popup', None)
+    if message:
+        render_settings['popup'] = popup
+        try:
+            del cookies['popup']
+        except KeyError:
+            pass
 
     return render_settings
 
@@ -109,19 +116,24 @@ def student_create(request):
 def student_edit(request):
     courses = CourseModel.objects.all()
     subplans = SubplanModel.objects.all()
+    exclude_keys = ['csrfmiddlewaretoken', 'action']
 
     plan_name = request.GET.get('plan', None)
+    compressed_plan = request.GET.get('load', '').replace(' ', '+')
 
     # Load up the error and regular messages to render in the plan
     render_settings = load_messages(request.session)
 
     # If no plan name is specified, redirect them to the plan creation page
-    if plan_name is None:
+    if plan_name is None and not compressed_plan:
         request.session['error_message'] = 'No plan name given'
         return redirect(student_index)
     # If the user submits a POST request
     if request.method == "POST":
-        new_plan_name = request.POST.get('plan_name', None)
+        if request.POST.get('action', '') == 'export':
+            render_settings['error'] = 'Feature not yet implemented'
+
+        new_plan_name = request.POST.get('name', None)
 
         # If the plan name changed, delete the old one and create the new one
         if not new_plan_name or new_plan_name != plan_name:
@@ -134,8 +146,7 @@ def student_edit(request):
                     render_settings['error'] = 'A plan already exists with that name. Please choose a different name.'
 
                 # Get the current plan state from the cookies and redraw it
-                new_plan = {key: request.POST[key] for key in request.POST.keys()
-                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+                new_plan = {key: request.POST[key] for key in request.POST.keys() if key not in exclude_keys}
                 try:
                     instance = model_to_dict(ProgramModel.objects.get(id=new_plan['program_id']))
                 except ProgramModel.DoesNotExist:
@@ -148,30 +159,34 @@ def student_edit(request):
                                                                      'render': render_settings,
                                                                      'superuser': request.user.is_authenticated})
             else:
-                new_plan = {key: request.POST[key] for key in request.POST.keys()
-                            if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+                new_plan = {key: request.POST[key] for key in request.POST.keys() if key not in exclude_keys}
                 new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
-                request.session['plan:' + new_plan_name] = compress(new_plan)
+                compressed_plan = compress(new_plan)
+                request.session['plan:' + new_plan_name] = compressed_plan
 
-                try:
-                    del request.session['plan:' + plan_name]
-                except KeyError:
-                    pass
+                # If the plan had a previous name
+                if plan_name is not None:
+                    try:
+                        del request.session['plan:' + plan_name]
+                    except KeyError:
+                        pass
         # If the plan name stayed the same, update the old plan
         else:
-            new_plan = {key: request.POST[key] for key in request.POST.keys()
-                        if key != 'csrfmiddlewaretoken' and key != 'plan_name'}
+            new_plan = {key: request.POST[key] for key in request.POST.keys() if key not in exclude_keys}
             new_plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
-            request.session['plan:' + new_plan_name] = compress(new_plan)
+            compressed_plan = compress(new_plan)
+            request.session['plan:' + new_plan_name] = compressed_plan
         request.session['message'] = 'Successfully saved'
+        if request.POST.get('action', '') == 'export':
+            request.session['popup'] = request.META['HTTP_HOST'] + '/edit/?load=' + compressed_plan
         return redirect('/edit/?plan=' + new_plan_name)
     # If the user submits a get request
     else:
-        # Decompress and read the plan from the cookies
-        compressed_plan = request.session.get("plan:" + plan_name, '')
+        if not compressed_plan:
+            # Decompress and read the plan from the cookies
+            compressed_plan = request.session.get("plan:" + plan_name, '')
         if compressed_plan:
             plan = decompress(compressed_plan)
-            plan['name'] = plan_name
 
             # Get the program that was specified in the plan
             try:
