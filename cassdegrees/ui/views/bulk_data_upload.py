@@ -240,6 +240,19 @@ def bulk_data_upload(request):
                     i += 1
                 first_row_checked = True
 
+        # If there are too many items to display, then only display the first 5 and numerically show how many more have
+        # succeeded/failed.
+        show_count = 5
+        upload_count = len(correctly_uploaded)
+        if upload_count > show_count:
+            correctly_uploaded = correctly_uploaded[0:show_count]
+            correctly_uploaded.append("... and {} more items".format(upload_count - show_count))
+
+        fail_count = len(failed_to_upload)
+        if fail_count > show_count:
+            failed_to_upload = failed_to_upload[0:show_count]
+            failed_to_upload.append("... and {} more items".format(fail_count - show_count))
+
         # Display error messages depending on the level of success of bulk upload.
         # There are 3 categories: All successful, some successful or none successful.
         if any_success and not any_error:
