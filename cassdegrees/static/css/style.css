@@ -311,17 +311,17 @@ select.text{
 /* Simple pagination tabs */
 .pagination li {
     display: inline-block;
-    width: 20px;
+    width: 30px;
     height: 20px;
-    border: 1px solid black;
 
     text-align: center;
 
-    margin: 5px;
+    margin: 3px;
 }
 
 .pagination li:not(.disabled) {
     cursor: pointer;
+    border: 1px solid black;
 }
 
 .pagination li:not(.disabled).active {
@@ -334,6 +334,7 @@ select.text{
 
 .pagination li.disabled a {
     cursor: default;
+    border: none;
 }
 
 .pagination li:link {

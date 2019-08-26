@@ -49,14 +49,15 @@
     {# Generates table instances for each table in 'data', as well as the appropriate settings to keep it hidden #}
     {% for title, content in data.items %}
         <div id="{{ title }}Table" hidden>
-            <form id="{{ title }}Sorter" method="post">
+            <form method="post">
                 {% csrf_token %}
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
                 <p class="left">
                     <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/" value="+ New {{ title }}">
                 </p>
-                <table class="fullwidth tbl-cell-bdr">
+
+                <table id="{{ title }}Sorter" class="fullwidth tbl-cell-bdr">
                     {# Add title row based on what was in the dictionary #}
                     <thead>
                         <tr>
@@ -95,8 +96,17 @@
                             {% endfor %}
                         </tr>
                     {% endfor %}
+
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="{{ content.0.items|length|add:1 }}">
+                                <div class="pagination align-center"></div>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
+
                 {# If there is no data available, notify the user #}
                 {% if not content %}
                     <p>No {{ title }}s to display</p>
@@ -112,10 +122,16 @@
         </div>
 
         <script>
-            // Creates a list object to be used by list.js for sorting
-            // Should result in something like `CourseOptions = { valueNames: ['Code', 'Year', 'Name', 'Units'] }`
+            // Pagination for list.js
             var {{ title }}Options = {
-                valueNames: [{% for k,v in content.0.items %}'{{ title }}{{ k }}',{% endfor %}]
+                valueNames: [{% for k,v in content.0.items %}'{{ title }}{{ k }}',{% endfor %}],
+                page: 20,
+                pagination: {
+                    innerWindow: 2,
+                    left: 1,
+                    right: 1,
+                    paginationClass: "pagination",
+                }
             };
 
             var {{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
