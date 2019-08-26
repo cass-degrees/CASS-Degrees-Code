@@ -116,6 +116,11 @@ Vue.component('rule_incompatibility', {
 
         request.addEventListener("load", function() {
             rule.courses = JSON.parse(request.response);
+            rule.courses.sort(
+                function(a, b){
+                    return a['code'].localeCompare(b['code'])
+                }
+            );
 
             rule.check_options();
         });
@@ -415,6 +420,12 @@ Vue.component('rule_course', {
 
         request.addEventListener("load", function() {
             rule.courses = JSON.parse(request.response);
+            rule.courses.sort(
+                function(a, b){
+                    return a['code'].localeCompare(b['code'])
+                }
+            );
+
             rule.list_types = LIST_TYPES;
             rule.check_options();
         });
@@ -512,6 +523,11 @@ Vue.component('rule_course_requisite', {
 
         request.addEventListener("load", function() {
             rule.courses = JSON.parse(request.response);
+            rule.courses.sort(
+                function(a, b){
+                    return a['code'].localeCompare(b['code'])
+                }
+            );
             rule.check_options();
         });
         request.open("GET", "/api/search/?select=code,name&from=course");
@@ -615,6 +631,11 @@ Vue.component('rule_subject_area', {
                 if (subject_areas.indexOf(subject_area) === -1) subject_areas.push(subject_area);
             }
             rule.subject_areas = subject_areas;
+            rule.subject_areas.sort(
+                function(a, b){
+                    return a.localeCompare(b)
+                }
+            );
             rule.check_options();
         });
         request.open("GET", "/api/search/?select=code&from=course");
