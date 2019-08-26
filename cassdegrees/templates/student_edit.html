@@ -125,26 +125,12 @@
                 <input type="button" id="close_modal" class="right btn-uni-grad btn-small" value="OK" />
             </footer>
         </div>
-        {# Script to allow interactivity in the menu #}
-        <script type="application/javascript">
-            var plan_link = document.getElementById("plan_link");
-            var copy = document.getElementById("copy_to_clipboard");
-            var close = document.getElementById("close_modal");
-
-            plan_link.onclick = function() {this.select();};
-            copy.onclick = function() {
-                plan_link.select();
-                plan_link.setSelectionRange(0, 99999);
-                document.execCommand("copy");
-                document.getElementById("modal_content").innerHTML = "(Copied)";
-            };
-            close.onclick = function() {document.getElementById("plan_popup").remove();};
-        </script>
     </div>
     {% endif %}
 
     <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/interact.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/student_edit.js' %}" type="application/javascript"></script>
+    <script type="application/javascript">setupPopup()</script>
 
 {% endblock %}

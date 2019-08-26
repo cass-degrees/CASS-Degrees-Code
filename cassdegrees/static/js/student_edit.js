@@ -12,6 +12,26 @@ var options = {
     }
 };
 
+// Script to allow interactivity in the popup menu
+function setupPopup() {
+    var plan_link = document.getElementById("plan_link");
+    var copy = document.getElementById("copy_to_clipboard");
+    var close = document.getElementById("close_modal");
+
+    plan_link.onclick = function () {
+        this.select();
+    };
+    copy.onclick = function () {
+        plan_link.select();
+        plan_link.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        document.getElementById("modal_content").innerHTML = "(Copied)";
+    };
+    close.onclick = function () {
+        document.getElementById("plan_popup").remove();
+    };
+}
+
 var courseSearch = new List('courses', options);
 
 // Gets metadata from all applied courses and stores it

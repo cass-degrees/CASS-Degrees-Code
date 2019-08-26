@@ -99,18 +99,38 @@ def student_delete(request):
 # Creation page. Also sends program metadata.
 def student_create(request):
     id_to_view = request.GET.get('id', None)
+    plan_to_duplicate = request.GET.get('plan', None)
 
     # Create a plan if an ID is specified
     if id_to_view:
         # Create a new cookie in the default plan location containing compressed relevant plan details
         request.session['plan:'] = compress(
-            {'program_id': int(id_to_view), 'date': timezone.localtime().strftime('%d/%m/%Y %H:%M')}
+            {'name': '', 'program_id': int(id_to_view), 'date': timezone.localtime().strftime('%d/%m/%Y %H:%M')}
         )
 
         # Redirect to the student edit page and add the '?plan=' url parameter
         response = redirect(student_edit)
         response['Location'] += '?plan='
         return response
+    # If a plan name is given, copy that plan
+    elif plan_to_duplicate:
+        plan = decompress(request.session.get('plan:' + plan_to_duplicate, None))
+        if plan:
+            # Find the next available plan name
+            count = 1
+            while 'plan:{} ({})'.format(plan['name'], count) in request.session:
+                count += 1
+            new_plan_name = '{} ({})'.format(plan['name'], count)
+
+            plan['name'] = new_plan_name
+            plan['date'] = timezone.localtime().strftime('%d/%m/%Y %H:%M')
+            request.session['plan:' + new_plan_name] = compress(plan)
+
+            # Redirect to the student edit page and add the '?plan=' url parameter
+            return redirect('/edit/?plan=' + new_plan_name)
+        else:
+            request.session['error_message'] = "Invalid plan name given"
+            redirect(student_index)
     # Render the creation homepage if an ID is not specified
     else:
         return render(request, 'student_create.html', context={'programs': ProgramModel.objects.filter(publish=True)})
