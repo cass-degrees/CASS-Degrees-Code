@@ -32,6 +32,7 @@ urlpatterns = [
     path('', student_index),
     path('create/', student_create),
     path('edit/', student_edit),
+    path('pdf/', student_pdf),
     path('delete/', student_delete),
 
     path(staff_url_prefix, index),

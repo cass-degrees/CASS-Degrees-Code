@@ -1,8 +1,8 @@
-{% load student_course_boxes %}
+{% load course_boxes %}
 {% load math %}
 
-{# Renders rule a rule for a student plan #}
-<div class="card">
+{# Renders rule a rule for a PDF program #}
+<div class="box try-complete-box">
     {% if rule.type == "subplan" %}
         <p>Completion of {{ rule.kind }} for {{ rule.units }} units:</p>
     {% elif rule.type == "subject_area" %}
@@ -34,9 +34,9 @@
         <p class="bottom-margin">Either:</p>
 
         {% for group in rule.either_or %}
-            <div class="left-box" style="padding-left: 40px;">
+            <div class="left-box">
                 {% for rule in group %}
-                    {% include "widgets/student_rules.html" %}
+                    {% include "widgets/pdf_rules.html" %}
                 {% endfor %}
             </div>
 
@@ -50,31 +50,32 @@
     {% endif %}
 </div>
 
-<div style="padding-left: 20px;">
-    {% if rule.type == "subplan" %}
-        {# Assume all subplans have equal units - else it wouldn't make sense for a complete program #}
-        {% with subplan=subplans|index:rule.ids.0 %}
-            {% student_course_box subplan.units %}
+
+{% if rule.type == "subplan" %}
+    {# Assume all subplans have equal units - else it wouldn't make sense for a complete program #}
+    {% with subplan=subplans|index:rule.ids.0 %}
+        {% course_box subplan.units plan %}
+    {% endwith %}
+{% elif rule.type == "subject_area" %}
+    {% course_box rule.unit_count plan %}
+{% elif rule.type == "year_level" %}
+    {% course_box rule.unit_count plan %}
+{% elif rule.type == "course" %}
+    {% with courses_provided=rule.codes|length %}
+        {% with courses_needed=rule.unit_count|divide:6 %}
+            {% if courses_provided == courses_needed %}
+                {# All courses specified are required - render all #}
+                {% course_box_with_values rule.unit_count rule.codes plan %}
+            {% else %}
+                {# Not all required courses - map them out as blanks #}
+                {% course_box rule.unit_count plan %}
+            {% endif %}
         {% endwith %}
-    {% elif rule.type == "subject_area" %}
-        {% student_course_box rule.unit_count %}
-    {% elif rule.type == "year_level" %}
-        {% student_course_box rule.unit_count %}
-    {% elif rule.type == "course" %}
-        {% with courses_provided=rule.codes|length %}
-            {% with courses_needed=rule.unit_count|divide:6 %}
-                {% if courses_provided == courses_needed %}
-                    {# All courses specified are required - render all #}
-                    {% student_course_box_with_values rule.unit_count rule.codes %}
-                {% else %}
-                    {# Not all required courses - map them out as blanks #}
-                    {% student_course_box rule.unit_count %}
-                {% endif %}
-            {% endwith %}
-        {% endwith %}
-    {% elif rule.type == "custom_text" %}
-        {% if rule.show_course_boxes %}
-            {% student_course_box rule.units %}
-        {% endif %}
+    {% endwith %}
+{% elif rule.type == "custom_text" %}
+    {% if rule.show_course_boxes %}
+        {% course_box rule.units plan %}
     {% endif %}
-</div>
+{% endif %}
+
+{% if forloop.last %}<div class="break-box"></div>{% endif %}

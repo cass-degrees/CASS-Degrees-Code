@@ -22,7 +22,7 @@
 
     {# program is the full program object as selected by the user, superuser is if an authenticated #}
     {# user is logged in #}
-    <form action="" id="main-form" method="post" class="box bdr-solid bdr-uni">
+    <form action="" id="main-form" method="post" class="box bdr-solid bdr-uni auto-overflow">
         {% csrf_token %}
 
         <input type="hidden" id="plan-courses" name="plan_courses" value="{{ plan.plan_courses }}" />
@@ -37,6 +37,7 @@
 
         <div class="float-right">
             <input type="button" onclick="prepareSubmit('save')" class="btn-uni-grad btn-small" value="Save...">
+            <input type="button" onclick="prepareSubmit('pdf')" class="btn-uni-grad btn-small" value="Save as PDF...">
             <input type="button" onclick="prepareSubmit('export')" class="btn-uni-grad btn-small" value="Export...">
             {% if superuser %}
                 <input type="button" onclick="prepareSubmit('approve')" class="btn-uni-grad btn-small" value="Save & Approve...">

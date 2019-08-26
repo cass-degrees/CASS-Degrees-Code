@@ -349,3 +349,8 @@ select.text{
     position: sticky;
     top: 10px;
 }
+
+/* Automatically handle overflowing text */
+.auto-overflow {
+    overflow: auto;
+}

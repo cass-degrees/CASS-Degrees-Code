@@ -1,4 +1,4 @@
-from api.models import ProgramModel
+from api.models import ProgramModel, SubplanModel
 from django.shortcuts import render
 
 from django_weasyprint import WeasyTemplateResponse
@@ -18,8 +18,11 @@ def view_program_pdf(request):
     pretty_print_reqs(instance)
     pretty_print_rules(instance)
 
+    subplans = SubplanModel.objects.all()
+
     context = {
-        "program": instance
+        "program": instance,
+        'subplans': subplans
     }
 
     if "raw" in request.GET:

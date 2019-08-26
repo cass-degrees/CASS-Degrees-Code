@@ -1,12 +1,16 @@
 from api.models import ProgramModel, CourseModel, SubplanModel
 from django.forms import model_to_dict
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
 import zlib
 import base64
 import json
+
+from django_weasyprint import WeasyTemplateResponse
+
+from ui.views.view_ import pretty_print_reqs, pretty_print_rules
 
 
 def compress(dct):
@@ -177,9 +181,15 @@ def student_edit(request):
             compressed_plan = compress(new_plan)
             request.session['plan:' + new_plan_name] = compressed_plan
         request.session['message'] = 'Successfully saved'
+
         if request.POST.get('action', '') == 'export':
             request.session['popup'] = request.META['HTTP_HOST'] + '/edit/?load=' + compressed_plan
-        return redirect('/edit/?plan=' + new_plan_name)
+
+        if request.POST.get('action', '') == "pdf":
+            return redirect('/pdf/?plan=' + new_plan_name)
+        else:
+            return redirect('/edit/?plan=' + new_plan_name)
+
     # If the user submits a get request
     else:
         if not compressed_plan:
@@ -204,3 +214,45 @@ def student_edit(request):
         else:
             request.session['error_message'] = 'Invalid plan name given'
             return redirect(student_index)
+
+
+def student_pdf(request):
+    """ Renders a student defined plan to a PDF. """
+
+    plan_name = request.GET.get('plan', None)
+    if not plan_name:
+        return HttpResponseBadRequest("No plan name specified")
+
+    compressed_plan = request.session.get("plan:" + plan_name, None)
+    if not compressed_plan:
+        return HttpResponseBadRequest("Named plan does not exist")
+
+    plan = decompress(compressed_plan)
+    plan['name'] = plan_name
+    plan['plan_courses'] = json.loads(plan['plan_courses'])
+
+    # Get the program that was specified in the plan
+    try:
+        instance = model_to_dict(ProgramModel.objects.get(id=plan['program_id']))
+    except ProgramModel.DoesNotExist:
+        return HttpResponseBadRequest("Named plan has non-existent backing model")
+
+    pretty_print_reqs(instance)
+    pretty_print_rules(instance)
+
+    subplans = SubplanModel.objects.all()
+
+    context = {
+        "program": instance,
+        "plan": plan,
+        'subplans': subplans
+    }
+
+    if "raw" in request.GET:
+        return render(request, 'pdf_program.html', context=context)
+    else:
+        response = WeasyTemplateResponse(request=request, content_type='application/pdf',
+                                         filename=instance["name"] + ".pdf", attachment=False,
+                                         template="pdf_program.html", context=context)
+
+        return response.render()

@@ -27,6 +27,11 @@ function prepareSubmit(action) {
     document.getElementById("plan-courses").value = JSON.stringify(course_codes);
     document.getElementById("action_to_perform").value = action;
 
+    if (action === "pdf") {
+        // Ensure that the PDF opens in a new page
+        document.getElementById("main-form").setAttribute("target", "_blank");
+    }
+
     document.getElementById("main-form").submit();
 }
 

@@ -9,7 +9,11 @@
         <br />
     </div>
 
-    <h1 class="no-bottom-margin">{{ program.name }} ({{ program.year }}, {{ program.units }} units)</h1>
+    {% if plan != None %}
+        <h1 class="no-bottom-margin">{{ plan.name }} ({{ program.name }}, {{ program.year }}, {{ program.units }} units)</h1>
+    {% else %}
+        <h1 class="no-bottom-margin">{{ program.name }} ({{ program.year }}, {{ program.units }} units)</h1>
+    {% endif %}
 
     <br />
 
