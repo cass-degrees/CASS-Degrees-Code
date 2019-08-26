@@ -43,6 +43,18 @@
                 <input type="button" onclick="prepareSubmit('approve')" class="btn-uni-grad btn-small" value="Save & Approve...">
             {% endif %}
         </div>
+
+        <div>
+            {% for rule in program.rules %}
+                <br>
+                {% if rule.type == 'subplan' %}
+                    {% include "widgets/subplan_choice.html" %}
+                {% else %}
+                    <input type="hidden" name="plan_rules.{{ forloop.counter0 }}">
+                {% endif %}
+            {% endfor %}
+        </div>
+
     </form>
 
 

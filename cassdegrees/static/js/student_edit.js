@@ -164,3 +164,29 @@ interact('.dropzone').dropzone({
         target.getElementsByClassName("course-code")[0].innerText = course;
     }
 });
+
+
+// When selecting a sublan from a list of subplans, sets the chosen subplan as the saved value
+function subplanSelect(element){
+    var inputField = element.parentNode;
+    while (inputField.tagName !== 'INPUT') {
+        inputField = inputField.previousSibling;
+    }
+    inputField.value = element.attributes['name'].value;
+}
+
+
+// Toggles whether the next div is shown or hidden
+function show_hide(element) {
+    div = element.nextSibling;
+    while (div.tagName !== 'DIV') {
+        div = div.nextSibling;
+    }
+    if (div.style.display === "none") {
+        div.style.display = "block";
+        element.innerHTML = "Hide Options";
+    } else {
+        div.style.display = "none";
+        element.innerHTML = "Show Options";
+    }
+}

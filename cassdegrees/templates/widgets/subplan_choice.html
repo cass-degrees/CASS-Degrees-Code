@@ -1,0 +1,33 @@
+{% load student_course_boxes %}
+
+{# For display on the student program planner. #}
+{# Allows a selection from a list of subplans for a program requirement. #}
+<div>
+    You must choose one subplan from the following list to complete:
+    <br>
+    <div style="margin-left:10px;">
+        Current Choice: <input type="text" value=
+            {% if plan.plan_rules %}
+                "{{ plan.plan_rules | listIndex:forloop.counter0 }}"
+            {% else %}
+                ""
+            {% endif %}
+                name="plan_rules.{{ forloop.counter0 }}" readonly>
+
+        <button onclick="show_hide(this)" type="button">Hide Options</button>
+
+        <br>
+        <br>
+        <div>
+            {% for subplan in subplans %}
+                {% if subplan.id in rule.ids %}
+                    <div class="card selectable-card" onclick="subplanSelect(this)" name='{{ subplan.code }} - {{ subplan.name }}'>
+                        <div class="box-solid">
+                            <b class="course-title">{{ subplan.code }} - {{ subplan.name }}</b>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
