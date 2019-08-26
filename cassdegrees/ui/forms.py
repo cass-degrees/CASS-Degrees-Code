@@ -194,7 +194,7 @@ class EditSubplanFormSnippet(ModelForm):
             'year': forms.NumberInput(attrs={'class': "text tfull",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
-            'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History Minor"}),
+            'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History"}),
             'publish': forms.CheckboxInput()
             # See units above
             # planType auto generated
