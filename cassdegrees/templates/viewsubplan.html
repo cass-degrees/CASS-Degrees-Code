@@ -64,7 +64,8 @@
                     {% elif rule.list_type == "max" %}
                         No more than
                     {% endif %}
-                    {{ rule.unit_count }} units from completion of the following course(s):</i>
+                    {{ rule.unit_count }} units from completion of the following course(s):
+                </i>
                 <table class="tbl-cell-bdr">
                     <tr><th>Code</th><th>Title</th><th>Units</th></tr>
                         {% for course in rule.courses %}
