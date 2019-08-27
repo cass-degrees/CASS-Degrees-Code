@@ -855,6 +855,10 @@ Vue.component('rule_either_or', {
             this.details.either_or[group].splice(index, 1);
             this.do_redraw();
         },
+        remove_group: function(group) {
+            this.details.either_or.splice(group, 1);
+            this.do_redraw();
+        },
         check_options: function() {
             var valid = true;
             for (var index in this.$children){

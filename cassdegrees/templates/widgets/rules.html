@@ -22,6 +22,7 @@
                 </div>
 
                 <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = i; component_names = component_groups.rules" value="Add New Rule to Group" />
+                <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="remove_group(i)" value="Remove This Group" />
 
             </fieldset>
         </div>
