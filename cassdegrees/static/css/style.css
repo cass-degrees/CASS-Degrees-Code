@@ -355,3 +355,26 @@ select.text{
 .auto-overflow {
     overflow: auto;
 }
+
+/* Display a border if the element is the side */
+.border-on-md {
+    /* Fill the row */
+    width: 100%;
+}
+
+@media only screen and (min-width:64em) {
+    .border-on-md {
+        border-left: 1px solid black;
+    }
+}
+
+/* Hide this element on smaller screens */
+.hide-on-small-screen {
+    display: none;
+}
+
+@media only screen and (min-width:37.5em) {
+    .hide-on-small-screen {
+        display: block;
+    }
+}
