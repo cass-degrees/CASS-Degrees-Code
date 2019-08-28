@@ -74,8 +74,9 @@
 
                 <div id="courses">
                     <div class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar custom_search_bar_full_length">
-                        <input class="text fuzzy-search" size="24" maxlength="75" type="text"
-                               placeholder="Search...">
+                        <input class="text" onkeyup="searchQuery(this.value)"
+                                onchange="searchQuery(this.value)" size="24" maxlength="75"
+                               type="text" placeholder="Search...">
                     </div>
 
                     <div class="list">
@@ -83,15 +84,12 @@
                             <div class="draggable draggable-course" data-course-code="{{ course.code }}">
                                 <div class="card selectable-card">
                                     <div class="box-solid">
-                                        <div class="card-content">
-                                            <b>{{ course.code }}</b> ({{ course.units }} units)<br />
-                                            {{ course.name }}
+                                        <div class="card-content limit-card-size">
+                                            <b class="course-code">{{ course.code }}</b>
+                                            (<span class="course-units">{{ course.units }}</span> units)<br />
+                                            <span class="course-name">{{ course.name }}</span>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="course-details hide">
-                                    {{ course.code }} {{ course.name }}
                                 </div>
                             </div>
                         {% endfor %}
@@ -147,6 +145,7 @@
     {% endif %}
 
     <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/fuse.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/interact.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/student_edit.js' %}" type="application/javascript"></script>
     <script type="application/javascript">setupPopup()</script>

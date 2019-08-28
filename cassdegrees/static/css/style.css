@@ -384,3 +384,14 @@ select.text{
         display: block;
     }
 }
+
+/* Restricts the height of a particular search result */
+/* https://stackoverflow.com/questions/3922739/limit-text-length-to-n-lines-using-css */
+.limit-card-size {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    max-height: 3.6em;
+    line-height: 1.8em;
+}

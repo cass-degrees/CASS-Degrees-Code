@@ -138,7 +138,7 @@ def student_create(request):
 
 # Main edit page. Sends program metadata for specific course chosen.
 def student_edit(request):
-    courses = CourseModel.objects.all()
+    courses = CourseModel.objects.distinct('code')
     subplans = SubplanModel.objects.all()
 
     plan_name = request.GET.get('plan', None)
