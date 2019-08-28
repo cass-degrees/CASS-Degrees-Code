@@ -455,6 +455,7 @@ Vue.component('rule_course', {
                     break;
                 }
             }
+            this.is_blank = this.is_blank || this.details.list_type === "";
 
             // Check for duplicates
             this.non_unique_options = false;
@@ -511,7 +512,6 @@ Vue.component('rule_course_requisite', {
             // Display related warnings if true
             "non_unique_options": false,
             "is_blank": false,
-
             "redraw": false
         }
     },

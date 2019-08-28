@@ -17,7 +17,7 @@
             </label>
         </p>
 
-        <select v-model="details.list_type" required>
+        <select v-model="details.list_type" v-on:change="check_options" required>
             <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
         </select>
 
