@@ -28,6 +28,12 @@
     margin: 12px;
 }
 
+.comments {
+    resize: none;
+    height: 5em; /* 1em height = 1 row */
+    width: 98.36%; /* textarea need custom width as anu styling width makes it longer */
+}
+
 .custom_search_bar input[type=text]{
     height: 30px;
     width: 78%;

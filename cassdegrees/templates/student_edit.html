@@ -27,6 +27,7 @@
 
         <input type="hidden" id="plan-courses" name="plan_courses" value="{{ plan.plan_courses }}" />
         <input type="hidden" name="program_id" value="{{ plan.program_id }}" />
+        <input type="hidden" id="hidden_comments" name="comments" value="{{ plan.comments }}" />
 
         <label for="plan-name">Name:</label>
         <input id="plan-name" name="name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
@@ -113,6 +114,11 @@
                         </div>
                     </div>
                 </div>
+                <h3>Additional Comments</h3>
+                <p class="form-group anuform">
+                    <textarea id="comments" name="comments" class="comments"
+                              placeholder="This is a comments section for additional information.">{{ plan.comments }}</textarea>
+                </p>
             </div>
         </div>
     </div>

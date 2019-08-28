@@ -52,6 +52,7 @@ function prepareSubmit(action) {
         document.getElementById("main-form").setAttribute("target", "_blank");
     }
 
+    document.getElementById("hidden_comments").value = document.getElementById("comments").value;
     document.getElementById("main-form").submit();
 }
 
