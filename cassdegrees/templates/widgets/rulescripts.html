@@ -14,7 +14,7 @@
             <select v-model="details.incompatible_courses[index]" v-on:change="check_options" required>
                 <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
             </select>
-            <input v-if="index != 0" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input v-if="details.incompatible_courses.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>
 
         <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
@@ -63,7 +63,7 @@
             <select v-model="details.ids[index]" v-on:change="check_options" required>
                 <option v-for="subplan in subplans" v-if="!program_year || subplan.year==program_year" v-bind:value="subplan.id">{{ subplan.name }} {{ subplan.year }} ({{ subplan.units }} units)</option>
             </select>
-            <input v-if="index != 0" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input v-if="details.ids.length > 1" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>
 
         <input type="button" v-on:click="add_subplan()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />

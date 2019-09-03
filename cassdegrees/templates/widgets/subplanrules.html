@@ -36,7 +36,7 @@
             <select v-model="details.codes[index]" v-on:change="check_options" required>
                 <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
             </select>
-            <input v-if="index != 0" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input v-if="details.codes.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>
 
         <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
