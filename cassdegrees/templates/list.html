@@ -54,7 +54,7 @@
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
                 <p class="left">
-                    <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/" value="+ New {{ title }}">
+                    <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/" value="+ New {{ title }}">
                 </p>
 
                 <table id="{{ title }}Sorter" class="fullwidth tbl-cell-bdr">
@@ -86,9 +86,9 @@
                                     {% else %}
                                         <td><p class="text-center"><input title="Select" type="checkbox" class="select_{{ title }}" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
                                         <td>
-                                            <a class="btn-uni-grad" href="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}&duplicate=true">Duplicate</a>
-                                            <a class="btn-uni-grad" href="{{ render.staff_url_prefix }}edit/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">Edit</a>
-                                            <a class="btn-uni-grad" href="{{ render.staff_url_prefix }}view/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% endif %}/?id={{ item }}">View</a>
+                                            <a class="btn-uni-grad" href="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/?id={{ item }}&duplicate=true">Duplicate</a>
+                                            <a class="btn-uni-grad" href="{{ render.staff_url_prefix }}edit/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/?id={{ item }}">Edit</a>
+                                            <a class="btn-uni-grad" href="{{ render.staff_url_prefix }}view/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/?id={{ item }}">View</a>
                                             {% if title == 'Program' %}<a class="btn-uni-grad" href="{{ render.staff_url_prefix }}pdf/program?id={{ item }}">PDF</a>{% endif %}
                                         </td>
                                     {% endif %}
@@ -114,7 +114,7 @@
                 {% else %}
                 <div class="right">
                     <p class="right">
-                       <input class="btn-uni-grad btn-large" type ="submit" formaction="{{ render.staff_url_prefix }}delete/{% if title == 'Program' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% endif %}/" value="Delete Selected">
+                       <input class="btn-uni-grad btn-large" type ="submit" formaction="{{ render.staff_url_prefix }}delete/{% if title == 'Program' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% elif title == 'List' %}lists{% endif %}/" value="Delete Selected">
                     </p>
                 </div>
                 {% endif %}

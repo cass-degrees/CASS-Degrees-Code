@@ -1,0 +1,175 @@
+{% load static %}
+
+{# Usage: Must pass in a string app_name that is id of the particular widget the app is to be bound to#}
+{# Must include imports below once in the relevant template prior to insertion of a widget #}
+{% comment %}    <script src="{% static "js/vue.js" %}"></script>
+    <script src="{% static "js/vue-multiselect.js" %}"></script>
+    <script src="{% static "js/vue-resource.js" %}"></script>
+    <link rel="stylesheet" href="{% static "css/vue-multiselect.css" %}">{% endcomment %}
+
+{#    content for multiselect#}
+{#    sources (including for HTML and CSS):#}
+{#    https://vue-multiselect.js.org/#sub-getting-started#}
+{#    https://medium.com/@hugodesigns/how-to-use-the-most-complete-selecting-solution-for-vue-js-f991b2605364#}
+
+{# Be aware that the control has a default maximum options listing of 1000, will need to change it depending on #}
+{# course list sizes #}
+
+<h4>Course listing</h4>
+<div id={{ app_name }}>
+    <multiselect
+            :options="options"
+            :value="optionsProxy"
+            @input="updateSelected"
+            :show-labels="true"
+            :multiple="true"
+            :searchable="true"
+            :close-on-select="false"
+            placeholder="Search courses, press esc or tab to close when done"
+            :custom-label="customLabel"
+            track-by="name"
+            :max-height="300"
+            :open-direction="'top'"
+            :loading="showLoadingSpinner"
+            ref="multiselectref"
+            >
+    </multiselect>
+
+    <ul class="resources-list">
+        <template v-for="(resource, index) in selectedResources">
+            <li class="resource-item" :data-index="index">
+                <div class="resource-info">
+                    <div class="resource-title" :id="index">
+                        <span>[[ resource.code ]] - [[ resource.name ]] - [[resource.id]]</span>
+                    </div>
+                </div>
+                <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
+                    <i class="fa fa-times fa-fw"></i>
+                </div>
+            </li>
+        </template>
+    </ul>
+
+</div>
+
+<script type="application/javascript">
+
+    API_MODEL_URL = 'api/model/course/'
+
+    new Vue({
+        // modify delimiters to prevent conflict with Django Template Console
+        delimiters: ["[[", "]]"],
+
+        el: '#{{ app_name }}',
+
+        components: {
+            Multiselect: window.VueMultiselect.default
+        },
+
+        data(){
+            return{
+                options: [],
+                optionsProxy: [],
+                selectedResources: [],
+                showLoadingSpinner: false,
+            }
+        },
+
+        // http element used for constructing API call in courseRequest
+        http: {
+            // Todo: check compatibility against server
+            root: 'http://localhost:8000'
+        },
+
+        // Todo: check whether this is required
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+
+        methods: {
+
+            resetHeight(){
+              this.dynamicHeight = 0
+            },
+
+            // Todo check what this is doing
+            // The label that will be displayed on the list item
+            customLabel(option) {
+                return `${option.code} - ${option.name}`
+            },
+
+
+            // todo: check for ways to conceal dropdown until user enters input rather than open above
+
+
+            // Update an array of selected values and remove the selected item from the list of available options
+            updateSelected(value) {
+                value.forEach((resource) => {
+                    // Adds selected resources to array
+
+                    // only add selection if not already contained in the list
+                    if (!this.selectedResources.some(element => element.code === resource.code)) {
+                        this.selectedResources.push(resource)
+
+                        // sort course listing by course code
+                        // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
+                        this.selectedResources.sort((a, b) => (a.code > b.code) ? 1 : -1)
+
+                        // set the hidden elements form box to value of selectedResources
+                        document.getElementById("id_elements").value = JSON.stringify(this.selectedResources)
+
+                        resourceID = this.options.indexOf(resource)
+                        this.options.splice(resourceID, 1)
+                    }
+                })
+
+                // Clear options proxy to avoid selection tags from being displayed
+                this.optionsProxy = []
+
+            },
+
+            courseRequest(value) {
+                this.$http.get(API_MODEL_URL).then((response) => {
+
+                    // get all element data
+                    this.options = []
+                    this.selectedResources = []
+                    response.body.forEach((object) => {
+                        this.options.push(object)
+                    });
+
+                    this.options.sort(((a, b) => (a.code > b.code) ? 1 : -1))
+
+                    this.showLoadingSpinner = false
+
+                    // create objects from existing data if present and load those into the ul element
+                    existingElements = JSON.parse(document.getElementById("id_elements").value)
+                    existingElements.forEach((object) => {
+                        this.selectedResources.push(object)
+                    })
+
+                }, (response) => {
+                    // error callback
+                })
+            },
+
+            // remove the item from the display list and the elements field when x is clicked
+            removeDependency(index) {
+                // when an element is removed from the list, add it back to the options
+                this.selectedResources.splice(index, 1).forEach((element) => {
+                    this.options.push(element)
+                })
+                document.getElementById("id_elements").value = JSON.stringify(this.selectedResources)
+            },
+        },
+
+        created() {
+            const value = ''
+            this.courseRequest(value)
+        },
+
+    }).$mount('#{{ app_name }}')
+
+</script>

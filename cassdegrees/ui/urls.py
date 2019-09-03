@@ -25,6 +25,7 @@ from .views.sampleform import *
 from .views.subplans import *
 from .views.view_ import *
 from .views.student import *
+from .views.lists import *
 
 staff_url_prefix = "staff/"
 
@@ -40,12 +41,14 @@ urlpatterns = [
     path(staff_url_prefix + 'create/course/', create_course),
     path(staff_url_prefix + 'create/program/', create_program),
     path(staff_url_prefix + 'create/subplan/', create_subplan),
+    path(staff_url_prefix + 'create/list/', create_list),
     path(staff_url_prefix + 'delete/courses/', delete_course),
     path(staff_url_prefix + 'delete/programs/', delete_program),
     path(staff_url_prefix + 'delete/subplans/', delete_subplan),
     path(staff_url_prefix + 'edit/course/', edit_course, name='edit_course'),
     path(staff_url_prefix + 'edit/program/', edit_program, name='edit_program'),
     path(staff_url_prefix + 'edit/subplan/', edit_subplan, name='edit_subplan'),
+    path(staff_url_prefix + 'edit/list/', edit_list),
     path(staff_url_prefix + 'list/', data_list),
     path(staff_url_prefix + 'bulk_upload/', bulk_data_upload),
     path(staff_url_prefix + 'view/program/', view_),

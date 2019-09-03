@@ -26,3 +26,10 @@ class ProgramSerializer(serializers.HyperlinkedModelSerializer):
         model = ProgramModel
         fields = ('id', 'code', 'year', 'name', 'units', 'programType', 'globalRequirements', 'rules', 'publish',
                   'staffNotes', 'studentNotes')
+
+
+# TODO: add type for elements? to allow generalisation
+class ListSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ListModel
+        fields = ('id', 'name', 'year', 'elements')

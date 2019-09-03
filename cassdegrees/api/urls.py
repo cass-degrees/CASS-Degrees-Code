@@ -26,5 +26,7 @@ urlpatterns = [
     path('model/subplan/<str:pk>/', SubplanRecord.as_view()),
     path('model/program/', ProgramList.as_view()),
     path('model/program/<str:pk>/', ProgramRecord.as_view()),
+    path('model/list/', ListList.as_view()),
+    path('model/list/<str:pk>/', ListRecord.as_view()),
     path('search/', search)
 ]

@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 
-from api.models import ProgramModel, SubplanModel, CourseModel
+from api.models import ProgramModel, SubplanModel, CourseModel, ListModel
 from django.db.models import Q
 from django.shortcuts import render
 
@@ -22,7 +22,8 @@ def data_dict_as_displayable(data):
     desired_columns = {
         'Program': ['id', 'code', 'year', 'name', 'units', 'lastUpdated'],
         'Subplan': ['id', 'code', 'year', 'name', 'planType', 'lastUpdated'],
-        'Course': ['id', 'code', 'year', 'name', 'units', 'lastUpdated']
+        'Course': ['id', 'code', 'year', 'name', 'units', 'lastUpdated'],
+        'List': ['id', 'name', 'year', 'lastUpdated']
     }
 
     for key, value in data.items():
@@ -67,7 +68,8 @@ def data_list(request):
                               {
                                   'Program': ProgramModel.objects.values(),
                                   'Subplan': SubplanModel.objects.values(),
-                                  'Course': CourseModel.objects.values()
+                                  'Course': CourseModel.objects.values(),
+                                  'List': ListModel.objects.values()
                               }
                           ),
                           'render': render_properties})
@@ -80,7 +82,7 @@ def data_list(request):
 
         # Create blank queries for text and dates (Allows AND relationship between dates and text)
         # The AND/OR representations are there to give higher priority to results that contain all keywords
-        new_query = {x: {'AND': Q(), 'OR': Q(), 'date': Q()} for x in ['Course', 'Subplan', 'Program']}
+        new_query = {x: {'AND': Q(), 'OR': Q(), 'date': Q()} for x in ['Course', 'Subplan', 'Program', 'List']}
 
         # Function that takes an input dict and a sub-query, and appends the sub-query based on the appropriate logic
         def build_query(target, q):

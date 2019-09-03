@@ -395,3 +395,57 @@ select.text{
     max-height: 3.6em;
     line-height: 1.8em;
 }
+
+/* https://medium.com/@hugodesigns/how-to-use-the-most-complete-selecting-solution-for-vue-js-f991b2605364 */
+.resources-list {
+  margin-top: 15px;
+  padding: 0;
+  list-style: none;
+}
+
+.resources-list li {
+  display: flex;
+  align-items: center;
+  min-height: 50px;
+  padding: 10px 40px 10px 0;
+  border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+  position: relative;
+}
+
+.resources-list li:last-child {
+  border-bottom: none;
+}
+
+.resources-list li .resource-title {
+  font-size: 1em;
+  color: #333;
+}
+
+.resources-list li .resource-description,
+.resources-list li .resource-url {
+  font-size: 0.8em;
+  color: #999;
+  margin-top: 5px;
+}
+
+.resources-list li .resource-url {
+  margin-top: 0;
+}
+
+.resources-list li .resource-description:empty {
+  display: none;
+}
+
+.resources-list li .delete-controls {
+  position: absolute;
+  right: 0;
+  width: 40px;
+  text-align: center;
+  color: #999;
+  cursor: pointer;
+}
+
+.resources-list li .delete-controls:hover,
+.resources-list li .delete-controls:focus {
+  color: red;
+}
