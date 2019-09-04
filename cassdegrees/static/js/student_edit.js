@@ -79,13 +79,15 @@ function prepareSubmit(action) {
     document.getElementById("plan-courses").value = JSON.stringify(course_codes);
     document.getElementById("action_to_perform").value = action;
 
-    if (action === "pdf") {
+    if (action === "pdf")
         // Ensure that the PDF opens in a new page
         document.getElementById("main-form").setAttribute("target", "_blank");
-    }
 
     document.getElementById("hidden_comments").value = document.getElementById("comments").value;
     document.getElementById("main-form").submit();
+   
+    if (action === "pdf")
+        document.getElementById("main-form").removeAttribute("target");
 }
 
 // Parses course codes from the document
@@ -200,12 +202,53 @@ interact('.dropzone').dropzone({
 
 
 // When selecting a sublan from a list of subplans, sets the chosen subplan as the saved value
-function subplanSelect(element){
+function subplanSelect(element, year){
     var inputField = element.parentNode;
     while (inputField.tagName !== 'INPUT') {
         inputField = inputField.previousSibling;
     }
     inputField.value = element.attributes['name'].value;
+
+    // Set the box values
+    var request = new XMLHttpRequest();
+    request.addEventListener("load", function() {
+        var rule = JSON.parse(request.response)[0]["rules"];
+        // Set the card to be the first 'div' block below the subplan entry field
+        var card = inputField.parentNode.nextSibling;
+        while (card.tagName !== 'DIV')
+            card = card.nextSibling;
+        // Iterate over each course list rule (e.g. [18 units from X, 6 units from Y])
+        for (var i=0; i<rule.length; i++){
+            // If the number of courses matches the unit count and an exact number of units needs to be completed
+            if (rule[i]["codes"].length*6 === parseInt(rule[i]["unit_count"]) && rule[i]["list_type"] === "exact"){
+                // For every compulsory course code, add that course to the next card
+                for (var j=0; j<rule[i]["codes"].length; j++){
+                    var course = rule[i]["codes"][j];
+                    card.childNodes[0].setAttribute("data-course-code", course);
+                    card.getElementsByClassName("course-code")[0].innerText = course;
+
+                    do {
+                        card = card.nextSibling
+                    } while (card.tagName !== 'DIV');
+                }
+            }
+        }
+        // Clear all remaining cards in the subplan
+        while(card.nextSibling) {
+            if (card.tagName === 'DIV')
+                clearCourse(card.childNodes[0]);
+            card = card.nextSibling;
+        }
+    });
+
+    // Function to sanitise course code
+    function parseCode(course){
+        return course.substring(0, 4)+parseInt(course.substring(4))
+    }
+
+    var code = inputField.value.split(' ', 1);
+    request.open("GET", "/api/search/?select=code,year,rules&from=subplan&year="+parseInt(year)+"&code="+parseCode(code));
+    request.send();
 }
 
 

@@ -56,7 +56,7 @@
     {% if rule.type == "subplan" %}
         {# Assume all subplans have equal units - else it wouldn't make sense for a complete program #}
         {% with subplan=subplans|index:rule.ids.0 %}
-            {% student_course_box subplan.units %}
+            {% include "widgets/subplan_choice.html" %}
         {%  endwith %}
     {% elif rule.type == "elective" %}
         {% student_course_box rule.unit_count %}

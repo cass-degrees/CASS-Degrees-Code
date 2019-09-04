@@ -22,132 +22,124 @@
 
     {# program is the full program object as selected by the user, superuser is if an authenticated #}
     {# user is logged in #}
-    <form action="" id="main-form" method="post" class="box bdr-solid bdr-uni auto-overflow">
-        {% csrf_token %}
+    <form action="" id="main-form" method="post" >
+        <div class="box bdr-solid bdr-uni auto-overflow">
+            {% csrf_token %}
 
-        <input type="hidden" id="plan-courses" name="plan_courses" value="{{ plan.plan_courses }}" />
-        <input type="hidden" name="program_id" value="{{ plan.program_id }}" />
-        <input type="hidden" id="hidden_comments" name="comments" value="{{ plan.comments }}" />
+            <input type="hidden" id="plan-courses" name="plan_courses" value="{{ plan.plan_courses }}" />
+            <input type="hidden" name="program_id" value="{{ plan.program_id }}" />
+            <input type="hidden" id="hidden_comments" name="comments" value="{{ plan.comments }}" />
 
-        <label for="plan-name">Name:</label>
-        <input id="plan-name" name="name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
-        &nbsp;|&nbsp;
-        <span>Last Edited: {{ plan.date }}</span>
+            <label for="plan-name">Name:</label>
+            <input id="plan-name" name="name" type="text" placeholder="e.g. {{ program.name }}" value="{{ plan.name }}"/>
+            &nbsp;|&nbsp;
+            <span>Last Edited: {{ plan.date }}</span>
 
-        <input type="hidden" id="action_to_perform" name="action">
+            <input type="hidden" id="action_to_perform" name="action">
 
-        <div class="float-right">
-            <input type="button" onclick="prepareSubmit('save')" class="btn-uni-grad btn-small" value="Save...">
-            <input type="button" onclick="prepareSubmit('pdf')" class="btn-uni-grad btn-small" value="Save as PDF...">
-            <input type="button" onclick="prepareSubmit('export')" class="btn-uni-grad btn-small" value="Export...">
-            {% if superuser %}
-                <input type="button" onclick="prepareSubmit('approve')" class="btn-uni-grad btn-small" value="Save & Approve...">
-            {% endif %}
-        </div>
-
-        <div>
-            {% for rule in program.rules %}
-                <br>
-                {% if rule.type == 'subplan' %}
-                    {% include "widgets/subplan_choice.html" %}
-                {% else %}
-                    <input type="hidden" name="plan_rules.{{ forloop.counter0 }}">
+            <div class="float-right">
+                <input type="button" onclick="prepareSubmit('save')" class="btn-uni-grad btn-small" value="Save...">
+                <input type="button" onclick="prepareSubmit('pdf')" class="btn-uni-grad btn-small" value="Save as PDF...">
+                <input type="button" onclick="prepareSubmit('export')" class="btn-uni-grad btn-small" value="Export...">
+                {% if superuser %}
+                    <input type="button" onclick="prepareSubmit('approve')" class="btn-uni-grad btn-small" value="Save & Approve...">
                 {% endif %}
-            {% endfor %}
+            </div>
         </div>
 
-    </form>
 
+        <div class="row">
+            <div class="col-xs-12 col-md-8">
+                <h3>Program</h3>
 
-    <div class="row">
-        <div class="col-xs-12 col-md-8">
-            <h3>Program</h3>
+                {% for rule in program.rules %}
+                    {% include "widgets/student_rules.html" %}
+                {% endfor %}
+            </div>
 
-            {% for rule in program.rules %}
-                {% include "widgets/student_rules.html" %}
-            {% endfor %}
-        </div>
+            <div class="col-md-4 border-on-md">
+                <div class="stay-on-screen">
+                    <h3>Courses</h3>
 
-        <div class="col-md-4 border-on-md">
-            <div class="stay-on-screen">
-                <h3>Courses</h3>
+                    <div id="courses">
+                        <div class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar custom_search_bar_full_length">
+                            <input class="text" onkeyup="searchQuery(this.value)"
+                                    onchange="searchQuery(this.value)" size="24" maxlength="75"
+                                   type="text" placeholder="Search...">
+                        </div>
 
-                <div id="courses">
-                    <div class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar custom_search_bar_full_length">
-                        <input class="text" onkeyup="searchQuery(this.value)"
-                                onchange="searchQuery(this.value)" size="24" maxlength="75"
-                               type="text" placeholder="Search...">
-                    </div>
-
-                    <div class="list">
-                        {% for course in courses %}
-                            <div class="draggable draggable-course" data-course-code="{{ course.code }}">
-                                <div class="card selectable-card">
-                                    <div class="box-solid">
-                                        <div class="card-content limit-card-size">
-                                            <b class="course-code">{{ course.code }}</b>
-                                            (<span class="course-units">{{ course.units }}</span> units)<br />
-                                            <span class="course-name">{{ course.name }}</span>
+                        <div class="list">
+                            {% for course in courses %}
+                                <div class="draggable draggable-course" data-course-code="{{ course.code }}">
+                                    <div class="card selectable-card">
+                                        <div class="box-solid">
+                                            <div class="card-content limit-card-size">
+                                                <b class="course-code">{{ course.code }}</b>
+                                                (<span class="course-units">{{ course.units }}</span> units)<br />
+                                                <span class="course-name">{{ course.name }}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
+
+
+                        <div class="pagination align-center"></div>
                     </div>
 
-
-                    <div class="pagination align-center"></div>
-                </div>
-
-                <i>Or some other credit not here:</i>
-                <div class="draggable draggable-course">
-                    <div class="card selectable-card">
-                        <div class="box-solid">
-                            <div class="card-content">
-                                <input type="text" class="full-width course-code-entry"
-                                       placeholder="Course code or short description" />
-                                <br />
-                                <input type="number" placeholder="Value..." min="0" step="6" max="1000" /> units
+                    <i>Or some other credit not here:</i>
+                    <div class="draggable draggable-course">
+                        <div class="card selectable-card">
+                            <div class="box-solid">
+                                <div class="card-content">
+                                    <input type="text" class="full-width course-code-entry"
+                                           placeholder="Course code or short description" />
+                                    <br />
+                                    <input type="number" placeholder="Value..." min="0" step="6" max="1000" /> units
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <h3>Additional Comments</h3>
+                    <p class="form-group anuform">
+                        <textarea id="comments" name="comments" class="comments"
+                                  placeholder="This is a comments section for additional information.">{{ plan.comments }}</textarea>
+                    </p>
                 </div>
-                <h3>Additional Comments</h3>
-                <p class="form-group anuform">
-                    <textarea id="comments" name="comments" class="comments"
-                              placeholder="This is a comments section for additional information.">{{ plan.comments }}</textarea>
-                </p>
             </div>
         </div>
-    </div>
 
-    {# Popup for copying plan link #}
-    {% if render.popup %}
-    <div id="plan_popup" class="modal">
-        <div class="modal-background"></div>
-        <div class="modal-card card">
-            <header class="box-header">
-                Plan Link
-            </header>
-            <div class="box-solid box-has-footer">
-                <div class="anuform w-full">
-                    Your plan link is:
-                    <textarea id="plan_link" readonly class="w-full no-overflow" rows=10>{{ render.popup }}</textarea>
+        {# Popup for copying plan link #}
+        {% if render.popup %}
+        <div id="plan_popup" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-card card">
+                <header class="box-header">
+                    Plan Link
+                </header>
+                <div class="box-solid box-has-footer">
+                    <div class="anuform w-full">
+                        Your plan link is:
+                        <textarea id="plan_link" readonly class="w-full no-overflow" rows=10>{{ render.popup }}</textarea>
+                    </div>
+                    <div id="modal_content"></div>
                 </div>
-                <div id="modal_content"></div>
+                <footer class="box-solid">
+                    <input type="button" id="copy_to_clipboard" class="btn-uni-grad btn-small" value="Copy to Clipboard" />
+                    <input type="button" id="close_modal" class="right btn-uni-grad btn-small" value="OK" />
+                </footer>
             </div>
-            <footer class="box-solid">
-                <input type="button" id="copy_to_clipboard" class="btn-uni-grad btn-small" value="Copy to Clipboard" />
-                <input type="button" id="close_modal" class="right btn-uni-grad btn-small" value="OK" />
-            </footer>
         </div>
-    </div>
-    {% endif %}
+        {% endif %}
+    </form>
 
     <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/fuse.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/interact.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/student_edit.js' %}" type="application/javascript"></script>
+    {% if render.popup %}
     <script type="application/javascript">setupPopup()</script>
+    {% endif %}
 
 {% endblock %}

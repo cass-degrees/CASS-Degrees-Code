@@ -49,5 +49,5 @@ def index(List, i):
 
 
 @register.filter
-def listIndex(List, i):
-    return List[i]
+def get(List, i):
+    return List[str(i)]
