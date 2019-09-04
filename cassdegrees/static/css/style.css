@@ -16,16 +16,17 @@
 .splash_menu_container {
     display: flex;
     padding-top: 20px;
-    flex-direction: row;
     justify-content: center;
     align-items: baseline;
+    flex-wrap: wrap;
 }
 
 .img_btn_container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: 12px;
+    width: 160px;
+    margin: 10px;
 }
 
 .comments {
