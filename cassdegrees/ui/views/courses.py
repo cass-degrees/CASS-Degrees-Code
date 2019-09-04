@@ -41,7 +41,7 @@ def create_course(request):
 
         if form.is_valid():
             form.save()
-            return redirect(list_course_url + '&msg=Successfully Added Course!')
+            return redirect(list_course_url + '&msg=Successfully Added a New Course: ' + form['code'].value() + '!')
 
     else:
         if duplicate:
@@ -160,9 +160,9 @@ def edit_course(request):
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
             if request.POST.get('redirect') == 'true':
-                return redirect(list_course_url + '&msg=Successfully Edited Course!')
+                return redirect(list_course_url + '&msg=Successfully Edited the Course: ' + form['code'].value() + '!')
             else:
-                message = "Successfully Edited Course!"
+                message = 'Successfully Edited The Course: ' + instance.code + '!'
 
     else:
         form = EditCourseFormSnippet(instance=instance)
