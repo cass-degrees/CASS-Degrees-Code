@@ -83,6 +83,13 @@
                 {# Course Rules #}
                 {% elif rule.type == 'course' %}
                     <p>
+                        {% if rule.list_type == "min" %}
+                            At least
+                        {% elif rule.list_type == "exact" %}
+                            Exactly
+                        {% elif rule.list_type == "max" %}
+                            No more than
+                        {% endif %}
                         {{ rule.unit_count }} units from the completion of the following courses:
                         <ul>
                             {% for course in rule.courses %}
