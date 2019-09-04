@@ -63,20 +63,18 @@
                 {# Program Rule #}
                 {% elif rule.type == 'program' %}
                     <p>Students must be studying a {{ rule.program.name }}</p>
-                {# Year-level Rule #}
-                {% elif rule.type == 'year_level' %}
+                {# elective Rule #}
+                {% elif rule.type == 'elective' %}
                     <p>
-                        Students must have completed {{ rule.unit_count }} units from
-                        {{ rule.year_level }}-level courses
-                    </p>
-                {# Subject-area Rule #}
-                {% elif rule.type == 'subject_area' %}
-                    <p>
-                        Students must have completed {{ rule.unit_count }} units of
-                        {% if rule.year_level != 'Any year-level' %}
+                        Students must complete {{ rule.unit_count }} units of
+                        {% if rule.year_level != 'all' %}
                             {{ rule.year_level }}-level
                         {% endif %}
-                        {{ rule.subject }} courses
+                        {% if rule.subject_area == 'all' %}
+                            elective courses offered by ANU
+                        {% else %}
+                            {{ rule.subject_area }} courses
+                        {% endif %}
                     </p>
                 {# Course-requisite Rule #}
                 {% elif rule.type == 'course_requisite' %}

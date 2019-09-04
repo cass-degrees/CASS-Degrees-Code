@@ -5,11 +5,19 @@
 <div class="box try-complete-box">
     {% if rule.type == "subplan" %}
         <p>Completion of {{ rule.kind }} for {{ rule.units }} units:</p>
-    {% elif rule.type == "subject_area" %}
-        {# https://stackoverflow.com/questions/4831306/need-to-convert-a-string-to-int-in-a-django-template #}
-        {# add:"0" needed to cast units to int #}
-        <p>Complete {{ rule.unit_count }} units from {% if rule.unit_count|add:"0" <= 6 %}a{% endif %}
-            {{ rule.subject }} course{% if rule.unit_count|add:"0" > 6 %}s{% endif %}:</p>
+    {% elif rule.type == 'elective' %}
+        <p>
+            {{ rule.unit_count }} units from
+            {% if rule.year_level != 'all' %}
+                {{ rule.year_level }}-level
+            {% endif %}
+            {% if rule.subject_area != 'all' %}
+                {{ rule.subject_area }}
+            {% else %}
+                elective
+            {% endif %}
+            courses:
+        </p>
     {% elif rule.type == "year_level" %}
         <p>Complete {{ rule.unit_count }} units from {% if rule.unit_count|add:"0" <= 6 %}a{% endif %}
             {{ rule.year_level }}-level course{% if rule.unit_count|add:"0" > 6 %}s{% endif %}:</p>
@@ -56,9 +64,7 @@
     {% with subplan=subplans|index:rule.ids.0 %}
         {% course_box subplan.units plan %}
     {% endwith %}
-{% elif rule.type == "subject_area" %}
-    {% course_box rule.unit_count plan %}
-{% elif rule.type == "year_level" %}
+{% elif rule.type == "elective" %}
     {% course_box rule.unit_count plan %}
 {% elif rule.type == "course" %}
     {% with courses_provided=rule.codes|length %}

@@ -14,7 +14,7 @@
             <select v-model="details.incompatible_courses[index]" v-on:change="check_options" required>
                 <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
             </select>
-            <input v-if="index != 0" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input v-if="details.incompatible_courses.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>
 
         <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
@@ -63,7 +63,7 @@
             <select v-model="details.ids[index]" v-on:change="check_options" required>
                 <option v-for="subplan in subplans" v-if="!program_year || subplan.year==program_year" v-bind:value="subplan.id">{{ subplan.name }} {{ subplan.year }} ({{ subplan.units }} units)</option>
             </select>
-            <input v-if="index != 0" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input v-if="details.ids.length > 1" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>
 
         <input type="button" v-on:click="add_subplan()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
@@ -125,69 +125,27 @@
     </fieldset>
 </script>
 
-<script type="text/x-template" id="subjectAreaRuleTemplate">
+<script type="text/x-template" id="electiveRuleTemplate">
     <fieldset v-if="!redraw">
-        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units">Unit count must be non-negative!</div>
         <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
         <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
-        <p class="form-group">
-            <label>
-                Students must complete...
-            </label>
-            <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
-            units
-        </p>
-
-
         <p>
-            from the following subject area:
-        </p>
-
-        <div>
-            <select v-model="details.subject" required>
-                <option v-for="subject_area in subject_areas" v-on:change="check_options" v-bind:value="subject_area">{{ subject_area }}</option>
-            </select>
-        </div>
-
-        <p>
-            within the following year-level:
-        </p>
-
-        <div>
-            <select v-model="details.year_level" v-on:change="check_options" required>
-                <option>Any year-level</option>
+            Students must complete
+            <input style="margin-left: 0;" class="text" v-on:change="check_options" onkeydown="javascript: return checkKeys(event)" type="number" min="0" step="6" max="1000" v-model="details.unit_count" aria-required="true" required>
+            units from
+            <select v-model="details.year_level" required>
+                <option value="all" selected>All</option>
                 <option v-for="year_level in number_of_year_levels" v-bind:value="year_level*1000">{{ year_level*1000 }}-level</option>
             </select>
-        </div>
-    </fieldset>
-</script>
-
-<script type="text/x-template" id="yearSpecificRuleTemplate">
-    <fieldset v-if="!redraw">
-        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
-        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
-        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
-
-        <p class="form-group">
-            <label>
-                Students must complete...
-            </label>
-            <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
-            units
-        </p>
-
-        <p>
-            from the following course year-level:
-        </p>
-
-        <div class="msg-error" v-if="invalid_course_year_level">Course Year-Level should be divisible by 1000!</div>
-
-        <div>
-            <select v-model="details.year_level" v-on:change="check_options" required>
-                <option v-for="year_level in number_of_year_levels" v-bind:value="year_level*1000">{{ year_level*1000 }}-level</option>
+            electives in
+            <select v-model="details.subject_area" required>
+                <option value="all" selected>Any</option>
+                <option v-for="subject_area in subject_areas" v-bind:value="subject_area">{{ subject_area }}</option>
             </select>
-        </div>
+            subject area.
+        </p>
     </fieldset>
 </script>
 

@@ -5,12 +5,11 @@ const ALL_COMPONENT_NAMES = {
     'incompatibility': "Incompatibility",
     'program': 'Program',
     'subplan': "Subplan",
-    'year_level': 'Level-Specific Units',
-    'subject_area': "Subject-Area Units",
     'course': "Course",
     'course_requisite': "Course",
     'custom_text': "Custom (Text)",
     'custom_text_req': "Custom (Text)",
+    'elective': "Elective Units",
     'either_or': "Either Or"
 };
 
@@ -21,8 +20,6 @@ const ALL_COMPONENT_HELP = {
     'subplan': "A rule which gives students a choice from a particular set of majors, minors, specialisations or " +
                "other subplans. The description here is used to describe the rule when displaying this rule to " +
                "students.",
-    'year_level': 'A rule which specifies that students must complete a number of units from a particular year level.',
-    'subject_area': "A rule which specifies that students must complete a number of units from a particular field.",
     'course': "A rule which specifies that students should pick a certain amount of units from a set of available " +
               "courses.",
     'course_requisite': "A rule which specifies that students should have taken a set of courses before taking this " +
@@ -33,6 +30,8 @@ const ALL_COMPONENT_HELP = {
     'custom_text_req': "If other rules don't entirely fit the requirements of a rule, the custom text field allows " +
                        "for the specification of other program content. Note that this isn't enforced in student-facing " +
                        "tools.",
+    'elective': "A rule which allows students to choose any courses offered by the ANU as electives to fill a set" +
+                " amount of units.",
     'either_or': "A rule which allows for the specification of sets of different paths that students can take. Each " +
                  "\"OR\" group is a collection of rules which must be completed if students were to pick that specific " +
                  "group."
@@ -41,28 +40,25 @@ const ALL_COMPONENT_HELP = {
 // Translation table between internal names for components and human readable ones.
 const COMPONENT_NAMES = {
     'subplan': "Subplan",
-    'year_level': 'Level-Specific Units',
-    'subject_area': "Subject-Area Units",
     'course': "Course",
     'custom_text': "Custom (Text)",
+    'elective': "Elective",
     'either_or': "Either Or"
 };
 
 // For either rule, list everything in the drop down menu except the "Either" option, or recursion will occur.
 const EITHER_OR_COMPONENT_NAMES = {
     'subplan': "Subplan",
-    'year_level': 'Level-Specific Units',
-    'subject_area': "Subject-Area Units",
     'course': "Course",
-    'custom_text': "Custom (Text)"
+    'custom_text': "Custom (Text)",
+    'elective': "Elective"
 };
 
 //
 const REQUISITE_COMPONENT_NAMES = {
     'incompatibility': "Incompatibility",
     'program': 'Program',
-    'year_level': 'Level-Specific Units',
-    'subject_area': "Subject-Area Units",
+    'elective': "Elective",
     'course_requisite': "Course",
     'custom_text_req': "Custom (Text)",
     'either_or': "Either Or"
@@ -70,8 +66,7 @@ const REQUISITE_COMPONENT_NAMES = {
 
 const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
     'program': 'Program',
-    'year_level': 'Level-Specific Units',
-    'subject_area': "Subject-Area Units",
+    'elective': "Elective",
     'course_requisite': "Course",
     'custom_text_req': "Custom (Text)"
 };
@@ -584,19 +579,23 @@ Vue.component('rule_course_requisite', {
     template: '#courseRequisiteTemplate'
 });
 
-Vue.component('rule_subject_area', {
+Vue.component('rule_elective', {
     props: {
         "details": {
             type: Object,
 
             validator: function (value) {
                 // Ensure that the object has all the attributes we need
-                if (!value.hasOwnProperty("subject")) {
-                    value.subject = "";
+                if (!value.hasOwnProperty("unit_count")) {
+                    value.unit_count = 0;
+                }
+
+                if (!value.hasOwnProperty("subject_area")) {
+                    value.subject_area = "all";
                 }
 
                 if (!value.hasOwnProperty("year_level")) {
-                    value.year_level = null;
+                    value.year_level = "all";
                 }
 
                 return true;
@@ -617,7 +616,6 @@ Vue.component('rule_subject_area', {
         }
     },
     created: function() {
-        // Javascript has the best indirection...
         var rule = this;
 
         var request = new XMLHttpRequest();
@@ -644,14 +642,16 @@ Vue.component('rule_subject_area', {
     methods: {
         check_options: function() {
             // Ensure all data has been filled in
-            this.is_blank = this.details.unit_count == null;
-            this.is_blank = this.is_blank || this.details.subject === "";
-            this.is_blank = this.is_blank || this.details.year_level == null;
+            this.is_blank = this.details.unit_count === "";
 
             // Ensure Unit Count is valid:
-            if (this.details.unit_count != null) {
-                this.invalid_units = this.details.unit_count <= 0;
+            if (this.details.unit_count !== "") {
+                this.invalid_units = this.details.unit_count < 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
+            }
+            else{
+                this.invalid_units = false;
+                this.invalid_units_step = false;
             }
 
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
@@ -665,68 +665,7 @@ Vue.component('rule_subject_area', {
             });
         }
     },
-    template: '#subjectAreaRuleTemplate'
-});
-
-Vue.component('rule_year_level', {
-    props: {
-        "details": {
-            type: Object,
-
-            validator: function (value) {
-                // Ensure that the object has all the attributes we need
-                if (!value.hasOwnProperty("year_level")) {
-                    value.year_level = null;
-                }
-
-                return true;
-            }
-        }
-    },
-    data: function() {
-        return {
-            "number_of_year_levels": 9,
-
-            // Display related warnings if true
-            "invalid_units": false,
-            "invalid_units_step": false,
-            "invalid_course_year_level": false,
-            "is_blank": false,
-
-            "redraw": false
-        }
-    },
-    created: function() {
-        this.check_options();
-    },
-    methods: {
-        check_options: function() {
-            // Ensure all data has been filled in
-            this.is_blank = this.details.unit_count == null;
-            this.is_blank = this.is_blank || this.details.year_level == null;
-
-            // Ensure Unit Count is valid:
-            if (this.details.unit_count != null) {
-                this.invalid_units = this.details.unit_count <= 0;
-                this.invalid_units_step = this.details.unit_count % 6 !== 0;
-            }
-            // Ensure Course Year Level Input is valid
-            if (this.details.year_level != null) {
-                this.invalid_course_year_level = this.details.year_level % 1000 !== 0;
-            }
-
-            return !this.invalid_units && !this.invalid_units_step && !this.invalid_course_year_level && !this.is_blank;
-        },
-        // https://michaelnthiessen.com/force-re-render/
-        do_redraw: function() {
-            this.redraw = true;
-
-            this.$nextTick(() => {
-                this.redraw = false;
-            });
-        }
-    },
-    template: '#yearSpecificRuleTemplate'
+    template: '#electiveRuleTemplate'
 });
 
 Vue.component('rule_custom_text', {

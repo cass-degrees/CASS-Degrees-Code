@@ -45,7 +45,8 @@ def create_subplan(request):
             if request.session.get('cached_program_form_data', ''):
                 return redirect(request.session.get('cached_program_form_source', '/'))
             else:
-                return redirect(list_subplan_url + '&msg=Successfully Added Subplan!')
+                return redirect(list_subplan_url + '&msg=Successfully Added a New Subplan: '
+                                                   '{} ({})!'.format(form['name'].value(), form['code'].value()))
 
     else:
         if duplicate:
@@ -143,9 +144,11 @@ def edit_subplan(request):
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
             if request.POST.get('redirect') == 'true':
-                return redirect(list_subplan_url + '&msg=Successfully Edited Subplan!')
+                return redirect(list_subplan_url + '&msg=Successfully Edited the Subplan: {} ({})!'
+                                .format(form['name'].value(), form['code'].value()))
             else:
-                message = "Successfully Edited Subplan!"
+                message = 'Successfully Edited The Subplan: {} ({})!'\
+                    .format(form['name'].value(), form['code'].value())
 
     else:
         form = EditSubplanFormSnippet(instance=instance)

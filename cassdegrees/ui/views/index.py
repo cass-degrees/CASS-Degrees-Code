@@ -20,7 +20,4 @@ def index(request):
         {'url': staff_url_prefix + "bulk_upload/", 'kind': "fas fa-sign-in-alt", 'label': "Bulk Upload"}
     ]
 
-    # Dynamically calculate expected width for buttons
-    element_width = str(100 / len(buttons)) + "%"
-
-    return render(request, 'index.html', context={'buttons': buttons, 'element_width': element_width})
+    return render(request, 'index.html', context={'buttons': buttons})

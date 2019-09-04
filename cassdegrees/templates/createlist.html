@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{% if edit %}Edit{% else %}Create{% endif %} List{% endblock %}
+
+{% block subtitle %}{% if edit %}Edit{% else %}Create{% endif %} List{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb '/staff' 'Staff Home' %}
+    {% breadcrumb '/staff/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% if edit %}
+        {% finalcrumb 'Edit List' %}
+    {% else %}
+        {% finalcrumb 'Create List' %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <script src="{% static "js/vue.js" %}"></script>
+    <script src="{% static "js/vue-multiselect.js" %}"></script>
+    <script src="{% static "js/vue-resource.js" %}"></script>
+    <link rel="stylesheet" href="{% static "css/vue-multiselect.css" %}">
+
+    {% if render.msg != None %}
+        <p class="msg-success">{{ render.msg }}</p>
+    {% endif %}
+
+    {% for error in form.non_field_errors %}
+        <p class="msg-error">{{ error }}</p>
+    {% endfor %}
+
+    <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;" autocomplete="off">
+        {% csrf_token %}
+
+        <input type="hidden" id="redirect" name="redirect">
+
+        <fieldset>
+            <legend>Configure List Details</legend>
+
+            {{ form.management_form }}
+
+            {% for field in form %}
+                <p class="form-group">
+                    {% if not field.is_hidden %}
+                        {{ field.label_tag }}
+                    {% endif %}
+                    {{ field }}
+                </p>
+                {% for error in field.errors %}
+                    <div class="msg-error inline-error">{{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            <br>
+            {# Insert a list creation widget to populate a background List.Elements hidden field #}
+            {# Todo: make list.element field id generation dynamic #}
+            {% include "widgets/courselistingwidget.html" with app_name="app" %}
+
+        </fieldset>
+    </form>
+
+    <p class="text-right">
+        <input class="btn-uni-grad btn-large" type="button" value="Cancel"
+               onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
+        {% if edit %}
+            <input class="btn-uni-grad btn-large" type="submit" value="Save"
+                   onclick="submit_form(this.value, false)">
+        {% endif %}
+        <input class="btn-uni-grad btn-large" type="submit"
+               value="{% if edit %}Save and Exit{% else %}Create{% endif %}"
+               onclick="submit_form(this.value, true)">
+    </p>
+
+    <script>
+        function submit_form(form_action, redirect) {
+            document.getElementById('mainForm').action.value = form_action;
+            document.getElementById('redirect').value = redirect;
+            document.getElementById('mainForm').submit();
+            return true;
+        }
+    </script>
+
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
+
+{% endblock %}

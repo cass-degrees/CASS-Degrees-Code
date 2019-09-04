@@ -244,14 +244,11 @@ def new_plan_from_request(request_post):
             if len(key.split('.')) > 1:
                 key_list = key.split('.')
                 key_name = key_list[0]
-                key_index = int(key_list[1])
+                key_index = key_list[1]
 
-                if key_index == 0:
-                    list = []
-                else:
-                    list = plan[key_name]
-                list.append(request_post[key])
-                plan[key_name] = list
+                if not plan.get(key_name, None):
+                    plan[key_name] = {}
+                plan[key_name][key_index] = request_post[key]
             else:
                 plan[key] = request_post[key]
     return plan
