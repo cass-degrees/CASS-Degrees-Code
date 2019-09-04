@@ -90,21 +90,25 @@
                             {% endfor %}
                         </ul>
                     </p>
-                {# Year-level Rules #}
-                {% elif rule.type == 'year_level' %}
-                    <p>{{ rule.unit_count }} units from completion of {{ rule.year_level }}-level courses</p>
-                {# Subject-area Rules #}
-                {% elif rule.type == 'subject_area' %}
+                {# Elective Rules #}
+                {% elif rule.type == 'elective' %}
                     <p>
                         {{ rule.unit_count }} units from completion of
-                        {% if rule.year_level != 'Any year-level' %}
+                        {% if rule.year_level != 'all' %}
                             {{ rule.year_level }}-level
                         {% endif %}
-                        {{ rule.subject }} courses
+                        {% if rule.subject_area == 'all' %}
+                            elective courses offered by ANU
+                        {% else %}
+                            courses in the subject area {{ rule.subject_area }}
+                        {% endif %}
                     </p>
                 {# Custom-text Rules #}
                 {% elif rule.type == "custom_text" %}
                     <p>{{ rule.units }} units from {{ rule.text }}</p>
+                {# Elective Rules #}
+                {% elif rule.type == "elective" %}
+                    <p>{{ rule.units }} units from the completion of elective courses offered by the ANU</p>
                 {# Either-or Rules #}
                 {% elif rule.type == 'either_or' %}
                     Either:
@@ -137,20 +141,18 @@
                                             {% endfor %}
                                         </ul>
                                     </p>
-                                {# Year-level Or Rule #}
-                                {% elif sub_rule.type == 'year_level' %}
+                                {# Elective Or Rule #}
+                                {% elif rule.type == 'elective' %}
                                     <p>
-                                        {{ sub_rule.unit_count }} units from completion of
-                                        {{ sub_rule.year_level }}-level courses
-                                    </p>
-                                {# Subject-area Or Rule #}
-                                {% elif sub_rule.type == 'subject_area' %}
-                                    <p>
-                                        {{ sub_rule.unit_count }} units from completion of
-                                        {% if sub_rule.year_level != 'Any year-level' %}
-                                            {{ sub_rule.year_level }}-level
+                                        {{ rule.unit_count }} units from completion of
+                                        {% if rule.year_level != 'all' %}
+                                            {{ rule.year_level }}-level
                                         {% endif %}
-                                        {{ sub_rule.subject }} courses
+                                        {% if rule.subject_area == 'all' %}
+                                            elective courses offered by ANU
+                                        {% else %}
+                                            courses in the subject area {{ rule.subject_area }}
+                                        {% endif %}
                                     </p>
                                 {# Custom-text Or Rule #}
                                 {% elif sub_rule.type == "custom_text" %}
