@@ -54,7 +54,7 @@ def create_subplan(request):
         else:
             form = EditSubplanFormSnippet()
 
-    return render(request, 'createsubplan.html', context={
+    return render(request, 'staff/creation/createsubplan.html', context={
         "form": form
     })
 
@@ -116,7 +116,7 @@ def delete_subplan(request):
 
         return redirect(list_subplan_url + '&msg=Successfully Deleted Subplan(s)!')
     else:
-        return render(request, 'deletesubplans.html', context={
+        return render(request, 'staff/delete/deletesubplans.html', context={
             "instances": instances
         })
 
@@ -153,7 +153,7 @@ def edit_subplan(request):
     else:
         form = EditSubplanFormSnippet(instance=instance)
 
-    return render(request, 'createsubplan.html', context={
+    return render(request, 'staff/creation/createsubplan.html', context={
         'render': {'msg': message},
         "edit": True,
         "form": form

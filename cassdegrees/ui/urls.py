@@ -15,17 +15,16 @@ Including another URLconf
 """
 from django.urls import path
 
-from .views.bulk_data_upload import *
-from .views.courses import *
-from .views.index import *
-from .views.listings import *
+from .views.staff.bulk_data_upload import *
+from .views.staff.courses import *
+from .views.staff.index import *
+from .views.staff.listings import *
+from .views.staff.programs import *
+from .views.staff.subplans import *
+from .views.staff.view import *
+from .views.staff.lists import *
 from .views.pdf import *
-from .views.programs import *
-from .views.sampleform import *
-from .views.subplans import *
-from .views.view_ import *
 from .views.student import *
-from .views.lists import *
 
 staff_url_prefix = "staff/"
 
@@ -37,7 +36,6 @@ urlpatterns = [
     path('delete/', student_delete),
 
     path(staff_url_prefix, index),
-    path(staff_url_prefix + 'sampleform/', sampleform),
     path(staff_url_prefix + 'create/course/', create_course),
     path(staff_url_prefix + 'create/program/', create_program),
     path(staff_url_prefix + 'create/subplan/', create_subplan),
@@ -51,8 +49,8 @@ urlpatterns = [
     path(staff_url_prefix + 'edit/list/', edit_list),
     path(staff_url_prefix + 'list/', data_list),
     path(staff_url_prefix + 'bulk_upload/', bulk_data_upload),
-    path(staff_url_prefix + 'view/program/', view_),
-    path(staff_url_prefix + 'view/subplan/', view_),
-    path(staff_url_prefix + 'view/course/', view_),
+    path(staff_url_prefix + 'view/program/', view_section),
+    path(staff_url_prefix + 'view/subplan/', view_section),
+    path(staff_url_prefix + 'view/course/', view_section),
     path(staff_url_prefix + 'pdf/program/', view_program_pdf),
 ]

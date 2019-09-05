@@ -48,7 +48,7 @@ def create_list(request):
         else:
             form = EditListFormSnippet()
 
-    return render(request, 'createlist.html', context={
+    return render(request, 'staff/creation/createlist.html', context={
         "edit": False,
         "form": form,
     })
@@ -99,7 +99,7 @@ def edit_list(request):
         else:
             form = EditListFormSnippet(instance=instance)
 
-    return render(request, 'createlist.html', context={
+    return render(request, 'staff/creation/createlist.html', context={
         'render': {'msg': message},
         "edit": True,
         "form": form,

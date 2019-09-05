@@ -53,7 +53,7 @@
                 <h3>Program</h3>
 
                 {% for rule in program.rules %}
-                    {% include "widgets/student_rules.html" %}
+                    {% include "widgets/student/rules.html" %}
                 {% endfor %}
             </div>
 
@@ -134,10 +134,10 @@
         {% endif %}
     </form>
 
-    <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
-    <script src="{% static 'js/fuse.js' %}" type="application/javascript"></script>
-    <script src="{% static 'js/interact.js' %}" type="application/javascript"></script>
-    <script src="{% static 'js/student_edit.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/vendor/list.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/vendor/fuse.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/vendor/interact.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/student/edit.js' %}" type="application/javascript"></script>
     {% if render.popup %}
     <script type="application/javascript">setupPopup()</script>
     {% endif %}

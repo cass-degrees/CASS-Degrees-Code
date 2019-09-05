@@ -62,7 +62,7 @@ def data_list(request):
     }
     # No search, render default page
     if not query:
-        return render(request, 'list.html',
+        return render(request, 'staff/list.html',
                       context={
                           'data': data_dict_as_displayable(
                               {
@@ -133,5 +133,5 @@ def data_list(request):
         data = {k: v for k, v in data.items() if v}
 
         # Render the requested data and autofill the query in the search
-        return render(request, 'list.html', context={'autofill': query, 'data': data_dict_as_displayable(data),
+        return render(request, 'staff/list.html', context={'autofill': query, 'data': data_dict_as_displayable(data),
                                                      'render': render_properties})

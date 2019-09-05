@@ -8,7 +8,7 @@
     <rule_container v-bind:rules="rules" />
 </fieldset>
 
-{% include "widgets/rulescripts.html" %}
+{% include "widgets/staff/rulescripts.html" %}
 {% verbatim %}
 <script type="text/x-template" id="eitherOrTemplate">
     <div v-if="!redraw">
@@ -94,8 +94,8 @@
 </script>
 {% endverbatim %}
 
-<script src="{% static 'js/vue.js' %}" type="application/javascript"></script>
-<script src="{% static 'js/rules.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/vendor/vue.js' %}" type="application/javascript"></script>
+<script src="{% static 'js/staff/rules.js' %}" type="application/javascript"></script>
 
 {% if rules != None %}
     <script>

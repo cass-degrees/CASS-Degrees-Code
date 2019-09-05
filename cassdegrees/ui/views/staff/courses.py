@@ -49,7 +49,7 @@ def create_course(request):
         else:
             form = EditCourseFormSnippet()
 
-    return render(request, 'createcourse.html', context={
+    return render(request, 'staff/creation/createcourse.html', context={
         "edit": False,
         "form": form,
         "courses": CourseModel.objects.values()
@@ -114,7 +114,7 @@ def delete_course(request):
 
         return redirect(list_course_url + '&msg=Successfully Deleted Course(s)!')
     else:
-        return render(request, 'deletecourses.html', context={
+        return render(request, 'staff/delete/deletecourses.html', context={
             "instances": instances
         })
 
@@ -168,7 +168,7 @@ def edit_course(request):
         form = EditCourseFormSnippet(instance=instance)
         form.fields['code'].disabled = len(programs) + len(subplans) > 0
 
-    return render(request, 'createcourse.html', context={
+    return render(request, 'staff/creation/createcourse.html', context={
         'render': {'msg': message},
         "edit": True,
         "form": form,

@@ -53,7 +53,7 @@ def pretty_print_rules(program):
                         rule['courses'] += courses
 
 
-def view_(request):
+def view_section(request):
     """
     Upon navigating to the view page for a given course, subplan, or program,
     this function will pull the requisite information about the item and return it
@@ -68,7 +68,7 @@ def view_(request):
 
     if "course" in url:
         course = model_to_dict(CourseModel.objects.get(id=int(id_to_edit)))
-        return render(request, 'viewcourse.html', context={'data': course})
+        return render(request, 'staff/view/viewcourse.html', context={'data': course})
 
     elif "subplan" in url:
         # Create a request template to use for getting each course
@@ -84,7 +84,7 @@ def view_(request):
                 courses = json.loads(search(gen_request).content.decode())
                 rule['courses'] += courses
 
-        return render(request, 'viewsubplan.html', context={'data': subplan})
+        return render(request, 'staff/view/viewsubplan.html', context={'data': subplan})
 
     elif "program" in url:
         program = model_to_dict(ProgramModel.objects.get(id=int(id_to_edit)))
@@ -92,4 +92,4 @@ def view_(request):
         pretty_print_reqs(program)
         pretty_print_rules(program)
 
-        return render(request, 'viewprogram.html', context={'data': program})
+        return render(request, 'staff/view/viewprogram.html', context={'data': program})

@@ -38,7 +38,7 @@
         {% for group in rule.either_or %}
             <div class="left-box" style="padding-left: 40px;">
                 {% for rule in group %}
-                    {% include "widgets/student_rules.html" %}
+                    {% include "widgets/student/rules.html" %}
                 {% endfor %}
             </div>
 
@@ -56,7 +56,7 @@
     {% if rule.type == "subplan" %}
         {# Assume all subplans have equal units - else it wouldn't make sense for a complete program #}
         {% with subplan=subplans|index:rule.ids.0 %}
-            {% include "widgets/subplan_choice.html" %}
+            {% include "widgets/student/subplan_choice.html" %}
         {%  endwith %}
     {% elif rule.type == "elective" %}
         {% student_course_box rule.unit_count %}

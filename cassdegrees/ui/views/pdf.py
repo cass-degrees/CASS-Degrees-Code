@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django_weasyprint import WeasyTemplateResponse
 from django.forms.models import model_to_dict
 
-from ui.views.view_ import pretty_print_reqs, pretty_print_rules
+from ui.views.staff.view import pretty_print_reqs, pretty_print_rules
 
 
 def view_program_pdf(request):

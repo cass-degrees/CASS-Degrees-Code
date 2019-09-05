@@ -20,4 +20,4 @@ def index(request):
         {'url': staff_url_prefix + "bulk_upload/", 'kind': "fas fa-sign-in-alt", 'label': "Bulk Upload"}
     ]
 
-    return render(request, 'index.html', context={'buttons': buttons})
+    return render(request, 'staff/index.html', context={'buttons': buttons})

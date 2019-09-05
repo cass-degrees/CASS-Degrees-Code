@@ -45,7 +45,8 @@
         </ul>
     </div>
 
-    <script src="{% static 'js/list.js' %}" type="application/javascript"></script>
+    <script src="{% static 'js/vendor/list.js' %}" type="application/javascript"></script>
+
     {# Generates table instances for each table in 'data', as well as the appropriate settings to keep it hidden #}
     {% for title, content in data.items %}
         <div id="{{ title }}Table" hidden>

@@ -5,7 +5,7 @@ from django.http import HttpResponseNotFound, HttpRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 
 from ui.forms import EditProgramFormSnippet
-from ui.views.subplans import create_subplan
+from ui.views.staff.subplans import create_subplan
 from django.utils import timezone
 
 staff_url_prefix = "/staff/"
@@ -63,7 +63,7 @@ def create_program(request):
             else:
                 form = EditProgramFormSnippet()
 
-    return render(request, 'createprogram.html', context={
+    return render(request, 'staff/creation/createprogram.html', context={
         "edit": False,
         "form": form,
         "render_separately": ["staffNotes", "studentNotes"]
@@ -87,7 +87,7 @@ def delete_program(request):
 
         return redirect(list_program_url + '&msg=Successfully Deleted Program(s)!')
     else:
-        return render(request, 'deleteprograms.html', context={
+        return render(request, 'staff/delete/deleteprograms.html', context={
             "instances": instances
         })
 
@@ -139,7 +139,7 @@ def edit_program(request):
         else:
             form = EditProgramFormSnippet(instance=instance)
 
-    return render(request, 'createprogram.html', context={
+    return render(request, 'staff/creation/createprogram.html', context={
         'render': {'msg': message},
         "edit": True,
         "form": form,

@@ -285,4 +285,4 @@ def bulk_data_upload(request):
                                   "or the format of the file is incorrect. Please try again."
             context['err_type'] = "error"
 
-    return render(request, 'bulkupload.html', context=context)
+    return render(request, 'staff/bulkupload.html', context=context)
