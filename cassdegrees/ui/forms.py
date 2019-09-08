@@ -291,21 +291,46 @@ class EditCourseFormSnippet(ModelForm):
 
     class Meta:
         model = CourseModel
-        fields = ('code', 'year', 'name', 'units', 'offeredSem1', 'offeredSem2', 'rules')
+        fields = ('code',
+                  'name',
+                  'units',
+                  'offeredYears',
+                  'offeredSem1',
+                  'offeredSem2',
+                  'offeredSummer',
+                  'offeredAutumn',
+                  'offeredWinter',
+                  'offeredSpring',
+                  'otherOffering',
+                  'currentlyActive',
+                  'rules')
+
+        offered_years_choices = [
+            ("ALL", "Every Year"),
+            ("ODD", "Odd Years"),
+            ("EVEN", "Even Years"),
+            ("OTHER", "Other/Unknown")
+        ]
+
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
-            'year': forms.NumberInput(attrs={'class': "text tfull",
-                                             'onkeydown': "javascript: return checkKeys(event)",
-                                             'type': "number"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
             'units': forms.NumberInput(attrs={'class': "text tfull",
                                               'onkeydown': "javascript: return checkKeys(event)",
-                                              'type': "number"})
+                                              'type': "number"}),
+            'offeredYears': forms.Select(choices=offered_years_choices)
         }
         labels = {
+            'offeredYears': "Years Offered",
             'offeredSem1': "Offered in Semester 1",
             'offeredSem2': "Offered in Semester 2",
+            'offeredSummer': "Offered in Summer",
+            'offeredAutumn': "Offered in Autumn",
+            'offeredWinter': "Offered in Winter",
+            'offeredSpring': "Offered in Spring",
+            'otherOffering': "Other/Unknown Offering",
+            'currentlyActive': "Currently Active Course",
         }
         error_messages = {
             NON_FIELD_ERRORS: {
@@ -325,12 +350,6 @@ class EditCourseFormSnippet(ModelForm):
         if len(data) == 9 and not data[-1:].isalpha():
             raise forms.ValidationError("Extra Key should be a letter e.g. A, B, C")
         return data.upper()
-
-    def clean_year(self):
-        data = self.cleaned_data['year']
-        if data < 2000 or data > 3000:
-            raise forms.ValidationError("This should be between 2000-3000!")
-        return data
 
     def clean_name(self):
         data = self.cleaned_data['name']

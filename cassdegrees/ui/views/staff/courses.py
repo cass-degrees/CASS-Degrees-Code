@@ -64,7 +64,7 @@ def delete_course(request):
     gen_request = HttpRequest()
 
     # Grab all the courses in the database
-    gen_request.GET = {'select': 'id,code,year', 'from': 'course'}
+    gen_request.GET = {'select': 'id,code', 'from': 'course'}
     courses = json.loads(search(gen_request).content.decode())
 
     # ids of all the courses that were selected to be deleted
@@ -92,14 +92,12 @@ def delete_course(request):
                 # compose error message
                 if len(subplans) > 0:
                     for subplan in subplans:
-                        error_msg += "Course Code: '" + course['code'] + "'(" + str(course['year']) + \
-                                     ") is used by Subplan Code: '" + subplan['code'] + "'(" + \
-                                     str(subplan['year']) + ").\n"
+                        error_msg += "Course Code: '" + course['code'] + " is used by Subplan Code: '" + \
+                                     subplan['code'] + "'(" + str(subplan['year']) + ").\n"
                 if len(programs) > 0:
                     for program in programs:
-                        error_msg += "Course Code: '" + course['code'] + "'(" + str(course['year']) + \
-                                     ") is used by Program Code: '" + program['code'] + "'(" + \
-                                     str(program['year']) + ").\n"
+                        error_msg += "Course Code: '" + course['code'] + " is used by Program Code: '" + \
+                                     program['code'] + "'(" + str(program['year']) + ").\n"
                 continue  # dont append course to the list instances
         instances.append(CourseModel.objects.get(id=course['id']))
 

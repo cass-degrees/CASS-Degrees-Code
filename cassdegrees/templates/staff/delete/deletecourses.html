@@ -25,7 +25,7 @@
 
             {% for instance in instances %}
                 <p class="marginleft">
-                    {{ instance.name }} ({{ instance.code }}) in {{ instance.year }}
+                    {{ instance.name }} ({{ instance.code }})
                 </p>
                 <input type="number" hidden value="{{ instance.id }}" name="id" />
             {% endfor %}
