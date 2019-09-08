@@ -13,6 +13,10 @@
 {% block subtitle %}Are You Sure?{% endblock %}
 
 {% block content %}
+    {% if render.error != None %}
+        <p class="msg-error">{{ render.error|linebreaksbr }}</p>
+    {% endif %}
+
     <form % class="anuform" action="" method="post">
         {% csrf_token %}
 

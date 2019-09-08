@@ -59,7 +59,6 @@ def create_course(request):
 @login_required
 def delete_course(request):
     data = request.POST
-    instances = []
 
     # Generate an internal request to search api made by Jack
     gen_request = HttpRequest()
@@ -104,7 +103,7 @@ def delete_course(request):
                 continue  # dont append course to the list instances
         instances.append(CourseModel.objects.get(id=course['id']))
 
-    if len(error_msg) > 0:
+    if len(error_msg) > 0 and not instances:
         return redirect(list_course_url + '&error=Failed to Delete Course(s)!'
                                           '\n' + error_msg + '\nPlease check dependencies!')
 
@@ -114,8 +113,13 @@ def delete_course(request):
 
         return redirect(list_course_url + '&msg=Successfully Deleted Course(s)!')
     else:
+        render_properties = {}
+        if error_msg:
+            render_properties['error'] = \
+                'The following courses cannot be deleted:\n' + error_msg + '\nPlease check dependencies!'
+
         return render(request, 'staff/delete/deletecourses.html', context={
-            "instances": instances
+            "instances": instances, "render": render_properties
         })
 
 
