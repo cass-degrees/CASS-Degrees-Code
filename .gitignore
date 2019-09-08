@@ -1,7 +1,7 @@
 .idea/
 venv/
 cassdegrees/cassdegrees/__pycache__/
-cassdegrees/api/migrations/
+cassdegrees/api/migrations/*
 !cassdegrees/api/migrations/__init__.py
 
 __pycache__/
