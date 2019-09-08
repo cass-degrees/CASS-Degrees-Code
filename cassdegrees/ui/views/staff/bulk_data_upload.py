@@ -11,8 +11,8 @@ from django.shortcuts import render
 # Note that column order does not matter, as long as data corresponds to the order of the first row.
 
 # Courses:
-# code%year%name%units%offeredSem1%offeredSem2
-# ARTS1001%2019%Introduction to Arts%6%True%False
+# code%name%units%offeredYears%offeredSem1%offeredSem2%offeredSummer%offeredAutumn%offeredWinter%offeredSpring%otherOffering
+# ARTS1001%Introduction to Arts%6%ALL%True%False%True%True%True%True%False
 # ...
 
 # Subplans:
@@ -70,98 +70,136 @@ def bulk_data_upload(request):
             # If the uploaded excel sheet is in format of what CASS already has, do special processing.
             # Change this if statement when the checkbox is implemented.
             if cass_course_custom_format:
-                year_range_found = False
                 columns_set = False
                 col_index = dict()
-                col_counter = 0
-
-                start_year = int()
-                end_year = int()
 
                 # Add columns that are matching the custom format designed in this script, detailed in line 10 - 26.
-                uploaded_file.append(["code", "year", "name", "units", "offeredSem1", "offeredSem2"])
+                uploaded_file.append([
+                    "code",
+                    "name",
+                    "units",
+                    "offeredYears",
+                    "offeredSem1",
+                    "offeredSem2",
+                    "offeredSummer",
+                    "offeredAutumn",
+                    "offeredWinter",
+                    "offeredSpring",
+                    "otherOffering"
+                ])
                 for row in sheet.iter_rows():
-
-                    sem_offer_value = ""
-                    if columns_set:
-                        sem_offer_value = row[col_index["Semesters"]].value
-
-                    # This is the initialisation phase,
-                    # where the file reader determines the year ranges and column positions.
-                    if not year_range_found or not columns_set:
+                    # This is the initialisation phase, where the file reader determines the column positions.
+                    col_counter = 0
+                    if not columns_set:
                         for cell in row:
-                            # Split the string in the first line of the excel sheet to get start and end years.
-                            if not year_range_found:
-                                if cell.value is not None:
-                                    stripped_title = cell.value.split()
-
-                                    # Only extract years if we found the right cell
-                                    if " ".join(stripped_title[0:5]) == "CASS 3 Year Teaching Plan:":
-                                        start_year = int(stripped_title[-3])
-                                        end_year = int(stripped_title[-1])
-
-                                        year_range_found = True
-
-                            # Once the year range is set, then determine the column positions of the excel sheet.
-                            elif not columns_set:
+                            # Determine the column positions of the excel sheet.
+                            if not columns_set:
                                 if cell.value is not None:
                                     # Find and store the index of all the column positions
                                     col_index[cell.value] = col_counter
                                     col_counter += 1
 
                                 # If every column has been indexed, then mark columns_set as true.
-                                if col_counter + 1 == len(row):
+                                if col_counter == len(row):
                                     columns_set = True
 
-                        # If years are not determined in the first row, the excel file is not in the desirable format.
-                        if not year_range_found:
-                            any_error = True
-                            failed_to_upload.append("Unknown File Format")
-                            break
-
-                    # Once the year range and the column positions are set,
-                    # check the offerings specified in the 'Semester' column and process accordingly.
+                    # Once the column positions are set,
+                    # check the offerings specified in the 'Semester' and 'Sessions' columns and process accordingly.
                     else:
-                        # Right now, courses with offering type 'other' and 'sessions' are not supported,
-                        # so add them to the list of 'failed' courses and move on to the next course.
-                        if sem_offer_value == "Other" or sem_offer_value == "Offered only in sessions":
-                            skipped_course = "{} - {} - Unknown/Unsupported course offering".format(
-                                row[col_index["Course Code"]].value,
-                                row[col_index["Course Title"]].value)
+                        code = row[col_index["Course Code"]].value
+                        name = row[col_index["Course Title"]].value
+
+                        # Made all cases to be upper to make comparisons easier
+                        semesters = str(row[col_index["Semesters"]].value)
+                        sessions = str(row[col_index["Sessions"]].value)
+                        comments = str(row[col_index["Comments"]].value)
+
+                        semesters = semesters.upper() if semesters is not None else ""
+                        sessions = sessions.upper() if sessions is not None else ""
+                        comments = comments.upper() if comments is not None else ""
+
+                        # Semester columns with 'other' and non-empty Comments column are marked with 'other_offering'.
+                        other_offering = semesters == "OTHER" or comments != ""
+
+                        sem_offer_set = False  # Marks whether semester 1, 2 offerings are set in the "Semesters" column
+
+                        # Skip all courses that is marked for disestablishment.
+                        if "DISESTABLISH" in comments:
+                            skipped_course = "{} - {} - Marked for Disestablishment".format(code, name)
 
                             failed_to_upload.append(skipped_course)
                             any_error = True
                             continue
 
-                        sem_offer_args = sem_offer_value.split()
-
-                        for year in range(start_year, end_year + 1):
+                        # If no semester offering details are mentioned, then initially set the following variables
+                        # as follows, but can be overwritten later based on what the 'Sessions' column contains.
+                        if semesters == "OTHER" or semesters == "OFFERED ONLY IN SESSIONS":
+                            years_offered = "OTHER"
                             s1_offer = False
                             s2_offer = False
 
-                            # Skip for this year if the semester offer states it is not offered in odd/even years.
-                            if sem_offer_args[0] == "Even":
-                                if year % 2 == 1:
-                                    continue
-                            elif sem_offer_args[0] == "Odd":
-                                if year % 2 == 0:
-                                    continue
+                        # If information on semester offerings are available, then extract all relevant information.
+                        else:
+                            if "EVERY" in semesters:
+                                years_offered = "ALL"
+                            elif "EVEN" in semesters:
+                                years_offered = "EVEN"
+                            elif "ODD" in semesters:
+                                years_offered = "ODD"
+                            else:
+                                years_offered = "OTHER"
 
-                            # Set the boolean values to true if the semester offerings say they are offered.
-                            if sem_offer_args[-1] == "Semester" or \
-                                    ("S1" in sem_offer_value and "S2" in sem_offer_value):
+                            if semesters == "EVERY SEMESTER":
                                 s1_offer = True
                                 s2_offer = True
-                            elif sem_offer_args[-1] == "S1":
-                                s1_offer = True
-                            elif sem_offer_args[-1] == "S2":
-                                s2_offer = True
+                            else:
+                                s1_offer = "S1" in semesters
+                                s2_offer = "S2" in semesters
 
-                            # Assume all courses are worth 6 units,
-                            # since unit value is not included in the CASS course list excel sheet.
-                            row_data = [row[col_index["Course Code"]].value, year,
-                                        row[col_index["Course Title"]].value, 6, s1_offer, s2_offer]
-                            uploaded_file.append(row_data)
+                            sem_offer_set = True
+
+                        # All rows that contains "all" in the "Sessions" column has referred to all sessions.
+                        if "ALL" in sessions:
+                            sum_offer = True
+                            aut_offer = True
+                            win_offer = True
+                            spr_offer = True
+
+                        # If individual sessions are mentioned, then extract this info by string comparison.
+                        else:
+                            sum_offer = "SUMMER" in sessions or "SUMMER" in comments
+                            aut_offer = "AUTUMN" in sessions or "AUTUMN" in comments
+                            win_offer = "WINTER" in sessions or "WINTER" in comments
+                            spr_offer = "SPRING" in sessions or "SPRING" in comments
+
+                        # If there are no information on offered years (odd, even etc) in the "Semesters" column,
+                        # Check if there are any in the "Sessions" column and overwrite the years_offered.
+                        # Also, there are no courses where offered years for semesters and sessions are different,
+                        # so the overwrite is acceptable.
+                        if "EVERY" in sessions:
+                            years_offered = "ALL"
+                        elif "EVEN" in sessions:
+                            years_offered = "EVEN"
+                        elif "ODD" in sessions:
+                            years_offered = "ODD"
+
+                        # If semesters aren't already set at this point, check the "Sessions" and "Comments" column to
+                        # see if there are any information on semester offerings (e.g. S1 in 2020 only).
+                        if not sem_offer_set:
+                            if "SEMESTERS" in sessions or "EVERY SEMESTER" in sessions:
+                                s1_offer = True
+                                s2_offer = True
+                            else:
+                                s1_offer = "S1" in sessions or "SEMESTER 1" in sessions or \
+                                           "S1" in comments or "SEMESTER 1" in comments
+                                s2_offer = "S2" in sessions or "SEMESTER 2" in sessions or \
+                                           "S2" in comments or "SEMESTER 2" in comments
+
+                        # Assume all courses are worth 6 units,
+                        # since unit value is not included in the CASS course list excel sheet.
+                        row_data = [code, name, 6, years_offered, s1_offer, s2_offer,
+                                    sum_offer, aut_offer, win_offer, spr_offer, other_offering]
+                        uploaded_file.append(row_data)
 
             # If the uploaded excel sheet is in custom format specified in line 23,
             # then simply convert from the excel format to a list of lists.
@@ -182,22 +220,38 @@ def bulk_data_upload(request):
         # Stores the index of the column containing the data type of each row,
         # so that the right data is stored in the right column
         # This would also allow columns to be in any order, and courses/subplans would still be added.
-        map = {}
+        map = dict()
         for row in uploaded_file:
             if first_row_checked:
                 if content_type == 'Courses':
                     # If number of columns from file doesn't match the model, return error to user.
-                    if len(row) != 6:
+                    if len(row) != 11:
                         any_error = True
                         break
 
                     course_instance = CourseModel()
                     course_instance.code = row[map['code']]
-                    course_instance.year = int(row[map['year']])
                     course_instance.name = row[map['name']]
                     course_instance.units = int(row[map['units']])
-                    course_instance.offeredSem1 = bool(row[map['offeredSem1']])
-                    course_instance.offeredSem2 = bool(row[map['offeredSem2']])
+
+                    course_instance.offeredYears = row[map['offeredYears']].upper()
+
+                    # str() is wrapped around the value because if CASS supported file gets uploaded,
+                    # then boolean values would be added to the rows instead of string "True" and "False".
+                    # This is to support both string and boolean versions of True and False.
+                    course_instance.offeredSem1 = str(row[map['offeredSem1']]).upper() == "TRUE"
+                    course_instance.offeredSem2 = str(row[map['offeredSem2']]).upper() == "TRUE"
+
+                    course_instance.offeredSummer = str(row[map['offeredSummer']]).upper() == "TRUE"
+                    course_instance.offeredAutumn = str(row[map['offeredAutumn']]).upper() == "TRUE"
+                    course_instance.offeredWinter = str(row[map['offeredWinter']]).upper() == "TRUE"
+                    course_instance.offeredSpring = str(row[map['offeredSpring']]).upper() == "TRUE"
+
+                    course_instance.otherOffering = str(row[map['otherOffering']]).upper() == "TRUE"
+
+                    # It is assumed that all courses that are added are active.
+                    course_instance.currentlyActive = True
+
                     course_str = course_instance.code + " - " + course_instance.name
 
                     # Save the course instance
