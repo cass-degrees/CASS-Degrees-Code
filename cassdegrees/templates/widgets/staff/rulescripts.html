@@ -53,15 +53,17 @@
             Students must pick
             <input class="text" v-model="details.kind" v-on:change="check_options" aria-required="true" placeholder="e.g. Arts Major - brief description for students here"
                    style="margin-left: 0; width: 400px" required>
-            from the following:
+            from the following
+            <select v-model="details.subplan_type" v-on:change="change_filter" required>
+                <option v-for="(msg, type) in subplan_types" v-bind:value="type">{{ msg }}</option>
+            </select>:
         </p>
 
-        <p>
-        </p>
+        <p></p>
 
         <div v-for="(id, index) in details.ids">
             <select v-model="details.ids[index]" v-on:change="check_options" required>
-                <option v-for="subplan in subplans" v-if="!program_year || subplan.year==program_year" v-bind:value="subplan.id">{{ subplan.name }} {{ subplan.year }} ({{ subplan.units }} units)</option>
+                <option v-for="subplan in filtered_subplans" v-bind:value="subplan.id">{{ subplan.name }} ({{ subplan.code }})</option>
             </select>
             <input v-if="details.ids.length > 1" type="button" v-on:click="remove_subplan(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
         </div>

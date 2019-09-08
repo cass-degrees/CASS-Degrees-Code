@@ -77,6 +77,12 @@ const LIST_TYPES = {
     'max': 'No more than'
 };
 
+const SUBPLAN_TYPES = {
+    'MAJ':  'Majors',
+    'MIN':  'Minors',
+    'SPEC': 'Specialisations'
+};
+
 Vue.component('rule_incompatibility', {
     props: {
         "details": {
@@ -246,6 +252,10 @@ Vue.component('rule_subplan', {
                     value.kind = "";
                 }
 
+                if (!value.hasOwnProperty("subplan_type")) {
+                    value.subplan_type = "";
+                }
+
                 return true;
             }
         }
@@ -253,7 +263,9 @@ Vue.component('rule_subplan', {
     data: function() {
         return {
             "subplans": [],
+            "filtered_subplans": [],
             "program_year": "",
+            "subplan_types": [],
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -274,9 +286,12 @@ Vue.component('rule_subplan', {
             rule.subplans = JSON.parse(request.response);
 
             rule.check_options();
+            rule.apply_subplan_filter();
         });
         request.open("GET", "/api/search/?select=id,code,name,units,year,publish&from=subplan&publish=true");
         request.send();
+
+        rule.subplan_types = SUBPLAN_TYPES;
 
         // Sets the program year to be the value of the id_year field in the original component
         rule.program_year = document.getElementById('id_year').value;
@@ -284,6 +299,28 @@ Vue.component('rule_subplan', {
         document.getElementById('id_year').setAttribute("oninput", "redrawVueComponents()");
     },
     methods: {
+        apply_subplan_filter: function(){
+            // Create a new array containing the filtered items for vue to read off
+            var rule = this;
+
+            if(rule.program_year && rule.details.subplan_type) {
+                rule.filtered_subplans = rule.subplans.filter(
+                    function (item) {
+                        return item.code.endsWith(rule.details.subplan_type) && parseInt(rule.program_year) === item.year;
+                    }
+                );
+            }
+            else
+                rule.filtered_subplans = [];
+        },
+        change_filter: function(){
+            // Clear the current list and re-apply the filter
+            for(var i in this.details.ids)
+                this.details.ids[i] = -1;
+            this.apply_subplan_filter();
+            this.check_options();
+            this.do_redraw();
+        },
         add_subplan: function() {
             // Mutable modification - redraw needed
             this.details.ids.push(-1);
