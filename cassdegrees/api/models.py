@@ -32,7 +32,8 @@ class CourseModel(models.Model):
 
     otherOffering = models.BooleanField()
 
-    currentlyActive = models.BooleanField()
+    # Users will most likely add courses that are currently active.
+    currentlyActive = models.BooleanField(default=True)
 
     rules = psql.JSONField(default=list)
     lastUpdated = models.DateField(default=timezone.now)
