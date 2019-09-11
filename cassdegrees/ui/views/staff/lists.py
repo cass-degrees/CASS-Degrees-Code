@@ -6,6 +6,7 @@ from api.views import search
 from django.http import HttpResponseNotFound, HttpRequest
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from ui.views.staff.courses import handle_course_subform
 
 from ui.forms import EditListFormSnippet
 
@@ -37,20 +38,25 @@ def create_list(request):
     if request.method == 'POST':
         form = EditListFormSnippet(request.POST)
 
+        if request.POST.get("newCourse"):
+            course_creation_form = handle_course_subform(request.POST['newCourse'])
         # todo: implement list view on admin view page then change url
-        if form.is_valid():
+        elif form.is_valid():
             form.save()
             return redirect(list_course_group_url + '&msg=Successfully Added List!')
 
     else:
         if duplicate:
             form = EditListFormSnippet(instance=instance)
+            course_creation_form = handle_course_subform()
         else:
             form = EditListFormSnippet()
+            course_creation_form = handle_course_subform()
 
     return render(request, 'staff/creation/createlist.html', context={
         "edit": False,
         "form": form,
+        "course_creation": course_creation_form,
     })
 
 
@@ -72,7 +78,9 @@ def edit_list(request):
     if request.method == 'POST':
         form = EditListFormSnippet(request.POST, instance=instance)
 
-        if form.is_valid():
+        if request.POST.get("newCourse"):
+            course_creation_form = handle_course_subform(request.POST['newCourse'])
+        elif form.is_valid():
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
@@ -90,6 +98,7 @@ def edit_list(request):
         # If the cached path matches the current path, load the cached form and then clear the cache
         if request.session.get('cached_program_form_source', '') == request.build_absolute_uri():
             form = EditListFormSnippet(request.session.get('cached_program_form_data', ''), instance=instance)
+            course_creation_form = handle_course_subform()
 
             try:
                 del request.session['cached_program_form_data']
@@ -98,9 +107,11 @@ def edit_list(request):
                 pass
         else:
             form = EditListFormSnippet(instance=instance)
+            course_creation_form = handle_course_subform()
 
     return render(request, 'staff/creation/createlist.html', context={
         'render': {'msg': message},
         "edit": True,
         "form": form,
+        "course_creation": course_creation_form,
     })

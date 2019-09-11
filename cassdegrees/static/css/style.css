@@ -155,6 +155,12 @@ select.text{
     width: 30%;
     top: 35%;
 }
+.wide-modal-card {
+    position: absolute;
+    left: 10%;
+    width: 80%;
+    top: 10%;
+}
 
 .box-has-footer {
     margin-bottom: 0;

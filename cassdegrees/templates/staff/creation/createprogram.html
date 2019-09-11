@@ -84,10 +84,15 @@
     {% include "widgets/staff/rules.html" %}
     </div>
 
-    <p class="text-right">
+    <p class="left text-left">
+        <input class="btn-uni-grad btn-large" type="button" value="New Course"
+               onclick="toggleCourseCreationPopup()">
+        <input type="submit" class="btn-uni-grad btn-large" value="New Subplan"
+               onclick="submit_form(this.value)">
+    </p>
+    <p class="right text-right">
         <input class="btn-uni-grad btn-large" type="button" value="Cancel"
                onclick="{% if edit %}returnToList('Program'){% else %}goBack(){% endif %}">
-        <input type="submit" class="btn-uni-grad btn-large" value="Create New Subplan" onclick="submit_form(this.value)">
         {% if edit %}
             <input class="btn-uni-grad btn-large" type="submit" value="Save"
                onclick="submit_form(this.value, false)">
@@ -96,7 +101,14 @@
                onclick="submit_form(this.value, true)">
     </p>
 
+    {% include "widgets/staff/coursecreatepopup.html" %}
+
     <script>
+        function submit_course_form(){
+            handleRules();
+            document.getElementById('mainForm').submit();
+        }
+
         function submit_form(form_action, redirect) {
             if (handleProgram() && handleRules()) {
                 document.getElementById('mainForm').action.value = form_action;

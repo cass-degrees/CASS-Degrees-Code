@@ -5,7 +5,7 @@ from django.http import HttpResponseNotFound, HttpRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 
 from ui.forms import EditProgramFormSnippet
-from ui.views.staff.subplans import create_subplan
+from ui.views.staff.courses import handle_course_subform
 from django.utils import timezone
 
 staff_url_prefix = "/staff/"
@@ -42,12 +42,15 @@ def create_program(request):
 
         form = EditProgramFormSnippet(request.POST)
 
-        if form.is_valid():
+        if request.POST.get("newCourse"):
+            course_creation_form = handle_course_subform(request.POST['newCourse'])
+        elif form.is_valid():
             form.save()
             return redirect(list_program_url + '&msg=Successfully Added a New Program: {}!'
                             .format(form['name'].value()))
 
     else:
+        course_creation_form = handle_course_subform()
         if duplicate:
             form = EditProgramFormSnippet(instance=instance)
         else:
@@ -66,7 +69,8 @@ def create_program(request):
     return render(request, 'staff/creation/createprogram.html', context={
         "edit": False,
         "form": form,
-        "render_separately": ["staffNotes", "studentNotes"]
+        "render_separately": ["staffNotes", "studentNotes"],
+        "course_creation": course_creation_form
     })
 
 
@@ -113,7 +117,9 @@ def edit_program(request):
 
         form = EditProgramFormSnippet(request.POST, instance=instance)
 
-        if form.is_valid():
+        if request.POST.get("newCourse"):
+            course_creation_form = handle_course_subform(request.POST['newCourse'])
+        elif form.is_valid():
             instance.lastUpdated = timezone.now().strftime('%Y-%m-%d')
             instance.save(update_fields=['lastUpdated'])
             form.save()
@@ -127,6 +133,7 @@ def edit_program(request):
                 message = 'Successfully Edited the Program: {}!'.format(form['name'].value())
 
     else:
+        course_creation_form = handle_course_subform()
         # If the cached path matches the current path, load the cached form and then clear the cache
         if request.session.get('cached_program_form_source', '') == request.build_absolute_uri():
             form = EditProgramFormSnippet(request.session.get('cached_program_form_data', ''), instance=instance)
@@ -143,5 +150,6 @@ def edit_program(request):
         'render': {'msg': message},
         "edit": True,
         "form": form,
-        "render_separately": ["staffNotes", "studentNotes"]
+        "render_separately": ["staffNotes", "studentNotes"],
+        "course_creation": course_creation_form
     })

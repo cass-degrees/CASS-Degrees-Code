@@ -1,0 +1,93 @@
+{% load static %}
+<div id="createCoursePopup" class="modal" {% if course_creation.hidden %}hidden{% endif %} >
+    <div class="modal-background"></div>
+    <div class="wide-modal-card card">
+        <header class="box-header">
+            Create New Course
+        </header>
+        {# Start of form content #}
+        <div class="box-solid box-has-footer">
+            {% for error in course_creation.form.non_field_errors %}
+                 <p class="msg-error">{{ error }}</p>
+            {% endfor %}
+            {% if course_creation.message %}
+                 <p class="msg-success">{{ course_creation.message }}</p>
+            {% endif %}
+
+            <form id="createCourse" class="anuform" action="/staff/create/course/" method="POST" autocomplete="off">
+                {{ course_creation.form.management_form }}
+
+                {% with "code name units offeredYears" as list%}
+                <div id="createCourseForm">
+                    {% for field in course_creation.form %}{% if field.name in list.split %}
+                        <p class="form-group">{{ field.label_tag }}{{ field }}</p>
+                        {% for error in field.errors %}
+                             <div class="msg-error inline-error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}{% endfor %}
+                </div>
+                <div id="createCourseFormMore" hidden>
+                    {% for field in course_creation.form %}{% if field.name not in list.split and field.name != "rules" %}
+                        <p class="form-group">
+                            {% if not field.is_hidden %}
+                                {{ field.label_tag }}
+                            {% endif %}
+                            {{ field }}
+                        </p>
+                        {% for error in field.errors %}
+                             <div class="msg-error inline-error">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}{% endfor %}
+                </div>
+                {% endwith %}
+                <input type="text" name="rules" value="{}" hidden />
+            </form>
+        </div>
+        {# End of form content #}
+        <footer class="box-solid text-right">
+            <input onclick="toggleCourseCreationPopup()" type="button" class="left btn-uni-grad btn-small" value="Close" />
+            <input onclick="toggleCourseCreationMore()" id="createCourseBtnMore" type="button" class="btn-uni-grad btn-small" value="Show More" />
+            <input id="createCourseBtn" type="submit" class="btn-uni-grad btn-small" value="Create Course" />
+        </footer>
+    </div>
+</div>
+
+<script type="application/javascript">
+    // Toggle the presence of the course creation popup
+    function toggleCourseCreationPopup() {
+        var toggle = document.getElementById("createCoursePopup");
+        toggle.hidden = !toggle.hidden;
+    }
+
+    // Toggle the more button to see "more" or "less"
+    function toggleCourseCreationMore() {
+        var toggle = document.getElementById("createCourseFormMore");
+        toggle.hidden = !toggle.hidden;
+
+        if (toggle.hidden)
+            document.getElementById("createCourseBtnMore").value = "Show More";
+        else
+            document.getElementById("createCourseBtnMore").value = "Show Less";
+    }
+
+    // Set the submit button to send a (non-refreshing) post request and make the form out of the response
+    document.getElementById("createCourseBtn").onclick = function(){
+        var courseInput = document.createElement("input");
+        courseInput.type = "text";
+        courseInput.name = "newCourse";
+
+        var structuredFormData = {};
+        var formData = document.getElementById("createCourse");
+        for (var elm of formData.querySelectorAll("input,select")) {
+            if (elm.type === "checkbox")
+                structuredFormData[elm.name] = elm.checked;
+            else
+                structuredFormData[elm.name] = elm.value;
+        }
+
+        courseInput.value = JSON.stringify(structuredFormData);
+
+        document.getElementById('mainForm').appendChild(courseInput);
+        submit_course_form()
+    };
+</script>

@@ -62,6 +62,8 @@
     </form>
 
     <p class="text-right">
+        <input class="left btn-uni-grad btn-large" type="button" value="New Course"
+               onclick="toggleCourseCreationPopup()">
         <input class="btn-uni-grad btn-large" type="button" value="Cancel"
                onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
         {% if edit %}
@@ -73,7 +75,13 @@
                onclick="submit_form(this.value, true)">
     </p>
 
+    {% include "widgets/staff/coursecreatepopup.html" %}
+
     <script>
+        function submit_course_form(){
+            document.getElementById('mainForm').submit();
+        }
+
         function submit_form(form_action, redirect) {
             document.getElementById('mainForm').action.value = form_action;
             document.getElementById('redirect').value = redirect;
