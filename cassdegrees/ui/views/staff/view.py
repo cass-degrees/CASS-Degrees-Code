@@ -11,7 +11,7 @@ def pretty_print_reqs(program):
     # It is convenient to generate the pretty list of each min/max rule
     # here in python before passing it to the template.
     for req in program["globalRequirements"]:
-        if req["type"] == "min" or req["type"] == "max":
+        if req["type"] == "general":
             pretty = ""
             for field in req.keys():
                 if field[:7] == "courses":

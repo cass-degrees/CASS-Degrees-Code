@@ -55,14 +55,23 @@
         <p>The {{ data.name }} requires completion of {{ data.units }} units, of which:</p>
 
         {% for rule in data.globalRequirements %}
-            {% if rule.type == "min" %}
+            {% if rule.type == "general" %}
                 <p style="margin-left: 40px">
-                    A minimum of {{ rule.unit_count }} units must come from completion of {{ rule.prettyList }} courses.
-                </p>
-            {% endif %}
-            {% if rule.type == "max" %}
-                <p style="margin-left: 40px">
-                    A maximum of {{ rule.unit_count }} units may come from completion of {{ rule.prettyList }} courses.
+                    A
+                    {% if rule.minmax == "min" %}
+                        minimum of {{ rule.unit_count }} units must
+                    {% elif rule.minmax == "max" %}
+                        maximum of {{ rule.unit_count }} units may
+                    {% endif %}
+                    come from completion of {{ rule.prettyList }}
+                    {% if rule.subject_area == "any" %}
+                        courses.
+                    {% else %}
+                        courses from the subject area {{ rule.subject_area }}.
+                    {% endif %}
+                    {% if rule.customRequirements != "" %}
+                        {{ rule.customRequirements }}
+                    {% endif %}
                 </p>
             {% endif %}
         {% endfor %}

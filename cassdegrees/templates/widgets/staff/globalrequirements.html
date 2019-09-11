@@ -9,23 +9,28 @@
 </fieldset>
 
 {% verbatim %}
-<script type="text/x-template" id="minMaxUnitsTemplate">
+<script type="text/x-template" id="generalGlobalRequirementTemplate">
     <div>
         <fieldset>
-            <p class="form-group">
-                <label>
-                    Unit Count:
-                </label>
-                <input class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
-            </p>
-
             <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
             <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+            <div class="msg-error" v-if="units_is_blank">Unit count must be filled in!</div>
+            <div class="msg-error" v-if="is_invalid">Subject area cannot be "Any" while no year levels are selected!</div>
 
             <p>
-                <label>
-                    Year Options:
-                </label>
+                Students must complete a
+                <select v-model="details.minmax" required>
+                    <option value="min">Minimum</option>
+                    <option value="max">Maximum</option>
+                </select>
+                of
+                <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
+                units from courses in the subject area
+                <select v-model="details.subject_area" v-on:change="check_options" required>
+                    <option value="any" selected>Any</option>
+                    <option v-for="subject_area in subject_areas" v-bind:value="subject_area">{{ subject_area }}</option>
+                </select>
+                and in the following year levels:
             </p>
 
             <br />
@@ -65,35 +70,40 @@
                 <tbody>
                     <tr>
                         <td>
-                            <input type="checkbox" v-model="details.courses1000Level">
+                            <input type="checkbox" v-model="details.courses1000Level" v-on:change="check_options">
                         </td>
                         <td>
-                            <input type="checkbox" v-model="details.courses2000Level">
+                            <input type="checkbox" v-model="details.courses2000Level" v-on:change="check_options">
                         </td>
                         <td>
-                            <input type="checkbox" v-model="details.courses3000Level">
+                            <input type="checkbox" v-model="details.courses3000Level" v-on:change="check_options">
                         </td>
                         <td>
-                            <input type="checkbox" v-model="details.courses4000Level">
+                            <input type="checkbox" v-model="details.courses4000Level" v-on:change="check_options">
                         </td>
                         <td>
-                            <input type="checkbox" v-model="details.courses5000Level">
+                            <input type="checkbox" v-model="details.courses5000Level" v-on:change="check_options">
                         </td>
                         <td>
-                            <input type="checkbox" v-model="details.courses6000Level">
+                            <input type="checkbox" v-model="details.courses6000Level" v-on:change="check_options">
                         </td>
                         <td>
-                            <input type="checkbox" v-model="details.courses7000Level">
+                            <input type="checkbox" v-model="details.courses7000Level" v-on:change="check_options">
                         </td>
                         <td>
-                            <input type="checkbox" v-model="details.courses8000Level">
+                            <input type="checkbox" v-model="details.courses8000Level" v-on:change="check_options">
                         </td>
                         <td>
-                            <input type="checkbox" v-model="details.courses9000Level">
+                            <input type="checkbox" v-model="details.courses9000Level" v-on:change="check_options">
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+            <p>
+                Additional custom requirements (Optional):
+                <textarea v-model="details.customRequirements" v-on:change="check_options" style="width: 100%" placeholder="Example: Courses may also come from any majors listed in the Bachelor of Music." aria-required="true"></textarea>
+            </p>
         </fieldset>
     </div>
 </script>
@@ -138,32 +148,8 @@
             <div v-if="index < global_requirements.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
         </div>
 
-        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_global_requirement_modal = true" value="Add New Global Requirement" />
+        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_global_requirement" value="Add New Global Requirement" />
 
-        <div class="modal" v-if="show_add_a_global_requirement_modal">
-            <div class="modal-background" v-on:click="show_add_a_global_requirement_modal = false"></div>
-            <div class="modal-card">
-                <div class="card">
-                    <header class="box-header">
-                        Add a global requirement...
-                    </header>
-                    <div class="box-solid box-has-footer">
-                        <p>Select a kind of global requirement to add:</p>
-                        <div class="select">
-                            <select v-model="add_a_global_requirement_modal_option">
-                                <option v-for="(option, index) in component_names" v-bind:value="index">
-                                    {{ option }}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <footer class="box-solid">
-                        <button class="button is-success" v-on:click="add_global_requirement">Add</button>
-                        <button class="button" v-on:click="show_add_a_global_requirement_modal = false">Cancel</button>
-                    </footer>
-                </div>
-            </div>
-        </div>
     </div>
 </script>
 {% endverbatim %}
