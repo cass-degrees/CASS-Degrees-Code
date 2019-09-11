@@ -50,6 +50,8 @@ def create_subplan(request):
             else:
                 return redirect(list_subplan_url + '&msg=Successfully Added a New Subplan: '
                                                    '{} ({})!'.format(form['name'].value(), form['code'].value()))
+        else:
+            course_creation_form = handle_course_subform()
 
     else:
         course_creation_form = handle_course_subform()
@@ -154,8 +156,11 @@ def edit_subplan(request):
                 return redirect(list_subplan_url + '&msg=Successfully Edited the Subplan: {} ({})!'
                                 .format(form['name'].value(), form['code'].value()))
             else:
+                course_creation_form = handle_course_subform()
                 message = 'Successfully Edited The Subplan: {} ({})!'\
                     .format(form['name'].value(), form['code'].value())
+        else:
+            course_creation_form = handle_course_subform()
 
     else:
         form = EditSubplanFormSnippet(instance=instance)

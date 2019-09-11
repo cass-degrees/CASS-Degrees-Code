@@ -35,7 +35,7 @@ def create_program(request):
 
     if request.method == 'POST':
         # If the user clicked the 'Create New Subplan' button, cache the form and start creating a new subplan
-        if request.POST['action'] == 'Create New Subplan':
+        if request.POST['action'] == 'New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.path
             return redirect(staff_url_prefix + 'create/subplan/')
@@ -48,6 +48,8 @@ def create_program(request):
             form.save()
             return redirect(list_program_url + '&msg=Successfully Added a New Program: {}!'
                             .format(form['name'].value()))
+        else:
+            course_creation_form = handle_course_subform()
 
     else:
         course_creation_form = handle_course_subform()
@@ -110,7 +112,7 @@ def edit_program(request):
 
     if request.method == 'POST':
         # If the user clicked the 'Create New Subplan' button, cache the form and start creating a new subplan
-        if request.POST['action'] == 'Create New Subplan':
+        if request.POST['action'] == 'New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.build_absolute_uri()
             return redirect(staff_url_prefix + 'create/subplan/')
@@ -130,7 +132,10 @@ def edit_program(request):
                 return redirect(list_program_url + '&msg=Successfully Edited the Program: {}!'
                                 .format(form['name'].value()))
             else:
+                course_creation_form = handle_course_subform()
                 message = 'Successfully Edited the Program: {}!'.format(form['name'].value())
+        else:
+            course_creation_form = handle_course_subform()
 
     else:
         course_creation_form = handle_course_subform()

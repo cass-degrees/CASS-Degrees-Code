@@ -288,7 +288,7 @@ Vue.component('rule_subplan', {
             rule.check_options();
             rule.apply_subplan_filter();
         });
-        request.open("GET", "/api/search/?select=id,code,name,units,year,publish&from=subplan&publish=true");
+        request.open("GET", "/api/search/?select=id,code,name,units,year,publish,planType&from=subplan&publish=true");
         request.send();
 
         rule.subplan_types = SUBPLAN_TYPES;
@@ -306,7 +306,7 @@ Vue.component('rule_subplan', {
             if(rule.program_year && rule.details.subplan_type) {
                 rule.filtered_subplans = rule.subplans.filter(
                     function (item) {
-                        return item.code.endsWith(rule.details.subplan_type) && parseInt(rule.program_year) === item.year;
+                        return item.planType === rule.details.subplan_type && parseInt(rule.program_year) === item.year;
                     }
                 );
             }
