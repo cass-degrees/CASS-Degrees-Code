@@ -1,0 +1,63 @@
+@charset "UTF-8";
+
+/* Style overrides to ANU styling for accessibility */
+
+/* Improve readability of legend text */
+.anuform legend {
+    color: #444;
+}
+
+/* Improve button contrast */
+input.btn-uni-grad {
+    background: #E3EEF3;
+    color: #000;
+}
+
+input.btn-uni-grad:hover {
+    background: #D3DDE3;
+}
+
+.box-header input.btn-uni-grad {
+    background: #FFF;
+}
+
+.bg-uni50 input.btn-uni-grad {
+    background: #FFF;
+}
+
+/* Fix colors in input fields, increase input size */
+.anuform input.text {
+    background: #FFF;
+    height: 25px;
+    padding: 0 8px;
+    border: 1px solid #7C7C7C;
+}
+
+.anuform input.text:focus {
+    background: #F3FFF3;
+}
+
+.anuform input[type=number].text {
+    background: #FFF;
+    height: 25px;
+    padding: 0 0 0 8px;
+}
+
+/* Make select boxes appear interactive by default */
+.anuform select {
+    background: #FFF;
+    height: 25px;
+    border: 1px solid #7C7C7C;
+}
+
+/* Make textarea look interactive by default, increase font-size */
+.anuform textarea {
+    background: #FFF;
+    font-size: 15px;
+    border: 1px solid #7C7C7C;
+}
+
+/* Make top links appear as an actual link */
+.bnr-line-1 h1 a:link:hover {
+    text-decoration: underline;
+}

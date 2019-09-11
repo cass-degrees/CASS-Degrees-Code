@@ -456,3 +456,9 @@ select.text{
 .resources-list li .delete-controls:focus {
   color: red;
 }
+
+/* Sets an element to be a eighth of the width of the parent, with a minimum applied */
+.eighth-width {
+    min-width: 100px;
+    width: 12.5%;
+}
