@@ -155,6 +155,7 @@ select.text{
     width: 30%;
     top: 35%;
 }
+
 .wide-modal-card {
     position: absolute;
     left: 10%;
@@ -461,4 +462,14 @@ select.text{
 .eighth-width {
     min-width: 100px;
     width: 12.5%;
+}
+
+/* Ensure that custom checkboxes ignore ANU styling */
+.custom-checkbox {
+    margin-left: 0 !important;
+}
+
+/* Fix scrollbar with icon checkboxes on Chrome */
+.pretty .state label {
+    overflow: hidden;
 }
