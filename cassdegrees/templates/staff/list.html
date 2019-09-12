@@ -103,6 +103,12 @@
                         <tr>
                             <td colspan="{{ content.0.items|length|add:1 }}">
                                 <div class="pagination align-center"></div>
+                                <div class="align-right">
+                                    <input class="btn-uni-grad btn-sm no-left-margin" type="button" onClick="elemPerPage = 10; redraw()" value="10" />
+                                    <input class="btn-uni-grad btn-sm no-left-margin" type="button" onClick="elemPerPage = 20; redraw()" value="20" />
+                                    <input class="btn-uni-grad btn-sm no-left-margin" type="button" onClick="elemPerPage = 50; redraw()" value="50" />
+                                    <input class="btn-uni-grad btn-sm no-left-margin" type="button" onClick="elemPerPage = 20000; redraw()" value="All" />
+                                </div>
                             </td>
                         </tr>
                     </tfoot>
@@ -124,9 +130,11 @@
 
         <script>
             // Pagination for list.js
+            var elemPerPage = 20;
+
             var {{ title }}Options = {
                 valueNames: [{% for k,v in content.0.items %}'{{ title }}{{ k }}',{% endfor %}],
-                page: 20,
+                page: elemPerPage,
                 pagination: {
                     innerWindow: 2,
                     left: 1,
@@ -136,6 +144,16 @@
             };
 
             var {{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
+
+
+            function redraw() {
+                console.log(elemPerPage);
+                {{ title }}Options.page = elemPerPage;
+
+                //{{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
+                {{ title }}List.reIndex()
+                {{ title }}List.update()
+            }
         </script>
     {% endfor %}
 
