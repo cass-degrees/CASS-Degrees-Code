@@ -12,7 +12,7 @@
 <script type="text/x-template" id="generalGlobalRequirementTemplate">
     <div>
         <fieldset>
-            <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+            <div class="msg-error" v-if="invalid_units">Unit count must be greater than 0!</div>
             <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
             <div class="msg-error" v-if="units_is_blank">Unit count must be filled in!</div>
             <div class="msg-error" v-if="is_invalid">Subject area cannot be "Any" while no year levels are selected!</div>

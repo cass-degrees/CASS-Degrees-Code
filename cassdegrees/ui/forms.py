@@ -155,7 +155,7 @@ class EditProgramFormSnippet(ModelForm):
     def clean_year(self):
         data = self.cleaned_data['year']
         if data < 2000 or data > 3000:
-            raise forms.ValidationError("This should be between 2000-3000!")
+            raise forms.ValidationError("This should be between 2000 and 3000!")
         return data
 
     def clean_name(self):
