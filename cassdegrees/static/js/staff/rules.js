@@ -83,6 +83,16 @@ const SUBPLAN_TYPES = {
     'SPEC': 'Specialisations'
 };
 
+const INFO_MSGS = {
+    'course': '<p>This Requisite requires Courses in the system. Please create Courses ' +
+        '<a href="/staff/create/course/" target="_blank">here</a> or bulk upload Courses ' +
+        '<a href="/staff/bulk_upload/" target="_blank">here</a> first before creating this Requisite.</p>',
+    'subplan': '<p>This Requisite requires Subplans in the system. Please create Subplans ' +
+        '<a href="/staff/create/subplan/" target="_blank">here</a> first before creating this Requisite.</p>',
+    'program': '<p>This Requisite requires Programs in the system. Please create Programs ' +
+        '<a href="/staff/create/program/" target="_blank">here</a> first before creating this Requisite.</p>'
+};
+
 Vue.component('rule_incompatibility', {
     props: {
         "details": {
@@ -101,6 +111,7 @@ Vue.component('rule_incompatibility', {
     data: function() {
         return {
             "courses": [],
+            "info_msg": INFO_MSGS['course'],
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -197,6 +208,7 @@ Vue.component('rule_program', {
     data: function() {
         return {
             "programs": [],
+            "info_msg": INFO_MSGS['program'],
 
             // Display related warnings if true
             "is_blank": false,
@@ -266,6 +278,7 @@ Vue.component('rule_subplan', {
             "filtered_subplans": [],
             "program_year": "",
             "subplan_types": [],
+            "info_msg": INFO_MSGS['subplan'],
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -433,6 +446,7 @@ Vue.component('rule_course', {
         return {
             "courses": [],
             "list_types": [],
+            "info_msg": INFO_MSGS['course'],
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -540,6 +554,7 @@ Vue.component('rule_course_requisite', {
     data: function() {
         return {
             "courses": [],
+            "info_msg": INFO_MSGS['course'],
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -643,6 +658,7 @@ Vue.component('rule_elective', {
         return {
             "number_of_year_levels": 9,
             "subject_areas": [],
+            "info_msg": INFO_MSGS['course'],
 
             // Display related warnings if true
             "invalid_units": false,
