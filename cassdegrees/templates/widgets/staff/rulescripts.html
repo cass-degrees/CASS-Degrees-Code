@@ -223,6 +223,7 @@
             <img src="//style.anu.edu.au/_anu/images/icons/web/question.png" class="btn-snall no-left-margin vertical-middle clickable"
                  alt="Help button" v-on:click="show_help = true" />
             <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input type="button" v-on:click="$emit('duplicate_rule')" class="btn-uni-grad btn-snall no-left-margin" value="Duplicate" />
         </header>
         <div class="box-solid">
             <div class="card-content" v-bind:is="'rule_' + details.type" v-bind:details="details"></div>

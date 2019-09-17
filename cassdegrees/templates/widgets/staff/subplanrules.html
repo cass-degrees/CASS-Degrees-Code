@@ -63,6 +63,7 @@
             <img src="//style.anu.edu.au/_anu/images/icons/web/question.png" class="btn-snall no-left-margin vertical-middle clickable"
                  alt="Help button" v-on:click="show_help = true" />
             <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input type="button" v-on:click="$emit('duplicate_rule')" class="btn-uni-grad btn-snall no-left-margin" value="Duplicate" />
         </header>
         <div class="box-solid">
             <div class="card-content" v-bind:is="'rule_course'" v-bind:details="details"></div>
@@ -89,12 +90,11 @@
 <script type="text/x-template" id="ruleContainerTemplate">
     <div v-if="!redraw">
         <div v-for="(item, index) in rules" :key="index" >
-            <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)"></rule>
+            <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)" v-on:duplicate_rule="duplicate_rule(index)"></rule>
             <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
         </div>
 
         <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_rule" v-bind:add_a_rule_modal_option="'course'" value="Add New Rule" />
-
 
     </div>
 </script>
