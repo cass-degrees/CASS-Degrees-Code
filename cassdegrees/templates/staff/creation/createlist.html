@@ -65,7 +65,7 @@
         <input class="left btn-uni-grad btn-large" type="button" value="New Course"
                onclick="toggleCourseCreationPopup()">
         <input class="btn-uni-grad btn-large" type="button" value="Cancel"
-               onclick="{% if edit %}returnToList('Course'){% else %}goBack(){% endif %}">
+               onclick="{% if edit or 'list' in request.META.HTTP_REFERER %}returnToList('Course'){% else %}goBack(){% endif %}">
         {% if edit %}
             <input class="btn-uni-grad btn-large" type="submit" value="Save"
                    onclick="submit_form(this.value, false)">
