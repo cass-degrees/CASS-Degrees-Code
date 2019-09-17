@@ -121,6 +121,13 @@
 
         function submit_form(form_action, redirect) {
             if (handleProgram() && handleRules()) {
+                // Ensure that the course has been agreed to to being non public on submission.
+                if (!document.getElementById("id_publish").checked &&
+                    !confirm("You haven't marked this program as public - this means this won't appear " +
+                        "to students or be selectable as a requirement elsewhere.\n\nAre you sure you want to continue?")) {
+                    return false;
+                }
+
                 document.getElementById('mainForm').action.value = form_action;
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();

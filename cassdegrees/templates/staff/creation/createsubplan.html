@@ -88,6 +88,13 @@
 
         function submit_form(redirect) {
             if (handleRules()) {
+                // Ensure that the course has been agreed to to being non public on submission.
+                if (!document.getElementById("id_publish").checked &&
+                    !confirm("You haven't marked this subplan as public - this means this won't appear " +
+                        "to students or be selectable as a requirement elsewhere. Are you sure you want to continue?")) {
+                    return false;
+                }
+
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();
             }
