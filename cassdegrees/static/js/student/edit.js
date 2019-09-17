@@ -49,6 +49,13 @@ function searchQuery(query) {
 // Script to allow interactivity in the popup menu
 function setupPopup() {
     var plan_link = document.getElementById("plan_link");
+
+    // Ensure that plan links exist before trying to inject event handlers
+    if (plan_link === undefined) {
+        return;
+    }
+
+    // Plan link implies these:
     var copy = document.getElementById("copy_to_clipboard");
     var close = document.getElementById("close_modal");
 
