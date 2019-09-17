@@ -310,6 +310,9 @@ Vue.component('rule_subplan', {
         rule.program_year = document.getElementById('id_year').value;
         // Modifies the original 'id_year' element by telling it to refresh all components on all keystrokes
         document.getElementById('id_year').setAttribute("oninput", "redrawVueComponents()");
+
+        // Keep a copy of the OR Rule's "count_units" function (Or a blank function if unavailable)
+        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
     methods: {
         apply_subplan_filter: function(){
@@ -331,7 +334,7 @@ Vue.component('rule_subplan', {
             for(var i in this.details.ids)
                 this.details.ids[i] = -1;
             this.apply_subplan_filter();
-            this.check_options();
+            this.update_units();
             this.do_redraw();
         },
         add_subplan: function() {
@@ -409,6 +412,11 @@ Vue.component('rule_subplan', {
 
             return !this.wrong_year_selected && !this.non_unique_options && !this.inconsistent_units &&  !this.is_blank;
         },
+        update_units: function() {
+            // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
+            this.parent_count_units_fn();
+            this.check_options();
+        },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
             this.program_year = document.getElementById('id_year').value;
@@ -436,6 +444,10 @@ Vue.component('rule_course', {
                 if (!value.hasOwnProperty("list_type")) {
                     // possible values = LIST_TYPES
                     value.list_type = "";
+                }
+
+                if (!value.hasOwnProperty("unit_count")) {
+                    value.unit_count = "0";
                 }
 
                 return true;
@@ -477,6 +489,9 @@ Vue.component('rule_course', {
         });
         request.open("GET", "/api/search/?select=code,name&from=course");
         request.send();
+
+        // Keep a copy of the Or Rule's "count_units" function (Or a blank function if unavailable)
+        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
     methods: {
         add_course: function() {
@@ -523,6 +538,11 @@ Vue.component('rule_course', {
             }
 
             return !this.non_unique_options && !this.invalid_units && !this.invalid_units_step && !this.is_blank;
+        },
+        update_units: function() {
+            // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
+            this.parent_count_units_fn();
+            this.check_options();
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -691,6 +711,9 @@ Vue.component('rule_elective', {
         });
         request.open("GET", "/api/search/?select=code&from=course");
         request.send();
+
+        // Keep a copy of the Or Rule's "count_units" function (Or a blank function if unavailable)
+        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
     methods: {
         check_options: function() {
@@ -708,6 +731,11 @@ Vue.component('rule_elective', {
             }
 
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
+        },
+        update_units: function() {
+            // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
+            this.parent_count_units_fn();
+            this.check_options();
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -732,8 +760,8 @@ Vue.component('rule_custom_text', {
                     value.text = "";
                 }
 
-                if (!value.hasOwnProperty("units")) {
-                    value.units = 0;
+                if (!value.hasOwnProperty("unit_count")) {
+                    value.unit_count = "0";
                 }
 
                 if (!value.hasOwnProperty("show_course_boxes")) {
@@ -752,15 +780,22 @@ Vue.component('rule_custom_text', {
     },
     created: function() {
         this.check_options();
+        // Keep a copy of the Or Rule's "count_units" function (Or a blank function if unavailable)
+        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
     },
     methods: {
         check_options: function() {
             this.is_blank = this.details.text === "";
 
-            this.not_divisible = this.details.units % 6 !== 0;
+            this.not_divisible = this.details.unit_count % 6 !== 0;
 
             return !this.not_divisible && !this.is_blank;
-        }
+        },
+        update_units: function() {
+            // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
+            this.parent_count_units_fn();
+            this.check_options();
+        },
     },
     template: '#customTextRuleTemplate'
 });
@@ -793,7 +828,12 @@ Vue.component('rule_custom_text_req', {
             this.is_blank = this.details.text === "";
 
             return !this.is_blank;
-        }
+        },
+        update_units: function() {
+            // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
+            this.parent_count_units_fn();
+            this.check_options();
+        },
     },
     template: '#customTextReqRuleTemplate'
 });
@@ -823,6 +863,9 @@ Vue.component('rule_either_or', {
             which_or: 0,
             add_a_rule_modal_option: 'course',
 
+            // Show warnings if appropriate
+            large_unit_count: false,
+
             component_groups: { 'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
 
@@ -845,10 +888,12 @@ Vue.component('rule_either_or', {
         },
         remove: function(index, group) {
             this.details.either_or[group].splice(index, 1);
+            this.count_units();
             this.do_redraw();
         },
         remove_group: function(group) {
             this.details.either_or.splice(group, 1);
+            this.count_units();
             this.do_redraw();
         },
         check_options: function() {
@@ -858,6 +903,30 @@ Vue.component('rule_either_or', {
             }
 
             return valid;
+        },
+        count_units: function() {
+            // Will go through each rule and determine how many units it specifies, showing a warning if over 48
+            for(var or_group of this.details.either_or){
+                var units = 0;
+                for(var rule of or_group) {
+                    if (rule.hasOwnProperty("subplan_type")) {
+                        switch (rule.subplan_type) {
+                            case "MAJ" : units += 48; break;
+                            case "MIN" : units += 24; break;
+                            case "SPEC": units += 24; break;
+                        }
+                    }
+                    else if (rule.hasOwnProperty("unit_count")) {
+                        units += parseInt(rule.unit_count);
+                    }
+                }
+
+                if (units > 48) {
+                    this.large_unit_count = true;
+                    return;
+                }
+            }
+            this.large_unit_count = false;
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
@@ -893,6 +962,18 @@ Vue.component('rule', {
             }
 
             return valid;
+        },
+        get_or_rule_count_units_fn: function() {
+            // Looks through the parent nodes until it finds the OR rule, returning its "count_units" function
+            // If no OR rule is found, an empty function is returned
+            var parent_or = this.$parent;
+            while(parent_or !== undefined){
+                if (parent_or.constructor.options.name === 'rule_either_or'){
+                    return parent_or.count_units;
+                }
+                parent_or = parent_or.$parent;
+            }
+            return function() {};
         }
     },
     template: '#ruleTemplate'
