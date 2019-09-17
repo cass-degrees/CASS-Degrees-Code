@@ -25,6 +25,16 @@
          <p class="msg-error">{{ error }}</p>
     {% endfor %}
 
+    {% if edit %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ request.GET.id }}">
+            <div class="fullwidth auto-overflow">
+                <input class="btn-uni-grad btn-small right" type ="submit" formaction="/staff/delete/programs/" value="&#128465Delete">
+            </div>
+        </form>
+    {% endif %}
+
     <form class="anuform" id="mainForm" action="" method="post" onsubmit="return false;" autocomplete="off">
         {% csrf_token %}
 
