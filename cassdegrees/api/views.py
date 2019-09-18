@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import *
 from django.http import JsonResponse
 from .serializers import *
-from rest_framework import generics
+from rest_framework import generics, permissions
 from django.db.models import Q
 
 
@@ -10,6 +10,7 @@ from django.db.models import Q
 class SampleList(generics.ListCreateAPIView):
     queryset = SampleModel.objects.all()
     serializer_class = SampleSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 # Create view for browsing individual record in the 'Sample' model.
@@ -17,46 +18,86 @@ class SampleList(generics.ListCreateAPIView):
 class SampleRecord(generics.RetrieveUpdateDestroyAPIView):
     queryset = SampleModel.objects.all()
     serializer_class = SampleSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class CourseList(generics.ListCreateAPIView):
     queryset = CourseModel.objects.all()
     serializer_class = CourseSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class CourseRecord(generics.RetrieveUpdateDestroyAPIView):
     queryset = CourseModel.objects.all()
     serializer_class = CourseSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class SubplanList(generics.ListCreateAPIView):
-    queryset = SubplanModel.objects.all()
+    def initial(self, request, *args, **kwargs):
+        """
+        Verify a user's identity before doing any kind of database work.
+
+        :param request: The request context used for identity verification.
+        :param args: Arguments passed to the regular view.
+        :param kwargs: Arguments passed to the regular view.
+        """
+        super().initial(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            self.queryset = SubplanModel.objects.all()
+        else:
+            self.queryset = SubplanModel.objects.filter(publish=True)
+
     serializer_class = SubplanSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class SubplanRecord(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SubplanModel.objects.all()
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            self.queryset = SubplanModel.objects.all()
+        else:
+            self.queryset = SubplanModel.objects.filter(publish=True)
+
     serializer_class = SubplanSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ProgramList(generics.ListCreateAPIView):
-    queryset = ProgramModel.objects.all()
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            self.queryset = ProgramModel.objects.all()
+        else:
+            self.queryset = ProgramModel.objects.filter(publish=True)
+
     serializer_class = ProgramSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ProgramRecord(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ProgramModel.objects.all()
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            self.queryset = ProgramModel.objects.all()
+        else:
+            self.queryset = ProgramModel.objects.filter(publish=True)
+
     serializer_class = ProgramSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ListList(generics.ListCreateAPIView):
     queryset = ListModel.objects.all()
     serializer_class = ListSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ListRecord(generics.RetrieveUpdateDestroyAPIView):
     queryset = ListModel.objects.all()
     serializer_class = ListSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 def search(request):
@@ -75,7 +116,7 @@ def search(request):
             ...
 
     Example queries:
-        /api/search/from=course
+        /api/search/?from=course
         /api/search/?select=id,code&from=program
         /api/search/?select=code,name,rules&from=subplan&code=COMP&name=systems%20and&20architecture
 
@@ -96,9 +137,16 @@ def search(request):
     include.update(
         {x + "__iexact": request.GET.get(x+"_exact", None) for x in columns if request.GET.get(x+"_exact", None)}
     )
+
+    # Ensure only authenticated users can access secret plans
+    # Request.user will not exist if this is an internal request - thats perfectly fine, however!
+    if hasattr(request, "user") and not request.user.is_authenticated and hasattr(model, "publish"):
+        include["publish"] = True
+
     query = Q(**include)
 
-    # If the model is valid and all parameters are valid, returns the response, otherwise returning ["Invalid parameter given"]
+    # If the model is valid and all parameters are valid, returns the response,
+    # otherwise returning ["Invalid parameter given"]
     if model:
         for parameter in columns:
             if parameter not in [f.name for f in model._meta.fields]:
