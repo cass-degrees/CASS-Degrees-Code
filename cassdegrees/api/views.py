@@ -82,7 +82,7 @@ def search(request):
     :param request:
     :return <class django.http.response.JsonResponse>:
     """
-    model_map = {'program': ProgramModel, 'subplan': SubplanModel, 'course': CourseModel}
+    model_map = {'program': ProgramModel, 'subplan': SubplanModel, 'course': CourseModel, 'list': ListModel}
 
     # Extracts a model from the model_map, choosing None if an invalid model was requested
     model = model_map.get(request.GET.get('from'), None)

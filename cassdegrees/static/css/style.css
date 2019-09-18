@@ -406,7 +406,7 @@ select.text{
 
 /* https://medium.com/@hugodesigns/how-to-use-the-most-complete-selecting-solution-for-vue-js-f991b2605364 */
 .resources-list {
-  margin-top: 15px;
+  margin-top: 0px;
   padding: 0;
   list-style: none;
 }
@@ -414,7 +414,7 @@ select.text{
 .resources-list li {
   display: flex;
   align-items: center;
-  min-height: 50px;
+  min-height: 30px;
   padding: 10px 40px 10px 0;
   border-bottom: 1px solid rgba(51, 51, 51, 0.1);
   position: relative;
@@ -427,6 +427,10 @@ select.text{
 .resources-list li .resource-title {
   font-size: 1em;
   color: #333;
+}
+
+.resource-info {
+    padding-left: 12px;
 }
 
 .resources-list li .resource-description,

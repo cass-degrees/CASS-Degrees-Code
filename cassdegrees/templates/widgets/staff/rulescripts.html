@@ -1,3 +1,5 @@
+{% load static %}
+
 {% verbatim %}
 <script type="text/x-template" id="incompatibilityRuleTemplate">
      <fieldset v-if="!redraw">
@@ -247,4 +249,78 @@
         </div>
     </div>
 </script>
+
+<script type="text/x-template" id="course-list-template">
+    <fieldset v-if="!redraw">
+
+        <p class="form-group">
+            <label>
+                Students must select...
+            </label>
+        </p>
+
+        <select v-model="details.list_type" v-on:change="check_options" required>
+            <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
+        </select>
+
+        <!-- {#       instyle css only temporary #} -->
+        <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+               v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+
+        <div class="msg-error" v-if="invalid_units">Unit count must be > 0!</div>
+        <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
+        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
+        <p>
+            from the following courses:
+        </p>
+
+        <br>
+
+        <multiselect
+                :options="courses"
+                :value="optionsProxy"
+                @input="updateSelected"
+                :show-labels="true"
+                :multiple="true"
+                :searchable="true"
+                :close-on-select="false"
+                :placeholder="placeholderText"
+                :custom-label="customLabel"
+                track-by="name"
+                :max-height="200"
+                :open-direction="'top'"
+                :loading="showLoadingSpinner"
+                ref="multiselectref"
+                >
+        </multiselect>
+
+        <div class="msg-warn" v-if="is_list_search">Searching in list mode,
+            <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
+
+        <ul class="resources-list">
+            <template v-for="(resource, index) in sortedSelectedList">
+                <li class="resource-item" :data-index="index">
+                    <div class="resource-info">
+                        <div class="resource-title" :id="index">
+                            <span>{{ resource.code }} - {{ resource.name }} </span>
+                        </div>
+                    </div>
+                    <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
+                        <i class="fa fa-times fa-fw"></i>
+                    </div>
+                </li>
+            </template>
+        </ul>
+
+        <input style="margin-left: 0; float: right;" class="btn-uni-grad btn-large" type="button"
+               value="Add Courses from Existing List"
+               v-on:click="toggleListMode()">
+    </fieldset>
+</script>
 {% endverbatim %}
+    <script src="{% static "js/vendor/vue.js" %}"></script>
+    <script src="{% static "js/vendor/vue-multiselect.js" %}"></script>
+    <script src="{% static "js/vendor/vue-resource.js" %}"></script>
+    <link rel="stylesheet" href="{% static "css/vue-multiselect.css" %}">

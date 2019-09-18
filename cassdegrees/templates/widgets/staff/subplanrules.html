@@ -8,8 +8,13 @@
     <rule_container v-bind:rules="rules" />
 </fieldset>
 
+{# must come prior to use or uncaught reference error will occur #}
+<script src="{% static "js/vendor/vue-multiselect.js" %}"></script>
+<script src="{% static "js/vendor/vue-resource.js" %}"></script>
+<link rel="stylesheet" href="{% static "css/vue-multiselect.css" %}">
+
 {% verbatim %}
-<script type="text/x-template" id="courseRequirementTemplate">
+<script type="text/x-template" id="course-list-template">
     <fieldset v-if="!redraw">
 
         <div v-if="courses.length != 0">
@@ -21,8 +26,9 @@
                 <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
             </select>
 
-<!-- {#       instyle css only temporary #} -->
-            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+            <!-- {#       instyle css only temporary #} -->
+            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+                   v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" required> units
 
             <div class="msg-error" v-if="invalid_units">Unit count must be greater than 0!</div>
             <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
@@ -32,14 +38,47 @@
                 from the following courses:
             </p>
 
-            <div v-for="(code, index) in details.codes">
-                <select v-model="details.codes[index]" v-on:change="check_options" required>
-                    <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
-                </select>
-                <input v-if="details.codes.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
-            </div>
+            <br>
 
-            <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
+            <multiselect
+                    :options="courses"
+                    :value="optionsProxy"
+                    @input="updateSelected"
+                    :show-labels="true"
+                    :multiple="true"
+                    :searchable="true"
+                    :close-on-select="false"
+                    :placeholder="placeholderText"
+                    :custom-label="customLabel"
+                    track-by="name"
+                    :max-height="200"
+                    :open-direction="'top'"
+                    :loading="showLoadingSpinner"
+                    ref="multiselectref"
+            >
+            </multiselect>
+
+            <div class="msg-warn" v-if="is_list_search">Searching in list mode,
+                <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
+
+            <ul class="resources-list">
+                <template v-for="(resource, index) in sortedSelectedList">
+                    <li class="resource-item" :data-index="index">
+                        <div class="resource-info">
+                            <div class="resource-title" :id="index">
+                                <span>{{ resource.code }} - {{ resource.name }} </span>
+                            </div>
+                        </div>
+                        <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
+                            <i class="fa fa-times fa-fw"></i>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+
+            <input style="margin-left: 0; float: right;" class="btn-uni-grad btn-large" type="button"
+                   value="Add Courses from Existing List"
+                   v-on:click="toggleListMode()">
         </div>
         <div v-else>
             <p>
@@ -99,7 +138,6 @@
     </div>
 </script>
 {% endverbatim %}
-
 <script src="{% static 'js/vendor/vue.js' %}" type="application/javascript"></script>
 <script src="{% static 'js/staff/rules.js' %}" type="application/javascript"></script>
 

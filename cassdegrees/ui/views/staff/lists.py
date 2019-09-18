@@ -75,6 +75,9 @@ def edit_list(request):
     # Set message to user if needed. Setting it to 'None' will not display the message box.
     message = None
 
+    # Initiatlise form
+    course_creation_form = handle_course_subform()
+
     if request.method == 'POST':
         form = EditListFormSnippet(request.POST, instance=instance)
 

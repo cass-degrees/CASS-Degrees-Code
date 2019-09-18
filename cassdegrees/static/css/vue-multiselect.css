@@ -95,6 +95,7 @@ fieldset[disabled] .multiselect {
     border-top-right-radius: 0
 }
 
+/* need to override default left margin from anu fieldset input to prevent placeholder being pushed out */
 .multiselect__input, .multiselect__single {
     position: relative;
     display: inline-block;
@@ -108,7 +109,8 @@ fieldset[disabled] .multiselect {
     transition: border .1s ease;
     box-sizing: border-box;
     margin-bottom: 8px;
-    vertical-align: top
+    vertical-align: top;
+    margin-left: 0px !important;
 }
 
 .multiselect__input::-webkit-input-placeholder {
@@ -257,7 +259,7 @@ fieldset[disabled] .multiselect {
 .multiselect__content-wrapper {
     position: absolute;
     display: block;
-    background: #fff;
+    background: #f8f8f8;
     width: 100%;
     max-height: 240px;
     overflow: auto;

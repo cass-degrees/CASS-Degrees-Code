@@ -18,7 +18,7 @@
 <h4>Course listing</h4>
 <div id={{ app_name }}>
     <multiselect
-            :options="options"
+            :options="masterOptions"
             :value="optionsProxy"
             @input="updateSelected"
             :show-labels="true"
@@ -32,15 +32,15 @@
             :open-direction="'top'"
             :loading="showLoadingSpinner"
             ref="multiselectref"
-            >
+    >
     </multiselect>
 
     <ul class="resources-list">
-        <template v-for="(resource, index) in selectedResources">
+        <template v-for="(course, index) in selectedResources">
             <li class="resource-item" :data-index="index">
                 <div class="resource-info">
                     <div class="resource-title" :id="index">
-                        <span>[[ resource.code ]] - [[ resource.name ]] - [[resource.id]]</span>
+                        <span>[[ course.code ]] - [[ course.name ]] </span>
                     </div>
                 </div>
                 <div class="delete-controls" v-on:click.prevent="removeDependency(index)">
@@ -49,12 +49,11 @@
             </li>
         </template>
     </ul>
-
 </div>
 
 <script type="application/javascript">
 
-    API_MODEL_URL = 'api/model/course/'
+    API_MODEL_URL = 'api/search/?select=code,name&from=course'
 
     var app = new Vue({
         // modify delimiters to prevent conflict with Django Template Console
@@ -66,12 +65,13 @@
             Multiselect: window.VueMultiselect.default
         },
 
-        data(){
-            return{
-                options: [],
+        data: function() {
+            return {
+                masterOptions: [],
                 optionsProxy: [],
                 selectedResources: [],
                 showLoadingSpinner: false,
+                lists: [],
             }
         },
 
@@ -89,26 +89,14 @@
         },
 
         methods: {
-
-            resetHeight(){
-              this.dynamicHeight = 0
-            },
-
-            // Todo check what this is doing
-            // The label that will be displayed on the list item
+             // The label that will be displayed on the list item
             customLabel(option) {
                 return `${option.code} - ${option.name}`
             },
 
-
-            // todo: check for ways to conceal dropdown until user enters input rather than open above
-
-
             // Update an array of selected values and remove the selected item from the list of available options
             updateSelected(value) {
                 value.forEach((resource) => {
-                    // Adds selected resources to array
-
                     // only add selection if not already contained in the list
                     if (!this.selectedResources.some(element => element.code === resource.code)) {
                         this.selectedResources.push(resource)
@@ -120,8 +108,8 @@
                         // set the hidden elements form box to value of selectedResources
                         document.getElementById("id_elements").value = JSON.stringify(this.selectedResources)
 
-                        resourceID = this.options.indexOf(resource)
-                        this.options.splice(resourceID, 1)
+                        resourceID = this.masterOptions.indexOf(resource)
+                        this.masterOptions.splice(resourceID, 1)
                     }
                 })
 
@@ -130,44 +118,48 @@
 
             },
 
-            courseRequest(value) {
-                this.$http.get(API_MODEL_URL).then((response) => {
-
-                    // get all element data
-                    this.options = []
-                    this.selectedResources = []
-                    response.body.forEach((object) => {
-                        this.options.push(object)
-                    });
-
-                    this.options.sort(((a, b) => (a.code > b.code) ? 1 : -1))
-
-                    this.showLoadingSpinner = false
-
-                    // create objects from existing data if present and load those into the ul element
-                    existingElements = JSON.parse(document.getElementById("id_elements").value)
-                    existingElements.forEach((object) => {
-                        this.selectedResources.push(object)
-                    })
-
-                }, (response) => {
-                    // error callback
-                })
-            },
-
             // remove the item from the display list and the elements field when x is clicked
             removeDependency(index) {
                 // when an element is removed from the list, add it back to the options
                 this.selectedResources.splice(index, 1).forEach((element) => {
-                    this.options.push(element)
+                    this.masterOptions.push(element)
                 })
                 document.getElementById("id_elements").value = JSON.stringify(this.selectedResources)
             },
         },
 
         created() {
-            const value = ''
-            this.courseRequest(value)
+            // create new request for course details from api, set listener to run on load
+            var rule = this;
+            var request = new XMLHttpRequest();
+
+            request.addEventListener("load", function () {
+                rule.masterOptions = JSON.parse(request.response);
+                rule.masterOptions.sort(((a, b) => (a.code > b.code) ? 1 : -1))
+
+                // if there are already selected courses in details.codes when the component is loaded load,
+                // remove them from the options - must be done after courses response received
+                if (!(rule.selectedResources.length === 0)) {
+                    for (let i = 0; i < rule.selectedResources.length; i++) {
+                        for (let x = 0; x < rule.masterOptions.length; x++) {
+                            if (rule.masterOptions[x].code === rule.selectedResources[i].code) {
+                                rule.masterOptions.splice(x, 1)
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+
+            request.open("GET", "/api/search/?select=code,name&from=course");
+            request.send();
+
+            // add existing elements loaded from the form to the selected Resources
+            let existingElements = JSON.parse(document.getElementById("id_elements").value)
+
+            existingElements.forEach((object) => {
+                rule.selectedResources.push(object)
+            })
         },
 
     }).$mount('#{{ app_name }}')
