@@ -989,6 +989,12 @@ Vue.component('rule_either_or', {
         "separator": {
             type: String,
             default: ""
+        },
+        // Refresh is used to redraw the sub rules without nuking everything.
+        // The prop is bound when the either_or is defined, and upon updating
+        // a prop, the rules will be updated without deleting them first.
+        "refresh": {
+            type: Array,
         }
     },
     data: function() {
@@ -1003,8 +1009,7 @@ Vue.component('rule_either_or', {
             component_groups: { 'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
 
-            // Forces the element to re-render, if mutable events occurred
-            redraw: false
+            is_eitheror: true,
         }
     },
     methods: {
@@ -1018,16 +1023,16 @@ Vue.component('rule_either_or', {
             this.details.either_or[this.which_or].push({
                 type: this.add_a_rule_modal_option,
             });
-            this.do_redraw();
         },
         remove: function(index, group) {
+            console.log(this.details.either_or[group]);
             this.details.either_or[group].splice(index, 1);
             this.count_units();
             this.do_redraw();
         },
         duplicate_rule: function(index, group) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
-            this.details.either_or[group].splice(index, 0, JSON.parse(JSON.stringify(this.details.either_or[group][index])));
+            this.details.either_or[group].push(JSON.parse(JSON.stringify(this.details.either_or[group][index])));
             this.do_redraw();
         },
         remove_group: function(group) {
@@ -1074,11 +1079,7 @@ Vue.component('rule_either_or', {
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
-            this.redraw = true;
-
-            this.$nextTick(() => {
-                this.redraw = false;
-            });
+            this.refresh.push("");
         }
     },
     template: '#eitherOrTemplate'
@@ -1095,8 +1096,47 @@ Vue.component('rule', {
         return {
             component_names: ALL_COMPONENT_NAMES,
             component_help: ALL_COMPONENT_HELP,
-            show_help: false
+            show_help: false,
+            refresh: [],
         }
+    },
+    mounted: function() {
+        var siblings = app.$children[0].$children;
+
+        // Determine whether this rule is the most recent rule by finding which sibling
+        // has the highest _uid assigned by Vue.
+        var max = 0;
+        var rule_creation_ranks = {};
+        siblings.forEach(function(sib){
+            if (!sib.$children[0].is_eitheror) {
+                rule_creation_ranks[sib._uid] = sib;
+                sib.$el.classList.remove("rule_active_visual");
+                max = (sib._uid > max) ? sib._uid : max;
+            }
+            // Else we need to get the children of the either or rule
+            else {
+                // If nested or rules get implemented, this section may need to be made recursive
+                var either_or_rules = sib.$children[0].$children;
+                sib.$el.classList.remove("rule_active_visual");
+
+                if (either_or_rules.length > 0) {
+                    either_or_rules.forEach(function(rule) {
+                        rule_creation_ranks[rule._uid] = rule;
+                        rule.$el.classList.remove("rule_active_visual");
+                        max = (rule._uid > max) ? rule._uid : max;
+                    })
+                }
+                else {
+                    rule_creation_ranks[sib._uid] = sib;
+                    max = (sib._uid > max) ? sib._uid : max;
+                }
+            }
+        });
+        var recent_rule = rule_creation_ranks[max];
+
+        // Add a visual cue and scroll to the most recent rule
+        recent_rule.$el.classList.add("rule_active_visual");
+        recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
     methods:{
         check_options: function() {
@@ -1144,7 +1184,7 @@ Vue.component('rule_container', {
             component_names: null,
 
             // Forces the element to re-render, if mutable events occurred
-            redraw: false
+            redraw: false,
         }
     },
     methods: {
@@ -1153,16 +1193,13 @@ Vue.component('rule_container', {
             this.rules.push({
                 type: this.add_a_rule_modal_option,
             });
-            this.do_redraw();
         },
         remove: function(index) {
             this.rules.splice(index, 1);
-            this.do_redraw();
         },
         duplicate_rule: function(index) {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
-            this.rules.splice(index, 0, JSON.parse(JSON.stringify(this.rules[index])));
-            this.do_redraw();
+            this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },
         check_options: function() {
             var valid = true;

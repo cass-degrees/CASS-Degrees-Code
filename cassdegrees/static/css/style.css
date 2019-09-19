@@ -4,6 +4,12 @@
     min-height: 600px;
 }
 
+.rule_active_visual {
+    border-left: 2px solid green;
+    margin: 0 0 0 -6px;
+    padding: 0 0 0 4px;
+}
+
 .btn_label {
     text-align: center;
 }

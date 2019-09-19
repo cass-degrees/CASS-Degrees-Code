@@ -11,7 +11,8 @@
 {% include "widgets/staff/rulescripts.html" %}
 {% verbatim %}
 <script type="text/x-template" id="eitherOrTemplate">
-    <div v-if="!redraw">
+    <div>
+        <div hidden="true">{{ refresh }}</div>
         <div class="msg-warn" v-if="large_unit_count">
             You have created an OR group that contains more than 48 units. Please check <i>Programs and Courses</i> to ensure
             you have correctly implemented the rules, and try to reduce the number of units in each OR block if possible.

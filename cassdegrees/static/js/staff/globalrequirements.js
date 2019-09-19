@@ -117,8 +117,26 @@ Vue.component('global_requirement', {
         return {
             component_names: GLOBAL_REQUIREMENT_NAMES,
             component_help: GLOBAL_REQUIREMENT_HELP,
-            show_help: false
+            show_help: false,
         }
+    },
+    mounted: function() {
+        var siblings = globalRequirementsApp.$children[0].$children;
+
+        // Determine whether this rule is the most recent rule by finding which sibling
+        // has the highest _uid assigned by Vue.
+        var max = 0;
+        var rule_creation_ranks = {};
+        siblings.forEach(function(sib){
+            rule_creation_ranks[sib._uid] = sib;
+            sib.$el.classList.remove("rule_active_visual");
+            max = (sib._uid > max) ? sib._uid : max;
+        });
+        var recent_rule = rule_creation_ranks[max];
+
+        // Add a visual cue and scroll to the most recent rule
+        recent_rule.$el.classList.add("rule_active_visual");
+        recent_rule.$el.scrollIntoView({behavior: "smooth"})
     },
     template: '#globalRequirementTemplate'
 });
@@ -143,7 +161,7 @@ Vue.component('global_requirement_container', {
             component_names: GLOBAL_REQUIREMENT_NAMES,
 
             // Forces the element to re-render, if mutable events occurred
-            redraw: false
+            redraw: false,
         }
     },
     methods: {
@@ -152,11 +170,9 @@ Vue.component('global_requirement_container', {
             this.global_requirements.push({
                 type: "general",
             });
-            this.do_redraw();
         },
         remove: function(index) {
             this.global_requirements.splice(index, 1);
-            this.do_redraw();
         },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {

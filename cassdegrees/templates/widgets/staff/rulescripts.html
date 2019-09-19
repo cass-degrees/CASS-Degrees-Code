@@ -228,7 +228,7 @@
             <input type="button" v-on:click="$emit('duplicate_rule')" class="btn-uni-grad btn-snall no-left-margin" value="Duplicate" />
         </header>
         <div class="box-solid">
-            <div class="card-content" v-bind:is="'rule_' + details.type" v-bind:details="details"></div>
+            <div class="card-content" v-bind:refresh="refresh" v-bind:is="'rule_' + details.type" v-bind:details="details"></div>
         </div>
 
         <div class="modal" v-if="show_help">
