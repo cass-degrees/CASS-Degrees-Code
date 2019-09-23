@@ -60,7 +60,29 @@ def create_list(request):
     })
 
 
-# Todo: implement list deletion with associated business rules (if any)
+# Delete list(s) selected through the admin list page. Lists are mutable collections used to bulk add courses to plans.
+# As such, deleting or editing a list through the admin page will have no effect on existing plans containing that list
+@login_required
+def delete_list(request):
+    data = request.POST
+    instances = []
+
+    ids_to_delete = data.getlist('id')
+    if not ids_to_delete:
+        return redirect(list_course_group_url + '&error=Please select a List to delete!')
+    for id_to_delete in ids_to_delete:
+        instances.append(ListModel.objects.get(id=int(id_to_delete)))
+
+    if "confirm" in data:
+        for instance in instances:
+            instance.delete()
+
+        return redirect(list_course_group_url + '&msg=Successfully Deleted List(s)!')
+    else:
+        return render(request, 'staff/delete/deletelists.html', context={
+            "instances": instances
+        })
+
 
 
 @login_required
@@ -90,7 +112,6 @@ def edit_list(request):
             # POST Requests only carry boolean values over as string
             # Only redirect the user to the list page if the user presses "Save and Exit".
             # Otherwise, simply display a success message on the same page.
-            # todo: implement list view for admin page then change url
             if request.POST.get('redirect') == 'true':
                 return redirect(list_course_group_url + '&msg=Successfully Edited List!')
             else:

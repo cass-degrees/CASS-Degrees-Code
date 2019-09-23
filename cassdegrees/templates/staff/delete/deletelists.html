@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}Delete Course List{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb '/staff/' 'Staff Home'%}
+    {% breadcrumb '/staff/list/?view=List' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'Delete List' %}
+{% endblock %}
+
+{% block subtitle %}Are you sure?{% endblock %}
+
+{% block content %}
+    <form class="anuform" action="" method="post">
+        {% csrf_token %}
+
+        <fieldset>
+            <p>Deleting these lists will mean they are no longer available to bulk add courses to templates.
+                It will not affect templates already containing these lists.</p>
+            <p>Are you sure you want to delete:</p>
+            {% for instance in instances %}
+                <p>
+                    {{ instance.name }} {{ instance.year }}
+                </p>
+                <input type="number" hidden value="{{ instance.id }}" name="id" />
+            {% endfor %}
+        </fieldset>
+
+        <input type="hidden" value="confirm" name="confirm" />
+
+        <p class="text-right">
+            <input class="btn-uni-grad btn-large" type="button" value="Cancel" onclick="returnToList('List')">
+            <input class="btn-uni-grad btn-large" type="submit" value="Delete">
+        </p>
+    </form>
+
+    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
+{% endblock %}
