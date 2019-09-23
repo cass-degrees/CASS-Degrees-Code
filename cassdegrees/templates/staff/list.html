@@ -45,6 +45,8 @@
         </ul>
     </div>
 
+
+
     <script src="{% static 'js/vendor/list.js' %}" type="application/javascript"></script>
 
     {# Generates table instances for each table in 'data', as well as the appropriate settings to keep it hidden #}
@@ -55,9 +57,14 @@
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
                 <div>
-                    <p class="left fullwidth">
+                    <p class="left {% if title != "Course" %}fullwidth{% endif %}">
                         <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/" value="+ New {{ title }}">
                     </p>
+                    {% if title == "Course" %}
+                        <p class="right">
+                            <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}report/course/" value="View Courses Report">
+                        </p>
+                    {% endif %}
                 </div>
 
 

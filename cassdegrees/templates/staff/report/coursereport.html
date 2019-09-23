@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}Course Report{% endblock %}
+
+{% block subtitle %}Course Report{% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb '/staff/' 'Staff Home'%}
+    {% breadcrumb '/staff/list/?view=Course' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'Course Report' %}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h3>All Courses and their Dependencies</h3>
+
+        <table class="fullwidth tbl-cell-bdr">
+            <thead>
+                <tr>
+                    {% for col in table_headings %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody class="list">
+            {% for row in table_body %}
+                <tr>
+                    {% for col in row %}
+                        <td>{{ col }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
