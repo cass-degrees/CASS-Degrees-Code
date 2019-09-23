@@ -37,7 +37,7 @@ def course_box_with_values(context, count, courses, plan):
             course_name = None
 
         if course_name is None:
-            course_name = courses[i]
+            course_name = courses[i]['code']
 
         output += "<div class=\"box grey-box\"><span class=\"grey-text\">Course #" + str(i + 1) + ":</span> " \
                   + course_name + "</div>"

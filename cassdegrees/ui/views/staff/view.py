@@ -46,9 +46,12 @@ def pretty_print_rules(program):
                     gen_request = HttpRequest()
                     gen_request.GET = {'select': 'code,name,units', 'from': 'course'}
                     rule['courses'] = []
-                    for code in rule['codes']:
+                    for course in rule['codes']:
+                        code = course['code']
+                        name = course['name']
                         # Add a new field containing the courses that match the given code
                         gen_request.GET['code_exact'] = code
+                        gen_request.GET['name_exact'] = name
                         courses = json.loads(search(gen_request).content.decode())
                         rule['courses'] += courses
 
@@ -79,8 +82,11 @@ def view_section(request):
         for rule in subplan['rules']:
             # Add a new field containing the courses that match the given code
             rule['courses'] = []
-            for code in rule['codes']:
+            for course in rule['codes']:
+                code = course['code']
+                name = course['name']
                 gen_request.GET['code_exact'] = code
+                gen_request.GET['name_exact'] = name
                 courses = json.loads(search(gen_request).content.decode())
                 rule['courses'] += courses
 

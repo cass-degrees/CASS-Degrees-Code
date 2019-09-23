@@ -33,9 +33,9 @@ def student_course_box_with_values(context, count, courses):
 
     for i in range(iters):
         output += "<div class=\"card selectable-card\">" \
-                  "<div data-course-code=\"" + courses[i] + "\" class=\"box-solid course-drop dropzone\">" \
+                  "<div data-course-code=\"" + courses[i]['code'] + "\" class=\"box-solid course-drop dropzone\">" \
                   "<span class=\"grey-text\">Course #" + str(i + 1) + ":&nbsp;</span>" \
-                  "<span class=\"course-code\">" + courses[i] + "</span>" \
+                  "<span class=\"course-code\">" + courses[i]['code'] + "</span>" \
                   "</div>" \
                   "</div>"
 

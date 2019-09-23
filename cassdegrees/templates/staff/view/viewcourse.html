@@ -118,11 +118,11 @@
                         Incompatible with
                         {% for course in rule.incompatible_courses %}
                             {% if forloop.revcounter == 1 %}{# Last #}
-                                {{ course }}
+                                {{ course.code }}
                             {% elif forloop.revcounter == 2 %}{# Second-Last #}
-                                {{ course }} and
+                                {{ course.code }} and
                             {% else %}{# Otherwise #}
-                                {{ course }},
+                                {{ course.code }},
                             {% endif %}
                         {% endfor %}
                     </p>
@@ -148,11 +148,11 @@
                         Students must have completed
                         {% for course in rule.codes %}
                             {% if forloop.revcounter == 1 %}{# Last #}
-                                {{ course }}
+                                {{ course.code }}
                             {% elif forloop.revcounter == 2 %}{# Second-Last #}
-                                {{ course }} and
+                                {{ course.code }} and
                             {% else %}{# Otherwise #}
-                                {{ course }},
+                                {{ course.code }},
                             {% endif %}
                         {% endfor %}
                     </p>

@@ -14,7 +14,9 @@
 
             <div v-for="(code, index) in details.incompatible_courses">
                 <select v-model="details.incompatible_courses[index]" v-on:change="check_options" required>
-                    <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
+                    <option v-for="course in courses" v-bind:value="{'code': course.code, 'name': course.name}">
+                        {{ course.code }} {{ course.name }}
+                    </option>
                 </select>
                 <input v-if="details.incompatible_courses.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
             </div>
@@ -110,7 +112,9 @@
 
             <div v-for="(code, index) in details.codes">
                 <select v-model="details.codes[index]" v-on:change="check_options" required>
-                    <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
+                    <option v-for="course in courses" v-bind:value="{'code': course.code, 'name': course.name}">
+                        {{ course.code }} {{ course.name }}
+                    </option>
                 </select>
                 <input v-if="details.codes.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
             </div>
@@ -135,7 +139,9 @@
 
             <div v-for="(code, index) in details.codes">
                 <select v-model="details.codes[index]" v-on:change="check_options" required>
-                    <option v-for="course in courses" v-bind:value="course.code">{{ course.code }} {{ course.name }}</option>
+                    <option v-for="course in courses" v-bind:value="{'code': course.code, 'name': course.name}">
+                        {{ course.code }} {{ course.name }}
+                    </option>
                 </select>
                 <input v-if="details.codes.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
             </div>

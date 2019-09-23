@@ -506,7 +506,7 @@ Vue.component('rule_course', {
             if (!(rule.details.codes.length === 0)) {
                 for (let i = 0; i < rule.details.codes.length; i++){
                     for (let x = 0; x < rule.courses.length; x++){
-                        if (rule.courses[x].code === rule.details.codes[i]) {
+                        if (rule.courses[x].code === rule.details.codes[i]['code']) {
                             rule.courses.splice(x, 1).forEach(course => {
                                 rule.selected_courses.push(course)
                             });
@@ -597,7 +597,7 @@ Vue.component('rule_course', {
                     list.elements.forEach((course) => {
                         // add course code to details.codes if not already present
                         if (!this.details.codes.some(code => code === course.code)) {
-                            this.details.codes.push(course.code)
+                            this.details.codes.push({'code': resource.code, 'name': resource.name})
                         }
 
                         // if a course is added through a list, remove it from the temporary store of courses
@@ -620,12 +620,12 @@ Vue.component('rule_course', {
                     // Adds selected resources to array and prevents duplicates
                     if (!this.details.codes.some(code => code === resource.code)) {
                         this.selected_courses.push(resource)
-                        this.details.codes.push(resource.code)
+                        this.details.codes.push({'code': resource.code, 'name': resource.name});
                     }
                     // remove the selected course from the list of available courses to add
                     let resourceID = this.courses.indexOf(resource)
                     this.courses.splice(resourceID, 1)
-                })
+                });
             }
 
             // Clear options proxy to avoid selection tags from being displayed
@@ -643,7 +643,7 @@ Vue.component('rule_course', {
 
                 // find and remove code from details.codes
                 for (let i = 0; i < this.details.codes.length; i++){
-                    if (course.code === this.details.codes[i]){
+                    if (course.code === this.details.codes[i]['code']){
                         this.details.codes.splice(i, 1);
                         break;
                     }
