@@ -53,5 +53,6 @@ urlpatterns = [
     path(staff_url_prefix + 'view/program/', view_section),
     path(staff_url_prefix + 'view/subplan/', view_section),
     path(staff_url_prefix + 'view/course/', view_section),
+    path(staff_url_prefix + 'view/list/', view_section),
     path(staff_url_prefix + 'pdf/program/', view_program_pdf),
 ]

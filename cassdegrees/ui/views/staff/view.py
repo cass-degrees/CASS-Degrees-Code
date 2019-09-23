@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.forms.models import model_to_dict
 from django.http import HttpRequest
 
-from api.models import CourseModel, ProgramModel, SubplanModel
+from api.models import CourseModel, ProgramModel, SubplanModel, ListModel
 from api.views import search
 import json
 
@@ -93,3 +93,10 @@ def view_section(request):
         pretty_print_rules(program)
 
         return render(request, 'staff/view/viewprogram.html', context={'data': program})
+
+    # ListModel(id, name, year, elements, lastupdated)
+    elif "list" in url:
+        # ListModel.elements already contains the code and name of each unit in the list
+        cList = model_to_dict(ListModel.objects.get(id=int(id_to_edit)))
+
+        return render(request, 'staff/view/viewlist.html', context={'data': cList})

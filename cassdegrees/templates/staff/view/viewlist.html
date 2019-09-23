@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% load breadcrumbs %}
+
+{% block page-title %}{{ data.name }} ({{ data.year }}){% endblock %}
+
+{% block subtitle %}{{ data.name }} ({{ data.year }}){% endblock %}
+
+{% block breadcrumb-trail %}
+    {% breadcrumb '/staff/' 'Staff Home'%}
+    {% breadcrumb '/staff/list/?view=Program' 'Programs/Subplans/Courses' %}
+    {% finalcrumb 'View List' %}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h3>Courses in list:</h3>
+        {# Displays all of the lists courses in a table #}
+
+        <table class="fullwidth tbl-cell-bdr">
+            <tr>
+                <th>Code</th>
+                <th>Title</th>
+            </tr>
+            {% for course in data.elements %}
+                <tr>
+                    <td>{{ course.code }}</td>
+                    <td>{{ course.name }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <p class="text-left">Last Updated: {{ data.lastUpdated }}</p>
+
+{% endblock %}

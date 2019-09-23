@@ -26,6 +26,9 @@ def create_list(request):
     # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
     instance = ""
 
+    # Initiatlise form
+    course_creation_form = handle_course_subform()
+
     # If we are creating a list from a duplicate, we retrieve the instance with the given id
     # (should always come along with 'duplicate' variable) and return that data to the user.
     if duplicate:
