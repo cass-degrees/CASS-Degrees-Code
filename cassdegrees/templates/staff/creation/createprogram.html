@@ -98,7 +98,7 @@
         <input class="btn-uni-grad btn-large" type="button" value="New Course"
                onclick="toggleCourseCreationPopup()">
         <input type="submit" class="btn-uni-grad btn-large" value="New Subplan"
-               onclick="submit_form(this.value)">
+               onclick="force_submit_form(this.value)">
     </p>
     <p class="right text-right">
         <input class="btn-uni-grad btn-large" type="button" value="Cancel"
@@ -114,11 +114,6 @@
     {% include "widgets/staff/coursecreatepopup.html" %}
 
     <script>
-        function submit_course_form(){
-            handleRules();
-            document.getElementById('mainForm').submit();
-        }
-
         function submit_form(form_action, redirect) {
             if (handleProgram() && handleRules()) {
                 // Ensure that the course has been agreed to to being non public on submission.
@@ -135,6 +130,16 @@
             } else {
                 return false;
             }
+        }
+
+        function force_submit_form(form_action, redirect) {
+            handleRules();
+            handleProgram();
+
+            document.getElementById('mainForm').action.value = form_action;
+            document.getElementById('redirect').value = redirect;
+            document.getElementById('mainForm').submit();
+            return true;
         }
     </script>
 
