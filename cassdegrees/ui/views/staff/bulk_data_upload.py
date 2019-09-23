@@ -24,6 +24,7 @@ from django.shortcuts import render
 # the % sign in a new cell in that row).
 
 # Support is available for CASS' custom teaching plan excel file.
+import os
 
 
 @login_required
@@ -41,6 +42,18 @@ def bulk_data_upload(request):
         # Open file in text mode:
         # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
         raw_uploaded_file = request.FILES['uploaded_file']
+        file_type = os.path.splitext(str(raw_uploaded_file))[1]
+
+        # Put the supported file extensions in this list
+        supported_file_types = [".xlsx", ".xls", ".csv"]
+
+        if file_type not in supported_file_types:
+            context['user_msg'] = "Failed to upload file... " \
+                                  "File format '" + file_type + "' is not supported! <br>" \
+                                  "Please make sure the file extension and contents are correct."
+            context['err_type'] = "error"
+            return render(request, 'staff/bulkupload.html', context=context)
+
         uploaded_file = TextIOWrapper(raw_uploaded_file, encoding=request.encoding)
 
         # First row contains the column type headings (code, name etc). We can't add them to the db.
