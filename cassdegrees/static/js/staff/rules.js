@@ -83,6 +83,12 @@ const SUBPLAN_TYPES = {
     'SPEC': 'Specialisations'
 };
 
+const SUBPLAN_UNITS = {
+    'MAJ':  48,
+    'MIN':  24,
+    'SPEC': 24
+};
+
 const INFO_MSGS = {
     'course': '<p>This Requisite requires Courses in the system. Please create Courses ' +
         '<a href="/staff/create/course/" target="_blank">here</a> or bulk upload Courses ' +
@@ -312,8 +318,8 @@ Vue.component('rule_subplan', {
         // Modifies the original 'id_year' element by telling it to refresh all components on all keystrokes
         document.getElementById('id_year').setAttribute("oninput", "redrawVueComponents()");
 
-        // Keep a copy of the OR Rule's "count_units" function (Or a blank function if unavailable)
-        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
+        // Keep a copy of the OR Rule's "update_units" function (Or a blank function if unavailable)
+        this.parent_update_units_fn = this.$parent.get_or_rule_update_units_fn();
     },
     methods: {
         apply_subplan_filter: function(){
@@ -413,9 +419,16 @@ Vue.component('rule_subplan', {
 
             return !this.wrong_year_selected && !this.non_unique_options && !this.inconsistent_units &&  !this.is_blank;
         },
+        count_units: function() {
+            var units = SUBPLAN_UNITS[this.details.subplan_type];
+            if (units)
+                return {"exact": units, "max": 0, "min": 0};
+            else
+                return {"exact":  0, "max": 0, "min": 0};
+        },
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
-            this.parent_count_units_fn();
+            this.parent_update_units_fn();
             this.check_options();
         },
         // https://michaelnthiessen.com/force-re-render/
@@ -522,8 +535,8 @@ Vue.component('rule_course', {
         request.send();
 
 
-        // Keep a copy of the Or Rule's "count_units" function (Or a blank function if unavailable)
-        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
+        // Keep a copy of the Or Rule's "update_units" function (Or a blank function if unavailable)
+        this.parent_update_units_fn = this.$parent.get_or_rule_update_units_fn();
     },
 
     computed: {
@@ -671,10 +684,17 @@ Vue.component('rule_course', {
 
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
-
+        count_units: function() {
+            switch(this.details.list_type){
+                case "min":   return {"exact": 0, "max": 0, "min": parseInt(this.details.unit_count)};
+                case "max":   return {"exact": 0, "max": parseInt(this.details.unit_count), "min": 0};
+                case "exact": return {"exact": parseInt(this.details.unit_count), "max": 0, "min": 0};
+                default: return {"exact": 0, "max": 0, "min": 0};
+            }
+        },
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
-            this.parent_count_units_fn();
+            this.parent_update_units_fn();
             this.check_options();
         },
         // https://michaelnthiessen.com/force-re-render/
@@ -847,8 +867,8 @@ Vue.component('rule_elective', {
         request.open("GET", "/api/search/?select=code&from=course");
         request.send();
 
-        // Keep a copy of the Or Rule's "count_units" function (Or a blank function if unavailable)
-        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
+        // Keep a copy of the Or Rule's "update_units" function (Or a blank function if unavailable)
+        this.parent_update_units_fn = this.$parent.get_or_rule_update_units_fn();
     },
     methods: {
         check_options: function() {
@@ -867,9 +887,12 @@ Vue.component('rule_elective', {
 
             return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
         },
+        count_units: function() {
+            return {"exact": parseInt(this.details.unit_count), "max": 0, "min": 0};
+        },
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
-            this.parent_count_units_fn();
+            this.parent_update_units_fn();
             this.check_options();
         },
         // https://michaelnthiessen.com/force-re-render/
@@ -915,8 +938,8 @@ Vue.component('rule_custom_text', {
     },
     created: function() {
         this.check_options();
-        // Keep a copy of the Or Rule's "count_units" function (Or a blank function if unavailable)
-        this.parent_count_units_fn = this.$parent.get_or_rule_count_units_fn();
+        // Keep a copy of the Or Rule's "update_units" function (Or a blank function if unavailable)
+        this.parent_update_units_fn = this.$parent.get_or_rule_update_units_fn();
     },
     methods: {
         check_options: function() {
@@ -926,9 +949,12 @@ Vue.component('rule_custom_text', {
 
             return !this.not_divisible && !this.is_blank;
         },
+        count_units: function() {
+            return {"exact": parseInt(this.details.unit_count), "max": 0, "min": 0};
+        },
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
-            this.parent_count_units_fn();
+            this.parent_update_units_fn();
             this.check_options();
         },
     },
@@ -966,7 +992,7 @@ Vue.component('rule_custom_text_req', {
         },
         update_units: function() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
-            this.parent_count_units_fn();
+            this.parent_update_units_fn();
             this.check_options();
         },
     },
@@ -1006,6 +1032,7 @@ Vue.component('rule_either_or', {
 
             // Show warnings if appropriate
             large_unit_count: false,
+            inconsistent_units: false,
 
             component_groups: { 'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
@@ -1026,9 +1053,8 @@ Vue.component('rule_either_or', {
             });
         },
         remove: function(index, group) {
-            console.log(this.details.either_or[group]);
             this.details.either_or[group].splice(index, 1);
-            this.count_units();
+            this.update_units();
             this.do_redraw();
         },
         duplicate_rule: function(index, group) {
@@ -1038,7 +1064,7 @@ Vue.component('rule_either_or', {
         },
         remove_group: function(group) {
             this.details.either_or.splice(group, 1);
-            this.count_units();
+            this.update_units();
             this.do_redraw();
         },
         duplicate_group: function(group) {
@@ -1048,30 +1074,86 @@ Vue.component('rule_either_or', {
         },
         check_options: function() {
             var valid = true;
-            for (var index in this.$children){
-                valid = valid && this.$children[index].check_options();
+            for (var child of this.$children){
+                valid = valid && child.check_options();
+            }
+
+            // Count the number of units in each group, creating an error if there are any inconsistencies
+            this.inconsistent_units = false;
+            var units = null;
+            for(var or_group of this.details.either_or){
+                // Sum up the units of the or group
+                var group_units = {"exact": 0, "max": 0, "min": 0};
+                for (var details of or_group){
+                    var child_units = this.find_rule(details).count_units();
+                    for (var key in child_units)
+                        group_units[key] += child_units[key]
+                }
+
+                // If units has not been set yet, set it to the current OR group
+                if (units == null){
+                    units = group_units;
+                }
+                // If units has been set, verify they are compatible and shrink the possible unit bounds
+                else {
+                    // If the current unit count is incompatible with the OR rule count, notify of inconsistent units
+                    if (units.exact + units.min > group_units.exact + group_units.min + group_units.max){
+                        this.inconsistent_units = true;
+                        valid = false;
+                    }
+                    if (group_units.exact + group_units.min > units.exact + units.min + units.max){
+                        this.inconsistent_units = true;
+                        valid = false;
+                    }
+
+                    // Shrink the bounds of the OR rule units as much as possible
+                    var min =  Math.max(units.exact + units.min, group_units.exact + group_units.min);
+                    var max;
+                    if (units.exact + units.min + units.max > group_units.exact + group_units.min + group_units.max)
+                        max = group_units.exact + group_units.min + group_units.max - min;
+                    else
+                        max = units.exact + units.min + units.max - min;
+                    units = {'exactly': 0, 'min': min, 'max': max };
+
+                }
             }
 
             return valid;
         },
         count_units: function() {
+            // Get the unit count of the entire OR rule as the unit count of the first group
+            var units = {"exact": 0, "max": 0, "min": 0};
+            if (this.details.either_or.length !== 0){
+                for (var details of this.details.either_or[0]) {
+                    var child_units = this.find_rule(details).count_units();
+                    for (var key in child_units)
+                        units[key] += child_units[key]
+                }
+            }
+
+            return units;
+        },
+        find_rule: function(rule_details) {
+            // Takes a rule details object and finds the child node with a matching set of rules
+            for(var child of this.$children)
+                if (child.details === rule_details)
+                    return child;
+            return null;
+        },
+        update_units: function() {
+            // "check_options" is run as an updated unit count affects the error messages in this rule
+            this.check_options();
+
             // Will go through each rule and determine how many units it specifies, showing a warning if over 48
             for(var or_group of this.details.either_or){
-                var units = 0;
-                for(var rule of or_group) {
-                    if (rule.hasOwnProperty("subplan_type")) {
-                        switch (rule.subplan_type) {
-                            case "MAJ" : units += 48; break;
-                            case "MIN" : units += 24; break;
-                            case "SPEC": units += 24; break;
-                        }
-                    }
-                    else if (rule.hasOwnProperty("unit_count")) {
-                        units += parseInt(rule.unit_count);
-                    }
+                var group_units = {"exact": 0, "max": 0, "min": 0};
+                for (var details of or_group){
+                    var child_units = this.find_rule(details).count_units();
+                    for (var key in child_units)
+                        group_units[key] += child_units[key]
                 }
 
-                if (units > 48) {
+                if (group_units.exact + group_units.min > 48) {
                     this.large_unit_count = true;
                     return;
                 }
@@ -1148,13 +1230,22 @@ Vue.component('rule', {
 
             return valid;
         },
-        get_or_rule_count_units_fn: function() {
+        count_units: function() {
+            var units = {"exact": 0, "max": 0, "min": 0};
+            for (var child of this.$children){
+                var child_units = child.count_units();
+                for (var key in child_units)
+                    units[key] += child_units[key];
+            }
+            return units;
+        },
+        get_or_rule_update_units_fn: function() {
             // Looks through the parent nodes until it finds the OR rule, returning its "count_units" function
             // If no OR rule is found, an empty function is returned
             var parent_or = this.$parent;
             while(parent_or !== undefined){
                 if (parent_or.constructor.options.name === 'rule_either_or'){
-                    return parent_or.count_units;
+                    return parent_or.update_units;
                 }
                 parent_or = parent_or.$parent;
             }
@@ -1210,6 +1301,15 @@ Vue.component('rule_container', {
 
             return valid;
         },
+        count_units: function() {
+            var units = {"exact": 0, "max": 0, "min": 0};
+            for (var child of this.$children){
+                var child_units = child.count_units();
+                for (var key in child_units)
+                    units[key] += child_units[key];
+            }
+            return units;
+        },
         // https://michaelnthiessen.com/force-re-render/
         do_redraw: function() {
             this.redraw = true;
@@ -1250,6 +1350,20 @@ if (reqs.length > 0) {
     if (parsed != null) {
         app.rules = parsed;
     }
+}
+
+
+function isValidUnitCount(value) {
+    // Go through each child and sum up all of the units
+    var units = {"exact": 0, "max": 0, "min": 0};
+    for (var child of app.$children){
+        var child_units = child.count_units();
+        for (var key in child_units)
+            units[key] += child_units[key];
+    }
+
+    // Return true if the specified value is within the unit count bounds
+    return units.exact + units.min <= value && value <= units.exact + units.min + units.max;
 }
 
 

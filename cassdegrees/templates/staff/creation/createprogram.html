@@ -122,6 +122,13 @@
                         "to students or be selectable as a requirement elsewhere.\n\nAre you sure you want to continue?")) {
                     return false;
                 }
+                // If the user has chosen to publish a plan but the unit count is inconsistent, verify with the user
+                if (document.getElementById("id_publish").checked &&
+                    !isValidUnitCount(parseInt(document.getElementById("id_units").value)) &&
+                    !confirm("You have created a plan that contains a different number of units than you have " +
+                        "specified for the entire plan.\n\nAre you sure you want to continue? (Not Recommended)")) {
+                    return false;
+                }
 
                 document.getElementById('mainForm').action.value = form_action;
                 document.getElementById('redirect').value = redirect;

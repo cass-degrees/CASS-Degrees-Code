@@ -17,6 +17,9 @@
             You have created an OR group that contains more than 48 units. Please check <i>Programs and Courses</i> to ensure
             you have correctly implemented the rules, and try to reduce the number of units in each OR block if possible.
         </div>
+        <div class="msg-error" v-if="inconsistent_units">
+            The number of units in each group is inconsistent. Please ensure that each group has an equivalent number of units.
+        </div>
         <br v-if="large_unit_count" />
 
         <div class="box bdr-solid bdr-uni" v-for="(item, i) in details.either_or" :key="i">

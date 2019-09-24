@@ -96,6 +96,16 @@
                     return false;
                 }
 
+                // If the user has chosen to publish a subplan but the unit count is inconsistent, verify with the user
+                if (document.getElementById("id_publish").checked) {
+                    var planType = document.getElementById("id_planType").value;
+                    if (planType && !isValidUnitCount( SUBPLAN_UNITS[planType] ) &&
+                        !confirm("You have created a subplan that does not contain " + SUBPLAN_UNITS[planType] +
+                            " units.\n\nAre you sure you want to continue? (Not Recommended)")){
+                        return false;
+                    }
+                }
+
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();
             }
