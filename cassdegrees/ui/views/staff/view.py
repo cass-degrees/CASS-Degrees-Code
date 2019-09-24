@@ -79,6 +79,8 @@ def view_section(request):
         gen_request.GET = {'select': 'code,name,units', 'from': 'course'}
 
         subplan = model_to_dict(SubplanModel.objects.get(id=int(id_to_edit)))
+        pretty_print_reqs(subplan)
+
         for rule in subplan['rules']:
             # Add a new field containing the courses that match the given code
             rule['courses'] = []

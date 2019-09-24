@@ -62,6 +62,7 @@
     <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
          structure -->
     <form class="anuform">
+        {% include "widgets/staff/globalrequirements.html" %}
         {% include "widgets/staff/subplanrules.html" %}
     </form>
 
@@ -87,7 +88,7 @@
         }
 
         function submit_form(redirect) {
-            if (handleRules()) {
+            if (handleProgram() && handleRules()) {
                 // Ensure that the course has been agreed to to being non public on submission.
                 if (!document.getElementById("id_publish").checked &&
                     !confirm("You haven't marked this subplan as public - this means this won't appear " +

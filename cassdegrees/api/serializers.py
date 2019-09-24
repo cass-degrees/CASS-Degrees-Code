@@ -31,7 +31,7 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
 class SubplanSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SubplanModel
-        fields = ('id', 'code', 'year', 'name', 'units', 'planType', 'rules', 'publish')
+        fields = ('id', 'code', 'year', 'name', 'units', 'planType', 'globalRequirements', 'rules', 'publish')
 
 
 class ProgramSerializer(serializers.HyperlinkedModelSerializer):

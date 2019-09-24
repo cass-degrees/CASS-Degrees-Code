@@ -184,11 +184,12 @@ class EditProgramFormSnippet(ModelForm):
 class EditSubplanFormSnippet(ModelForm):
     # Automatically injected by default
     units = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    globalRequirements = JSONField(field_id='globalRequirements', required=False)
     rules = JSONField(field_id='rules', required=False)
 
     class Meta:
         model = SubplanModel
-        fields = ('code', 'year', 'name', 'units', 'planType', 'rules', 'publish')
+        fields = ('code', 'year', 'name', 'units', 'planType', 'globalRequirements', 'rules', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
             'year': forms.NumberInput(attrs={'class': "text eighth-width",

@@ -51,7 +51,7 @@
             {% if not forloop.last %}<p class="bottom-margin top-margin">or...</p>{% endif %}
         {% endfor %}
     {% elif rule.type == "custom_text" %}
-        <p>For {{ rule.units }} units:</p>
+        <p>For {{ rule.unit_count }} units:</p>
         <p>{{ rule.text }}</p>
     {% else %}
         ERROR: Unknown rule type "{{ rule.type }}"!
@@ -80,7 +80,7 @@
     {% endwith %}
 {% elif rule.type == "custom_text" %}
     {% if rule.show_course_boxes %}
-        {% course_box rule.units plan %}
+        {% course_box rule.unit_count plan %}
     {% endif %}
 {% endif %}
 

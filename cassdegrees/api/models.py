@@ -65,6 +65,7 @@ class SubplanModel(models.Model):
 
     subplanChoices = (("MAJ", "Major"), ("MIN", "Minor"), ("SPEC", "Specialisation"))
 
+    globalRequirements = psql.JSONField(default=list)
     rules = psql.JSONField(default=list)
 
     planType = models.CharField(max_length=4, choices=subplanChoices)
