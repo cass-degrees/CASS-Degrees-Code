@@ -279,6 +279,7 @@ Vue.component('rule_subplan', {
             "program_year": "",
             "subplan_types": [],
             "info_msg": INFO_MSGS['subplan'],
+            "show_help": false,
 
             // Display related warnings if true
             "non_unique_options": false,
