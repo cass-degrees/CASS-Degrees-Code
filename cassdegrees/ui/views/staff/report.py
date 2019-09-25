@@ -1,14 +1,15 @@
 from django.shortcuts import render
 from django.forms.models import model_to_dict
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 
 from api.models import CourseModel, ProgramModel, SubplanModel
 from api.views import search
 
 import json
+import xlwt
 
 
-def report_section(request):
+def generate_course_info_table():
     # Retrieve all courses and store them in a list.
     all_courses = CourseModel.objects.all()
     all_courses_list = list()
@@ -105,6 +106,49 @@ def report_section(request):
             new_row.append("Inactive")
 
         table_body.append(new_row)
+
+    return table_headings, table_body
+
+
+# Generates the courses report and then uses that to generate an excel file based off that.
+# https://www.pythoncircle.com/post/190/how-to-download-data-as-csv-and-excel-file-in-django/
+def generate_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+
+    # File name is defined here
+    response['Content-Disposition'] = 'attachment; filename="Course Report.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')  # Create new workbook
+    ws = wb.add_sheet("Courses")  # Add new sheet
+
+    columns, body = generate_course_info_table()
+
+    # Make the top row to be bold
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    for col_ind in range(len(columns)):
+        ws.write(0, col_ind, columns[col_ind], font_style)
+
+    # The body should not be bold
+    font_style = xlwt.XFStyle()
+
+    row_ind = 1  # Since column names occupy row number 0, start writing at row index 1.
+
+    # Write all the body rows to the excel workbook.
+    for row in body:
+        for col_ind in range(len(row)):
+            ws.write(row_ind, col_ind, row[col_ind], font_style)
+
+        row_ind += 1
+
+    wb.save(response)
+    return response
+
+
+# Simply generates and displays report of all courses in web view.
+def report_section(request):
+    table_headings, table_body = generate_course_info_table()
 
     context = {
         'table_headings': table_headings,

@@ -57,7 +57,7 @@
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
                 <div>
-                    <p class="left {% if title != "Course" %}fullwidth{% endif %}">
+                    <p class="left">
                         <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/" value="+ New {{ title }}">
                     </p>
                     {% if title == "Course" %}
@@ -67,11 +67,9 @@
                     {% endif %}
                 </div>
 
-
-
                 {# If there is no data available, notify the user #}
                 {% if not content %}
-                    <p class="left">No {{ title }}s to display</p>
+                    <p class="left fullwidth">No {{ title }}s to display</p>
                 {# otherwise if theres content then have the table show #}
                 {% else %}
                 <table id="{{ title }}Sorter" class="fullwidth tbl-cell-bdr">
