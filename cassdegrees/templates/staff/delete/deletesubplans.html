@@ -17,7 +17,11 @@
         {% csrf_token %}
 
         <fieldset>
-            <p>Are you sure you want to delete:</p>
+            {% if instances|length == 1 %}
+                <p>Are you sure you want to delete the following subplan:</p>
+            {% else %}
+                <p>Are you sure you want to delete the following subplans:</p>
+            {% endif %}
             {% for instance in instances %}
                 <p>
                     {{ instance.name }} ({{ instance.code }}) in {{ instance.year }}

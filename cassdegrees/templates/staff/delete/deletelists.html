@@ -19,7 +19,11 @@
         <fieldset>
             <p>Deleting these lists will mean they are no longer available to bulk add courses to templates.
                 It will not affect templates already containing these lists.</p>
-            <p>Are you sure you want to delete:</p>
+            {% if instances|length == 1 %}
+                <p>Are you sure you want to delete the following list:</p>
+            {% else %}
+                <p>Are you sure you want to delete the following lists:</p>
+            {% endif %}
             {% for instance in instances %}
                 <p>
                     {{ instance.name }} {{ instance.year }}

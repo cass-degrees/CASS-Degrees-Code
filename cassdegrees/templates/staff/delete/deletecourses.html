@@ -21,10 +21,13 @@
         {% csrf_token %}
 
         <fieldset>
-            <p>Are you sure you want to delete:</p>
-
+            {% if instances|length == 1 %}
+                <p>Are you sure you want to delete the following course:</p>
+            {% else %}
+                <p>Are you sure you want to delete the following courses:</p>
+            {% endif %}
             {% for instance in instances %}
-                <p class="marginleft">
+                <p>
                     {{ instance.name }} ({{ instance.code }})
                 </p>
                 <input type="number" hidden value="{{ instance.id }}" name="id" />
