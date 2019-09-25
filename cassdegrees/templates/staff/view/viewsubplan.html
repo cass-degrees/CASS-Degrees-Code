@@ -80,11 +80,11 @@
             <p>
                 <i>
                     {% if rule.list_type == "min" %}
-                        At least
+                        A minimum Of
                     {% elif rule.list_type == "exact" %}
                         Exactly
                     {% elif rule.list_type == "max" %}
-                        No more than
+                        A maximum Of
                     {% endif %}
                     {{ rule.unit_count }} units from completion of the following course(s):
                 </i>

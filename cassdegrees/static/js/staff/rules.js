@@ -72,9 +72,9 @@ const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
 };
 
 const LIST_TYPES = {
-    'min': 'At least',
+    'min': 'A Minimum Of',
     'exact': 'Exactly',
-    'max': 'No more than'
+    'max': 'A Maximum Of'
 };
 
 const SUBPLAN_TYPES = {
