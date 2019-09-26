@@ -23,6 +23,9 @@ def create_subplan(request):
         duplicate = True
     elif duplicate == 'false':
         duplicate = False
+    year = request.GET.get('program_year')
+    if not year:
+        year = ""
 
     # Initialise instance with an empty string so that we don't get a "may be referenced before assignment" error below
     instance = ""
@@ -62,7 +65,8 @@ def create_subplan(request):
 
     return render(request, 'staff/creation/createsubplan.html', context={
         "form": form,
-        "course_creation": course_creation_form
+        "course_creation": course_creation_form,
+        "year": year
     })
 
 
@@ -133,6 +137,9 @@ def edit_subplan(request):
     id = request.GET.get('id')
     if not id:
         return HttpResponseNotFound("Specified ID not found")
+    year = request.GET.get('program_year')
+    if not year:
+        year = ""
 
     # Find the program to specifically edit
     instance = SubplanModel.objects.get(id=int(id))
@@ -170,5 +177,6 @@ def edit_subplan(request):
         'render': {'msg': message},
         "edit": True,
         "form": form,
-        "course_creation": course_creation_form
+        "course_creation": course_creation_form,
+        "year": year
     })

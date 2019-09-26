@@ -82,6 +82,10 @@
     {% include "widgets/staff/coursecreatepopup.html" %}
 
     <script>
+        window.addEventListener("load", function(){
+            document.getElementById('mainForm').year.value = "{{ year }}"
+        });
+
         function submit_course_form(){
             handleRules();
             document.getElementById('mainForm').submit();

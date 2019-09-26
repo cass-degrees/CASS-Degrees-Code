@@ -38,7 +38,7 @@ def create_program(request):
         if request.POST['action'] == 'New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.path
-            return redirect(staff_url_prefix + 'create/subplan/')
+            return redirect(staff_url_prefix + 'create/subplan/?program_year=' + request.POST['year'])
 
         form = EditProgramFormSnippet(request.POST)
 
@@ -115,7 +115,7 @@ def edit_program(request):
         if request.POST['action'] == 'New Subplan':
             request.session['cached_program_form_data'] = request.POST
             request.session['cached_program_form_source'] = request.build_absolute_uri()
-            return redirect(staff_url_prefix + 'create/subplan/')
+            return redirect(staff_url_prefix + 'create/subplan/?program_year=' + request.POST['year'])
 
         form = EditProgramFormSnippet(request.POST, instance=instance)
 
