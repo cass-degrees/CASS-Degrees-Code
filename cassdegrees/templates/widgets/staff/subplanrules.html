@@ -19,25 +19,49 @@
 
         <div v-if="courses.length != 0">
             <p class="form-group">
-                <label>Students must complete:</label>
+                <Label style="width: 20.8333%; text-align: right; float: left;">List name:</Label>
+                <input class="text tfull" v-model="details.list_description"
+                       placeholder="Optional description for CASS Staff Reference, e.g. CASS Majors"
+                       style="margin-left: 0;">
             </p>
 
-            <select v-model="details.list_type" v-on:change="check_options(false)" required>
-                <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
-            </select>
+            <p class="form-group">
+                <label style="width: 20.8333%; text-align: right; float: left;">List type:</label>
+                <select v-model="details.list_type" v-on:change="updateListTypeLabel()" required>
+                    <option v-for="(msg, type) in list_types" v-bind:value="type">{{ msg }}</option>
+                </select>
+            </p>
 
-            <!-- {#       instyle css only temporary #} -->
-            <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="check_options(false)" v-model="details.unit_count" min="0" step="6" max="1000" required> units
+            <p class="form-group" v-if="details.list_type == 'min_max'">
+                <label style="width: 20.8333%; text-align: right; float: left;">Minimum units:</label>
+                <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+                   v-on:change="updateUnitCountLabel()" v-model="details.min_unit_count" min="0" step="6" max="1000" required>
+            </p>
+            <p class="form-group" v-if="details.list_type == 'min_max'">
+                <label style="width: 20.8333%; text-align: right; float: left;">Maximum units:</label>
+                <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+                   v-on:change="updateUnitCountLabel()" v-model="details.max_unit_count" min="0" step="6" max="1000" required>
+            </p>
+
+            <p class="form-group" v-if="details.list_type !='min_max'">
+                <label style="width: 20.8333%; text-align: right; float: left;">Number of units:</label>
+                <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
+                       v-on:change="updateUnitCountLabel()" v-model="details.unit_count" min="0" step="6" max="1000" required>
+            </p>
 
 
             <div class="msg-error" v-if="invalid_units">Unit count must be greater than 0!</div>
             <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
             <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
             <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+            <div class="msg-error" v-if="invalid_min_max_units">Minimum units count can not be greater than maximum units count!</div>
 
-            <p>
-                from the following courses:
+            <p v-if="details.list_type != 'min_max'">
+                Students must select {{ list_type_label }} {{ unit_value_label }} units from the following courses:
+            </p>
+            <p v-if="details.list_type == 'min_max'">
+                Students must select a minimum of {{details.min_unit_count}} units
+                and a maximum of {{ details.max_unit_count }} units from the following courses:
             </p>
 
             <br>

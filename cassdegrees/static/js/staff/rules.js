@@ -74,7 +74,8 @@ const REQUISITE_EITHER_OR_COMPONENT_NAMES = {
 const LIST_TYPES = {
     'min': 'A Minimum Of',
     'exact': 'Exactly',
-    'max': 'A Maximum Of'
+    'max': 'A Maximum Of',
+    'min_max': "Minimum and Maximum"
 };
 
 const SUBPLAN_TYPES = {
@@ -607,19 +608,22 @@ Vue.component('rule_course', {
                 if (!value.hasOwnProperty("codes")) {
                     value.codes = [];
                 }
-
                 // optional description field for staff reference
                 if (!value.hasOwnProperty("list_description")) {
                     value.list_description = "";
                 }
-
                 if (!value.hasOwnProperty("list_type")) {
                     // possible values = LIST_TYPES
                     value.list_type = "";
                 }
-
                 if (!value.hasOwnProperty("unit_count")) {
                     value.unit_count = "0";
+                }
+                if (!value.hasOwnProperty("min_unit_count")) {
+                    value.min_unit_count = "0";
+                }
+                if (!value.hasOwnProperty("max_unit_count")) {
+                    value.max_unit_count = "0";
                 }
 
                 return true;
@@ -651,6 +655,7 @@ Vue.component('rule_course', {
             "invalid_units": false,
             "invalid_units_step": false,
             "is_blank": false,
+            "invalid_min_max_units": false,
 
             // Track whether adding list
             "is_list_search": false,
@@ -850,10 +855,23 @@ Vue.component('rule_course', {
             if (is_submission) {
                 this.is_blank = blank_count || blank_codes || blank_listtype;
                 // Ensure Unit Count is valid:
-                if (this.details.unit_count != null) {
-                    this.invalid_units = this.details.unit_count <= 0;
-                    this.invalid_units_step = this.details.unit_count % 6 !== 0;
+                if (this.details.list_type != "min_max") {
+                    if (this.details.unit_count != null) {
+                        this.invalid_units = this.details.unit_count <= 0;
+                        this.invalid_units_step = this.details.unit_count % 6 !== 0;
+                    }
+                } else {
+                    console.log("TELL ME WHYYYYY");
+                    if (this.details.min_unit_count != null && this.details.max_unit_count != null) {
+                        this.invalid_units = this.details.min_unit_count <= 0 || this.details.max_unit_count <= 0;
+                        this.invalid_units_step = this.details.min_unit_count %6 !== 0 || this.details.max_unit_count %6 !== 0;
+
+                        this.invalid_min_max_units = parseInt(this.details.min_unit_count) > parseInt(this.details.max_unit_count);
+                    } else {
+                        this.is_blank = true;
+                    }
                 }
+
             } else {
                 // remove error if user corrects prior to resubmission
                 if (!blank_listtype && !blank_codes && !blank_count) {
@@ -862,8 +880,8 @@ Vue.component('rule_course', {
             }
 
             // Duplicates are prevented by condition on updateSelected()
-
-            return !this.invalid_units && !this.invalid_units_step && !this.is_blank;
+            return !this.invalid_units && !this.invalid_units_step && !this.is_blank && !this.invalid_min_max_units;
+            
         },
 
         count_units: function() {
@@ -871,6 +889,10 @@ Vue.component('rule_course', {
                 case "min":   return {"exact": 0, "max": 0, "min": parseInt(this.details.unit_count)};
                 case "max":   return {"exact": 0, "max": parseInt(this.details.unit_count), "min": 0};
                 case "exact": return {"exact": parseInt(this.details.unit_count), "max": 0, "min": 0};
+                case "min_max":  return {
+                    "exact": 0,
+                    "max": parseInt(this.details.max_unit_count) - parseInt(this.details.min_unit_count),
+                    "min": parseInt(this.details.min_unit_count)};
                 default: return {"exact": 0, "max": 0, "min": 0};
             }
         },

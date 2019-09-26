@@ -18,19 +18,37 @@
     {% elif rule.type == "course" %}
         {# Find out if all courses are required #}
         {% with courses_provided=rule.codes|length %}
-            {% with courses_needed=rule.unit_count|divide:6 %}
-                {% if courses_provided == courses_needed %}
-                    {# All courses specified are required - render all #}
-                    <p>Complete {{ rule.unit_count }} units from the following
-                        {% if rule.unit_count|add:"0" <= 6 %}course{% else %}set of courses{% endif %}:</p>
-                {% else %}
-                    {# Not all required courses - give descriptions #}
-                    <p>Complete {{ rule.unit_count }} units from a selection of:</p>
-                    {% for code in rule.codes %}
-                        {{ code }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+            {% if rule.list_type != 'min_max' %}
+                {% with courses_needed=rule.unit_count|divide:6 %}
+                    {% if courses_provided == courses_needed %}
+                        {# All courses specified are required - render all #}
+                        <p>Complete {{ rule.unit_count }} units from the following
+                            {% if rule.unit_count|add:"0" <= 6 %}course{% else %}set of courses{% endif %}:</p>
+                    {% else %}
+                        {# Not all required courses - give descriptions #}
+                        <p>Complete {{ rule.unit_count }} units from a selection of:</p>
+                        {% for code in rule.codes %}
+                            {{ code }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+                {% with courses_needed=rule.min_unit_count|divide:6 %}
+                    {% if courses_provided == courses_needed %}
+                        {# All courses specified are required - render all #}
+                        <p>Complete a minimum of {{ rule.min_unit_count }} units and a maximum of
+                            {{ rule.max_unit_count }} units from the following
+                            {% if rule.unit_count|add:"0" <= 6 %}course{% else %}set of courses{% endif %}:</p>
+                    {% else %}
+                        {# Not all required courses - give descriptions #}
+                        <p><p>Complete a minimum of {{ rule.min_unit_count }} units and a maximum of
+                            {{ rule.max_unit_count }} units from a selection of:</p>
+                        {% for code in rule.codes %}
+                            {{ code.code }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
         {% endwith %}
     {% elif rule.type == "either_or" %}
         <p class="bottom-margin">Either:</p>
@@ -62,15 +80,27 @@
         {% student_course_box rule.unit_count %}
     {% elif rule.type == "course" %}
         {% with courses_provided=rule.codes|length %}
-            {% with courses_needed=rule.unit_count|divide:6 %}
-                {% if courses_provided == courses_needed %}
-                    {# All courses specified are required - render all #}
-                    {% student_course_box_with_values rule.unit_count rule.codes %}
-                {% else %}
-                    {# Not all required courses - map them out as blanks #}
-                    {% student_course_box rule.unit_count %}
-                {% endif %}
-            {% endwith %}
+            {% if rule.list_type != 'min_max' %}
+                {% with courses_needed=rule.unit_count|divide:6 %}
+                    {% if courses_provided == courses_needed %}
+                        {# All courses specified are required - render all #}
+                        {% student_course_box_with_values rule.unit_count rule.codes %}
+                    {% else %}
+                        {# Not all required courses - map them out as blanks #}
+                        {% student_course_box rule.unit_count %}
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+                {% with courses_needed=rule.min_unit_count|divide:6 %}
+                    {% if courses_provided == courses_needed %}
+                        {# All courses specified are required - render all #}
+                        {% student_course_box_with_values rule.min_unit_count rule.codes %}
+                    {% else %}
+                        {# Not all required courses - map them out as blanks #}
+                        {% student_course_box rule.max_unit_count %}
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
         {% endwith %}
     {% elif rule.type == "custom_text" %}
         {% if rule.show_course_boxes %}

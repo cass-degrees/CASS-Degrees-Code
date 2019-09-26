@@ -92,14 +92,20 @@
                 {# Course Rules #}
                 {% elif rule.type == 'course' %}
                     <p>
-                        {% if rule.list_type == "min" %}
-                            A minimum of
-                        {% elif rule.list_type == "exact" %}
-                            Exactly
-                        {% elif rule.list_type == "max" %}
-                            A maximum of
+                        {% if rule.list_type != "min_max" %}
+                            {% if rule.list_type == "min" %}
+                                A minimum of
+                            {% elif rule.list_type == "exact" %}
+                                Exactly
+                            {% elif rule.list_type == "max" %}
+                                A maximum of
+                            {% endif %}
+                            {{ rule.unit_count }} units
+                        {% else %}
+                            A minimum of {{ rule.min_unit_count }} units
+                            and a maximum of {{ rule.max_unit_count }} units
                         {% endif %}
-                        {{ rule.unit_count }} units from the completion of the following courses:
+                        from the completion of the following courses:
                         <ul>
                             {% for course in rule.courses %}
                                 <li>{{ course.code }} - {{ course.name }} ({{ course.units }} units)</li>

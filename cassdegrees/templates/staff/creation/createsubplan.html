@@ -86,7 +86,8 @@
 
     <script>
         window.addEventListener("load", function(){
-            document.getElementById('mainForm').year.value = "{{ year }}"
+            if (document.getElementById('mainForm').year.value == "")
+                document.getElementById('mainForm').year.value = "{{ year }}";
         });
 
         function submit_course_form(){

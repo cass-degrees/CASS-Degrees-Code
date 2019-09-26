@@ -79,14 +79,20 @@
         {% for rule in data.rules %}
             <p>
                 <i>
-                    {% if rule.list_type == "min" %}
-                        A minimum Of
-                    {% elif rule.list_type == "exact" %}
-                        Exactly
-                    {% elif rule.list_type == "max" %}
-                        A maximum Of
+                    {% if rule.list_type != "min_max" %}
+                        {% if rule.list_type == "min" %}
+                            A minimum of
+                        {% elif rule.list_type == "exact" %}
+                            Exactly
+                        {% elif rule.list_type == "max" %}
+                            A maximum of
+                        {% endif %}
+                        {{ rule.unit_count }} units
+                    {% else %}
+                        A minimum of {{ rule.min_unit_count }} units
+                        and a maximum of {{ rule.max_unit_count }} units
                     {% endif %}
-                    {{ rule.unit_count }} units from completion of the following course(s):
+                    from completion of the following course(s):
                 </i>
                 <table class="tbl-cell-bdr">
                     <tr><th>Code</th><th>Title</th><th>Units</th></tr>
