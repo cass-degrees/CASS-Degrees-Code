@@ -82,7 +82,15 @@
                 {# Subplan Rules #}
                 {% if rule.type == 'subplan' %}
                     <p>
-                        Completion of one subplan from the following list:
+                        Completion of one
+                        {% if rule.subplan_type == 'MIN' %}
+                            Minor
+                        {% elif rule.subplan_type == 'MAJ' %}
+                            Major
+                        {% else %}
+                            Specialisation
+                        {% endif %}
+                        from the following list:
                         <ul>
                             {% for id, value in rule.contents.items %}
                                 <li><a class="btn-uni-grad" href="/staff/view/subplan/?id={{ id }}" >{{ value.name }}</a></li>
@@ -140,7 +148,15 @@
                                 {# Subplan Or Rule #}
                                 {% if sub_rule.type == 'subplan' %}
                                     <p>
-                                        Completion of one subplan from the following list:
+                                         Completion of one
+                                        {% if sub_rule.subplan_type == 'MIN' %}
+                                            Minor
+                                        {% elif sub_rule.subplan_type == 'MAJ' %}
+                                            Major
+                                        {% else %}
+                                            Specialisation
+                                        {% endif %}
+                                        from the following list:
                                         <ul>
                                             {% for id, value in sub_rule.contents.items %}
                                                 <li>
