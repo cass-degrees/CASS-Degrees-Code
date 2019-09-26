@@ -53,6 +53,9 @@
                         {% endif %}
                         {{ field }}
                     </p>
+                    {% if field.name == "publish" %}
+                        <p class="text-center">Please tick the checkbox above as 'published' if you want this to be searchable as a requirement and by students</p>
+                    {% endif %}
                     {% for error in field.errors %}
                          <div class="msg-error inline-error">{{ error }}</div>
                     {% endfor %}
@@ -118,8 +121,8 @@
             if (handleProgram() && handleRules()) {
                 // Ensure that the course has been agreed to to being non public on submission.
                 if (!document.getElementById("id_publish").checked &&
-                    !confirm("You haven't marked this program as public - this means this won't appear " +
-                        "to students or be selectable as a requirement elsewhere.\n\nAre you sure you want to continue?")) {
+                    !confirm("You haven't marked this program as 'published' - this means this won't appear " +
+                        "to students or be selectable as a requirement elsewhere.\r\n\r\nAre you sure you want to continue?")) {
                     return false;
                 }
                 // If the user has chosen to publish a plan but the unit count is inconsistent, verify with the user
