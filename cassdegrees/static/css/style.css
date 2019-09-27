@@ -485,3 +485,17 @@ select.text{
 .pretty .state label {
     overflow: hidden;
 }
+
+/* A centered checkbox */
+.pretty.centered {
+    display: block;
+    margin-right: auto;
+    width: calc(1em + 2px);
+    margin-left: auto;
+}
+
+/* Forces a checkbox to appear larger on the page */
+.large-checkbox {
+    margin: 5px;
+    font-size: 25px;
+}

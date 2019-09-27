@@ -126,7 +126,13 @@
 
         <p class="form-group">
             <label>Show 6-unit course boxes in plans (e.g. PDF):</label>
-            <input class="text" type="checkbox" v-model="details.show_course_boxes">
+            <div class="pretty p-icon large-checkbox">
+                <input type="checkbox" class="custom-checkbox" v-model="details.show_course_boxes">
+                <div class="state p-primary">
+                    <i class="icon fa fa-check"></i>
+                    <label>&nbsp;</label>
+                </div>
+            </div>
         </p>
     </fieldset>
 </script>
