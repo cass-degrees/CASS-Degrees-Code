@@ -1,0 +1,37 @@
+{% load static %}
+
+{% verbatim %}
+<script type="text/x-template" id="customTextRuleTemplate">
+    <fieldset>
+        <p>
+            Students must complete the following:
+        </p>
+
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
+        <p>
+            <textarea v-model="details.text" v-on:change="check_options" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
+        </p>
+
+        <p class="form-group">
+            <label>Unit value for this item:</label>
+            <input class="text" v-on:change="update_units" onkeydown="javascript: return checkKeys(event)" type="number" min="0" max="1000" v-model="details.unit_count" aria-required="true" required>
+        </p>
+
+        <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>
+
+        <p class="form-group">
+            <label>Show 6-unit course boxes in plans (e.g. PDF):</label>
+            <div class="pretty p-icon large-checkbox">
+                <input type="checkbox" class="custom-checkbox" v-model="details.show_course_boxes">
+                <div class="state p-primary">
+                    <i class="icon fa fa-check"></i>
+                    <label>&nbsp;</label>
+                </div>
+            </div>
+        </p>
+    </fieldset>
+</script>
+{% endverbatim %}
+
+<script type="text/javascript" src="{% static "js/staff/rules/custom_text.js" %}"></script>

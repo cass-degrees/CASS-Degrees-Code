@@ -68,7 +68,8 @@
     </form>
 
     <form class="anuform">
-        {% include "widgets/staff/courserequisites.html" %}
+        {% include "widgets/rules/resources.html" %}
+        {% include "widgets/staff/course_rules.html" %}
     </form>
 
     <p class="text-right">
@@ -84,7 +85,7 @@
 
     <script>
         function submit_form(form_action, redirect) {
-            if (handleRules()) {
+            if (app.export_rules()) {
                 document.getElementById('mainForm').action.value = form_action;
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();

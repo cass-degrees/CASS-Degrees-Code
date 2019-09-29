@@ -1,0 +1,32 @@
+{% load static %}
+
+{% verbatim %}
+<script type="text/x-template" id="incompatibilityRuleTemplate">
+    <fieldset v-if="!redraw">
+
+        <div v-if="courses.length != 0">
+            <p class="form-group">
+                <label>Students must not have completed/be currently enrolled in the following courses:</label>
+            </p>
+
+            <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+            <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
+            <div v-for="(code, index) in details.incompatible_courses">
+                <select v-model="details.incompatible_courses[index]" v-on:change="check_options" required>
+                    <option v-for="course in courses" v-bind:value="{'code': course.code, 'name': course.name}">
+                        {{ course.code }} {{ course.name }}
+                    </option>
+                </select>
+                <input v-if="details.incompatible_courses.length > 1" type="button" v-on:click="remove_course(index)" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            </div>
+
+            <input type="button" v-on:click="add_course()" class="btn-uni-grad btn-snall no-left-margin" value="Add new option" />
+        </div>
+        <div v-else v-html="info_msg"></div>
+
+    </fieldset>
+</script>
+{% endverbatim %}
+
+<script type="text/javascript" src="{% static "js/staff/rules/incompatibility.js" %}"></script>

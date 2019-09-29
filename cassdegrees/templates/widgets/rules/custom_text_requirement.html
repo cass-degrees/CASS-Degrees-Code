@@ -1,0 +1,20 @@
+{% load static %}
+
+{% verbatim %}
+<script type="text/x-template" id="customTextReqRuleTemplate">
+    <fieldset>
+        <p>
+            Students must meet the following requirements:
+        </p>
+
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
+        <p>
+            <textarea v-model="details.text" v-on:change="check_options" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
+        </p>
+
+    </fieldset>
+</script>
+{% endverbatim %}
+
+<script type="text/javascript" src="{% static "js/staff/rules/custom_text_requirement.js" %}"></script>

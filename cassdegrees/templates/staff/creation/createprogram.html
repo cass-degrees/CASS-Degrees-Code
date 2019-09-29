@@ -93,8 +93,9 @@
     <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
      structure -->
     <div class="anuform">
-    {% include "widgets/staff/globalrequirements.html" %}
-    {% include "widgets/staff/rules.html" %}
+    {% include "widgets/rules/resources.html" %}
+    {% include "widgets/staff/global_requirements.html" %}
+    {% include "widgets/staff/program_rules.html" %}
     </div>
 
     <p class="left text-left">
@@ -118,7 +119,7 @@
 
     <script>
         function submit_form(form_action, redirect) {
-            if (handleProgram() && handleRules()) {
+            if (globalRequirementsApp.export_requirements() && app.export_rules()) {
                 // Ensure that the course has been agreed to to being non public on submission.
                 if (!document.getElementById("id_publish").checked &&
                     !confirm("You haven't marked this program as 'published' - this means this won't appear " +
@@ -143,8 +144,8 @@
         }
 
         function force_submit_form(form_action, redirect) {
-            handleRules();
-            handleProgram();
+            app.export_rules();
+            globalRequirementsApp.export_requirements();
 
             document.getElementById('mainForm').action.value = form_action;
             document.getElementById('redirect').value = redirect;

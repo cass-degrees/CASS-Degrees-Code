@@ -65,8 +65,9 @@
     <!-- We still need a form for regular styling, though these will be serialized manually because of their list-like
          structure -->
     <form class="anuform">
-        {% include "widgets/staff/globalrequirements.html" %}
-        {% include "widgets/staff/subplanrules.html" %}
+        {% include "widgets/rules/resources.html" %}
+        {% include "widgets/staff/global_requirements.html" %}
+        {% include "widgets/staff/subplan_rules.html" %}
     </form>
 
     <p class="text-right">
@@ -91,12 +92,12 @@
         });
 
         function submit_course_form(){
-            handleRules();
+            app.export_rules();
             document.getElementById('mainForm').submit();
         }
 
         function submit_form(redirect) {
-            if (handleProgram() && handleRules()) {
+            if (globalRequirementsApp.export_requirements() && app.export_rules()) {
                 // Ensure that the course has been agreed to to being non public on submission.
                 if (!document.getElementById("id_publish").checked &&
                     !confirm("You haven't marked this subplan as 'published' - this means this won't appear " +

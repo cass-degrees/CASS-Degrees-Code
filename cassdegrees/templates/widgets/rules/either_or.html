@@ -1,14 +1,5 @@
 {% load static %}
 
-<fieldset id="rulesContainer">
-    <legend>Add Rules</legend>
-
-    <br />
-
-    <rule_container v-bind:rules="rules" />
-</fieldset>
-
-{% include "widgets/staff/rulescripts.html" %}
 {% verbatim %}
 <script type="text/x-template" id="eitherOrTemplate">
     <div>
@@ -66,50 +57,7 @@
         </div>
     </div>
 </script>
-
-<script type="text/x-template" id="ruleContainerTemplate">
-    <div v-if="!redraw">
-        <div v-for="(item, index) in rules" :key="index" >
-            <rule class="rule-container" v-bind:details="item" v-on:update="update(index, $event)" v-on:remove="remove(index)" v-on:duplicate_rule="duplicate_rule(index)"></rule>
-            <div v-if="index < rules.length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
-        </div>
-
-
-        <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; component_names = component_groups.rules" value="Add New Rule" />
-
-        <div class="modal" v-if="show_add_a_rule_modal">
-            <div class="modal-background" v-on:click="show_add_a_rule_modal = false"></div>
-            <div class="modal-card">
-                <div class="card">
-                    <header class="box-header">
-                        Add a rule...
-                    </header>
-                    <div class="box-solid box-has-footer">
-                        <p>Select a kind of rule to add:</p>
-                        <div class="select">
-                            <select v-model="add_a_rule_modal_option">
-                                <option v-for="(option, index) in component_names" v-bind:value="index">
-                                    {{ option }}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <footer class="box-solid">
-                        <button class="button is-success" v-on:click="add_rule">Add</button>
-                        <button class="button" v-on:click="show_add_a_rule_modal = false">Cancel</button>
-                    </footer>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
 {% endverbatim %}
 
-<script src="{% static 'js/vendor/vue.js' %}" type="application/javascript"></script>
-<script src="{% static 'js/staff/rules.js' %}" type="application/javascript"></script>
+<script type="text/javascript" src="{% static "js/staff/rules/either_or.js" %}"></script>
 
-{% if rules != None %}
-    <script>
-        app.rules = {{ rules|safe }};
-    </script>
-{% endif %}

@@ -1,0 +1,26 @@
+{% load static %}
+
+{% verbatim %}
+<script type="text/x-template" id="programRuleTemplate">
+    <fieldset v-if="!redraw">
+
+        <div v-if="programs.length != 0">
+            <p class="form-group">
+                <label>Students must be studying the following program:</label>
+            </p>
+
+            <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+
+            <div>
+                <select v-model="details.program" v-on:change="check_options" required>
+                    <option v-for="program in programs" v-bind:value="program">{{ program.code }} {{ program.name }}</option>
+                </select>
+            </div>
+        </div>
+        <div v-else v-html="info_msg"></div>
+
+    </fieldset>
+</script>
+{% endverbatim %}
+
+<script type="text/javascript" src="{% static "js/staff/rules/enrolled_program.js" %}"></script>

@@ -1,0 +1,40 @@
+{# Generic visual container for rules with options to duplicate and delete #}
+{% load static %}
+
+{% verbatim %}
+<script type="text/x-template" id="ruleTemplate">
+    <div class="card">
+        <header class="box-header">
+            <p class="card-header-title">
+                {{ component_names[details.type] }}
+            </p>
+            <img src="//style.anu.edu.au/_anu/images/icons/web/question.png" class="btn-snall no-left-margin vertical-middle clickable"
+                 alt="Help button" v-on:click="show_help = true" />
+            <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
+            <input type="button" v-on:click="$emit('duplicate_rule')" class="btn-uni-grad btn-snall no-left-margin" value="Duplicate" />
+        </header>
+        <div class="box-solid">
+            <div class="card-content" v-bind:refresh="refresh" v-bind:is="'rule_' + details.type" v-bind:details="details"></div>
+        </div>
+
+        <div class="modal" v-if="show_help">
+            <div class="modal-background" v-on:click="show_help = false"></div>
+            <div class="modal-card">
+                <div class="card">
+                    <header class="box-header">
+                        Help for {{ component_names[details.type] }}
+                    </header>
+                    <div class="box-solid box-has-footer">
+                        <p>{{ component_help[details.type] }}</p>
+                    </div>
+                    <footer class="box-solid">
+                        <button class="button" v-on:click="show_help = false">OK</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+{% endverbatim %}
+
+<script type="text/javascript" src="{% static "js/staff/rules/rule.js" %}"></script>
