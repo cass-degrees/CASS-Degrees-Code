@@ -334,9 +334,6 @@ class EditCourseFormSnippet(ModelForm):
             'currentlyActive': "Currently Active Course",
         }
         error_messages = {
-            NON_FIELD_ERRORS: {
-                'unique_together': "A Course with the same %(field_labels)s already exists!",
-            }
         }
 
     def clean_code(self):
@@ -350,6 +347,8 @@ class EditCourseFormSnippet(ModelForm):
             raise forms.ValidationError("Course Code should end with 4 numbers!")
         if len(data) == 9 and not data[-1:].isalpha():
             raise forms.ValidationError("Extra Key should be a letter e.g. A, B, C")
+        if CourseModel.objects.filter(code=data):
+            raise forms.ValidationError("A course with this code already exists!")
         return data.upper()
 
     def clean_name(self):

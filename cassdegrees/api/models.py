@@ -10,7 +10,7 @@ class SampleModel(models.Model):
 
 class CourseModel(models.Model):
     id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=32)
+    code = models.CharField(max_length=32, unique=True)
     name = models.CharField(max_length=256)
     units = models.PositiveIntegerField()
 
@@ -37,9 +37,6 @@ class CourseModel(models.Model):
 
     rules = psql.JSONField(default=list)
     lastUpdated = models.DateField(default=timezone.now)
-
-    class Meta:
-        unique_together = (("code", "name"),)
 
 
 # todo: Add type for elements
