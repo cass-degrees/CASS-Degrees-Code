@@ -36,10 +36,10 @@ Vue.component('rule_container', {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.rules.push(JSON.parse(JSON.stringify(this.rules[index])));
         },
-        check_options() {
+        check_options(is_submission) {
             let valid = true;
             for (const index in this.$children) {
-                valid = valid && this.$children[index].check_options();
+                valid = valid && this.$children[index].check_options(is_submission);
             }
 
             return valid;
