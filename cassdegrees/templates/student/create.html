@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load cache_control %}
 {% load breadcrumbs %}
 
 {% block page-title %}Create New Plan{% endblock %}
@@ -93,5 +94,5 @@
     </div>
 
     <script src="{% static 'js/vendor/list.js' %}" type="application/javascript"></script>
-    <script src="{% static 'js/student/create.js' %}" type="application/javascript"></script>
+    <script src="{% static_no_cache 'js/student/create.js' %}" type="application/javascript"></script>
 {% endblock %}

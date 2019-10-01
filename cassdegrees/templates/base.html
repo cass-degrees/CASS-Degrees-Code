@@ -1,5 +1,6 @@
 {# Follows from https://docs.djangoproject.com/en/2.1/ref/templates/language/ #}
 {% load static %}
+{% load cache_control %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +25,7 @@
     <link rel="stylesheet" href="{% static 'css/flexboxgrid.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/pretty-checkbox.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/anu-style-override.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static_no_cache 'css/style.css' %}">
 </head>
 <body>
     <!-- Heavily modified from CASS homepage root + ANU styling guide -->

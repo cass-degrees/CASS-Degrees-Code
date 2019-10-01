@@ -1,5 +1,5 @@
 {# Generic visual container for rules with options to duplicate and delete #}
-{% load static %}
+{% load cache_control %}
 
 {% verbatim %}
 <script type="text/x-template" id="ruleTemplate">
@@ -37,4 +37,4 @@
 </script>
 {% endverbatim %}
 
-<script type="text/javascript" src="{% static "js/staff/rules/rule.js" %}"></script>
+<script type="text/javascript" src="{% static_no_cache "js/staff/rules/rule.js" %}"></script>

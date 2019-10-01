@@ -1,8 +1,8 @@
-{% load static %}
+{% load cache_control %}
 
 {% verbatim %}
 
 
 {% endverbatim %}
 
-<script type="text/javascript" src="{% static "js/staff/rules/" %}"></script>
+<script type="text/javascript" src="{% static_no_cache "js/staff/rules/" %}"></script>

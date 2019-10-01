@@ -1,4 +1,4 @@
-{% load static %}
+{% load cache_control %}
 
 {% verbatim %}
 <script type="text/x-template" id="courseRequisiteTemplate">
@@ -29,4 +29,4 @@
 </script>
 {% endverbatim %}
 
-<script type="text/javascript" src="{% static "js/staff/rules/course_requisite.js" %}"></script>
+<script type="text/javascript" src="{% static_no_cache "js/staff/rules/course_requisite.js" %}"></script>

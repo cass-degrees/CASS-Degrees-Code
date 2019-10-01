@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load cache_control %}
 {% load breadcrumbs %}
 
 {% block page-title %}Delete Courses{% endblock %}
@@ -42,5 +43,5 @@
         </p>
     </form>
 
-    <script src="{% static 'js/main.js' %}" type="application/javascript"></script>
+    <script src="{% static_no_cache 'js/main.js' %}" type="application/javascript"></script>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load cache_control %}
 {% load breadcrumbs %}
 
 {% block page-title %}Edit Plan ({{ program.name }} - {{ program.year }}){% endblock %}
@@ -137,7 +138,7 @@
     <script src="{% static 'js/vendor/list.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/vendor/fuse.js' %}" type="application/javascript"></script>
     <script src="{% static 'js/vendor/interact.js' %}" type="application/javascript"></script>
-    <script src="{% static 'js/student/edit.js' %}" type="application/javascript"></script>
+    <script src="{% static_no_cache 'js/student/edit.js' %}" type="application/javascript"></script>
     {% if render.popup %}
     <script type="application/javascript">setupPopup()</script>
     {% endif %}

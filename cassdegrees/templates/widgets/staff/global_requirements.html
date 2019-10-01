@@ -1,4 +1,5 @@
 {% load static %}
+{% load cache_control %}
 
 <fieldset id="globalRequirementsContainer">
     <legend>Add Global Requirements</legend>
@@ -211,4 +212,4 @@
 {% endverbatim %}
 
 <script src="{% static 'js/vendor/vue.js' %}" type="application/javascript"></script>
-<script src="{% static 'js/staff/globalrequirements.js' %}" type="application/javascript"></script>
+<script src="{% static_no_cache 'js/staff/globalrequirements.js' %}" type="application/javascript"></script>

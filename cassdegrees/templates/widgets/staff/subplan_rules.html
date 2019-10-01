@@ -1,4 +1,4 @@
-{% load static %}
+{% load cache_control %}
 
 <fieldset id="rulesContainer">
     <legend>Add Rules</legend>
@@ -13,7 +13,7 @@
 {% include "widgets/rules/rule.html" %}
 {% include "widgets/rules/rule_container.html" with component_names="component_groups.rules" kind="Rule" single_rule="course_list" %}
 
-<script src="{% static 'js/staff/rules.js' %}" type="application/javascript"></script>
+<script src="{% static_no_cache 'js/staff/rules.js' %}" type="application/javascript"></script>
 
 {% if rules != None %}
     <script>

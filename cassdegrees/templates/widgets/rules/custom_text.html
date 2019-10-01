@@ -1,4 +1,4 @@
-{% load static %}
+{% load cache_control %}
 
 {% verbatim %}
 <script type="text/x-template" id="customTextRuleTemplate">
@@ -34,4 +34,4 @@
 </script>
 {% endverbatim %}
 
-<script type="text/javascript" src="{% static "js/staff/rules/custom_text.js" %}"></script>
+<script type="text/javascript" src="{% static_no_cache "js/staff/rules/custom_text.js" %}"></script>
