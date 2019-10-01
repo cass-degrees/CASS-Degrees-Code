@@ -61,6 +61,26 @@ Vue.component('rule_either_or', {
             this.details.either_or[group].push(JSON.parse(JSON.stringify(this.details.either_or[group][index])));
             this.do_redraw();
         },
+        move_up_rule(index, group) {
+            var rules_array = this.details.either_or[group];
+
+            if (index > 0) {
+                var to_move = rules_array[index];
+                rules_array[index] = rules_array[index - 1];
+                rules_array[index - 1] = to_move;
+                this.do_redraw();
+            }
+        },
+        move_down_rule(index, group) {
+            var rules_array = this.details.either_or[group];
+
+            if (index < rules_array.length - 1) {
+                var to_move = rules_array[index];
+                rules_array[index] = rules_array[index + 1];
+                rules_array[index + 1] = to_move;
+                this.do_redraw();
+            }
+        },
         remove_group(group) {
             this.details.either_or.splice(group, 1);
             this.update_units();
@@ -70,6 +90,26 @@ Vue.component('rule_either_or', {
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.details.either_or.splice(group, 0, JSON.parse(JSON.stringify(this.details.either_or[group])));
             this.do_redraw();
+        },
+        move_up(group) {
+            var groups_array = this.details.either_or;
+
+            if (group > 0) {
+                var to_move = groups_array[group];
+                groups_array[group] = groups_array[group - 1];
+                groups_array[group - 1] = to_move;
+                this.do_redraw();
+            }
+        },
+        move_down(group) {
+            var groups_array = this.details.either_or;
+
+            if (group < groups_array.length - 1) {
+                var to_move = groups_array[group];
+                groups_array[group] = groups_array[group + 1];
+                groups_array[group + 1] = to_move;
+                this.do_redraw();
+            }
         },
         check_options(is_submission) {
             let valid = true;
