@@ -22,11 +22,15 @@
     {% endif %}
 
     <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="?action=Search" method="get">
-        <input class="text" name="q" size="24" maxlength="75" type="text"
+        <input class="text" name="q" size="24" maxlength="75" type="text" id="search_bar"
                placeholder="Search Programs, Subplans, or Courses..."
                value="{{ autofill }}"
         >
-        <input class="btn-uni-grad btn-medium" type="submit" value="Search">
+        <span class="btn-group">
+            <input class="btn-uni-grad btn-medium" type="submit" value="Search">
+            <input class="btn-uni-grad btn-medium" type="submit" value="Clear Search"
+                   onclick="document.getElementById('search_bar').value=''">
+        </span>
     </form>
 
     <div class="divline-solid-uni"></div><br />
