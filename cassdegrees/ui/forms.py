@@ -119,11 +119,11 @@ class EditProgramFormSnippet(ModelForm):
                   'staffNotes', 'studentNotes')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. BARTS"}),
-            'year': forms.NumberInput(attrs={'class': "text eighth-width",
+            'year': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 2020",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Bachelor of Arts"}),
-            'units': forms.NumberInput(attrs={'class': "text eighth-width",
+            'units': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 144",
                                               'onkeydown': "javascript: return checkKeys(event)",
                                               'step': 6, 'max': 512}),
             'publish': forms.CheckboxInput(),
@@ -192,7 +192,7 @@ class EditSubplanFormSnippet(ModelForm):
         fields = ('code', 'year', 'name', 'units', 'planType', 'globalRequirements', 'rules', 'publish')
         widgets = {
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH-MIN"}),
-            'year': forms.NumberInput(attrs={'class': "text eighth-width",
+            'year': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 2020",
                                              'onkeydown': "javascript: return checkKeys(event)",
                                              'min': 2000, 'max': 3000}),
             'name': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. Art History"}),
@@ -321,7 +321,7 @@ class EditCourseFormSnippet(ModelForm):
             'code': forms.TextInput(attrs={'class': "text tfull", 'placeholder': "e.g. ARTH1006, ARTH1100"}),
             'name': forms.TextInput(attrs={'class': "text tfull",
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
-            'units': forms.NumberInput(attrs={'class': "text eighth-width",
+            'units': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 6",
                                               'onkeydown': "javascript: return checkKeys(event)",
                                               'type': "number"}),
             'offeredYears': forms.Select(choices=offered_years_choices, attrs={'class': "eighth-width"})
