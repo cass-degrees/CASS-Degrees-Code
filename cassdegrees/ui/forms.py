@@ -286,6 +286,10 @@ class EditListFormSnippet(ModelForm):
             'elements': forms.HiddenInput
         }
 
+    def __init__(self, *args, **kwargs):
+        super(EditListFormSnippet, self).__init__(*args, **kwargs)
+        self.fields['elements'].error_messages = {'required': 'Courses must be added before you can save'}
+
 
 class EditCourseFormSnippet(ModelForm):
     rules = JSONField(field_id='rules', required=False)

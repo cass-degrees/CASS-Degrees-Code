@@ -49,16 +49,27 @@
                     {% endif %}
                     {{ field }}
                 </p>
+
+                {# Render field errors separate to no course error #}
                 {% for error in field.errors %}
-                    <div class="msg-error inline-error">{{ error }}</div>
+                    {% if not "Courses" in error %}
+                        <div class="msg-error inline-error">{{ error }}</div>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
 
             <br>
             {# Insert a list creation widget to populate a background List.Elements hidden field #}
-            {# Todo: make list.element field id generation dynamic #}
             {% include "widgets/staff/courselistingwidget.html" with app_name="app" %}
 
+            {# Render missing course error under custom element #}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    {% if "Courses" in error %}
+                        <div class="msg-error">{{ error }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
         </fieldset>
     </form>
 
