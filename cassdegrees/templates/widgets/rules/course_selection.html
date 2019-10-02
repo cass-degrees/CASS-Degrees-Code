@@ -21,18 +21,18 @@
         <p class="form-group" v-if="details.list_type == 'min_max'">
             <label style="width: 20.8333%; text-align: right; float: left;">Minimum units:</label>
             <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="updateUnitCountLabel()" v-model="details.min_unit_count" min="0" step="6" max="1000" required>
+                   v-on:change="update_units()" v-model="details.min_unit_count" min="0" step="6" max="1000" required>
         </p>
         <p class="form-group" v-if="details.list_type == 'min_max'">
             <label style="width: 20.8333%; text-align: right; float: left;">Maximum units:</label>
             <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="updateUnitCountLabel()" v-model="details.max_unit_count" min="0" step="6" max="1000" required>
+                   v-on:change="update_units()" v-model="details.max_unit_count" min="0" step="6" max="1000" required>
         </p>
 
         <p class="form-group" v-if="details.list_type !='min_max'">
             <label style="width: 20.8333%; text-align: right; float: left;">Number of units:</label>
             <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="updateUnitCountLabel()" v-model="details.unit_count" min="0" step="6" max="1000" required>
+                   v-on:change="update_units()" v-model="details.unit_count" min="0" step="6" max="1000" required>
         </p>
 
         <br>
@@ -47,8 +47,8 @@
             Students must select {{ list_type_label }} {{ unit_value_label }} units from the following courses:
         </p>
         <p v-if="details.list_type == 'min_max'">
-            Students must select a minimum of {{details.min_unit_count}} units
-            and a maximum of {{ details.max_unit_count }} units from the following courses:
+            Students must select a minimum of {{ min_unit_value_label }} units
+            and a maximum of {{ max_unit_value_label }} units from the following courses:
         </p>
 
         <br>
