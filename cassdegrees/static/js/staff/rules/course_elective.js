@@ -6,7 +6,7 @@ Vue.component('rule_elective', {
             validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("unit_count")) {
-                    value.unit_count = 0;
+                    value.unit_count = 24;
                 }
 
                 if (!value.hasOwnProperty("subject_area")) {
@@ -69,7 +69,7 @@ Vue.component('rule_elective', {
 
             // Ensure Unit Count is valid:
             if (this.details.unit_count !== "") {
-                this.invalid_units = this.details.unit_count < 0;
+                this.invalid_units = this.details.unit_count <= 0;
                 this.invalid_units_step = this.details.unit_count % 6 !== 0;
             } else {
                 this.invalid_units = false;

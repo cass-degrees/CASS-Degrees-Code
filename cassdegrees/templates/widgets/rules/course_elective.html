@@ -5,12 +5,12 @@
     <fieldset v-if="!redraw">
 
         <div v-if="subject_areas.length != 0">
-            <div class="msg-error" v-if="invalid_units">Unit count must be non-negative!</div>
+            <div class="msg-error" v-if="invalid_units">Unit count must be non-zero!</div>
             <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
             <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
             <p>
                 Students must complete
-                <input style="margin-left: 0;" class="text" v-on:change="update_units" onkeydown="javascript: return checkKeys(event)" type="number" min="0" step="6" max="1000" v-model="details.unit_count" aria-required="true" required>
+                <input style="margin-left: 0;" class="text" v-on:change="update_units" onkeydown="javascript: return checkKeys(event)" type="number" min="6" step="6" max="1000" v-model="details.unit_count" aria-required="true" required>
                 units from
                 <select v-model="details.year_level" required>
                     <option value="all" selected>All</option>

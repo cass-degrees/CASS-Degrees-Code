@@ -272,15 +272,14 @@ Vue.component('rule_course_list', {
             if (is_submission) {
                 this.is_blank = blank_count || blank_codes || blank_listtype;
                 // Ensure Unit Count is valid:
-                if (this.details.list_type != "min_max") {
+                if (this.details.list_type !== "min_max") {
                     if (this.details.unit_count != null) {
                         this.invalid_units = this.details.unit_count <= 0;
                         this.invalid_units_step = this.details.unit_count % 6 !== 0;
                     }
                 } else {
-                    console.log("TELL ME WHYYYYY");
                     if (this.details.min_unit_count != null && this.details.max_unit_count != null) {
-                        this.invalid_units = this.details.min_unit_count <= 0 || this.details.max_unit_count <= 0;
+                        this.invalid_units = this.details.min_unit_count < 0 || this.details.max_unit_count <= 0;
                         this.invalid_units_step = this.details.min_unit_count %6 !== 0 || this.details.max_unit_count %6 !== 0;
 
                         this.invalid_min_max_units = parseInt(this.details.min_unit_count) > parseInt(this.details.max_unit_count);
@@ -293,6 +292,12 @@ Vue.component('rule_course_list', {
                 // remove error if user corrects prior to resubmission
                 if (!blank_listtype && !blank_codes && !blank_count) {
                     this.is_blank = false;
+                }
+                if (this.details.unit_count != null){
+                    if (this.details.unit_count > 0)
+                        this.invalid_units = false;
+                    if (this.details.unit_count % 6 === 0)
+                        this.invalid_units_step = false
                 }
             }
 

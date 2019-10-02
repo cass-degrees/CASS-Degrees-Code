@@ -26,13 +26,13 @@
         <p class="form-group" v-if="details.list_type == 'min_max'">
             <label style="width: 20.8333%; text-align: right; float: left;">Maximum units:</label>
             <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="update_units()" v-model="details.max_unit_count" min="0" step="6" max="1000" required>
+                   v-on:change="update_units()" v-model="details.max_unit_count" min="6" step="6" max="1000" required>
         </p>
 
         <p class="form-group" v-if="details.list_type !='min_max'">
             <label style="width: 20.8333%; text-align: right; float: left;">Number of units:</label>
             <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number"
-                   v-on:change="update_units()" v-model="details.unit_count" min="0" step="6" max="1000" required>
+                   v-on:change="update_units()" v-model="details.unit_count" min="6" step="6" max="1000" required>
         </p>
 
         <br>
