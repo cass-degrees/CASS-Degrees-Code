@@ -393,8 +393,8 @@ def bulk_data_upload(request):
                                   " list and try manually adding ones that failed through the dedicated " \
                                   "forms. <br><br>The following " + content_type + " could not be added: " + \
                                   failed_str + \
-                                  "<br><a href='#' onclick='toggleFailedItemsPopup();'>Click here to see a complete " + \
-                                  "list of all " + content_type + " that could not be added.</a><br><br>" + \
+                                  "<br><a href='#' onclick='toggleFailedItemsPopup();'>Click here to see a " + \
+                                  "complete list of all " + content_type + " that could not be added.</a><br><br>" + \
                                   str(upload_count) + " items were uploaded successfully!"
             context['err_type'] = "warn"
 

@@ -73,6 +73,20 @@
     display:inline-block;
     border-radius: 5px;
 }
+@media only screen and (max-width: 600px) {
+    .custom_search_bar {
+        text-align: center;
+    }
+
+    .custom_search_bar input[type=text] {
+        width: 100%;
+    }
+
+    .custom_search_bar input[type=submit]{
+        width: 49%;
+        margin-top: 5px;
+    }
+}
 
 .custom_search_bar_full_length input[type=text]{
     width: 100%;
