@@ -40,6 +40,7 @@ Vue.component('rule_subplan', {
             "subplan_type_label": "",
             "student_description_label": "",
             "show_help": false,
+            "is_subplans_view_hidden": false,   // used to flag whether the subplan list is displayed or hidden
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -66,7 +67,7 @@ Vue.component('rule_subplan', {
                     let existingID = rule.details.ids[i];
                     for (let x = 0; x < rule.subplans.length; x++) {
                         if (existingID === rule.subplans[x].id) {
-                            rule.selected_subplans.push(rule.subplans[x])
+                            rule.selected_subplans.unshift(rule.subplans[x])
                             break;
                         }
                     }
@@ -146,7 +147,7 @@ Vue.component('rule_subplan', {
             value.forEach((resource) => {
                 // Adds selected resources to array and prevents duplicates
                 if (!this.details.ids.some(id => id === resource.id)) {
-                    this.selected_subplans.push(resource);
+                    this.selected_subplans.unshift(resource);
                     this.details.ids.push(resource.id);
                 }
                 // remove the selected course from the list of available courses to add

@@ -52,6 +52,17 @@
         </p>
 
         <br>
+        <div class="align_right" style="margin-bottom: 5px">
+            <input type="button" value="Search Lists" class="btn-uni-grad btn-small" style="margin-left: 0"
+                   v-on:click="toggleListMode();"
+                   onclick="(this.value=='Search Lists') ? this.value='Search Courses' : this.value='Search Lists';">
+            <input type="button" value="Sort Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
+                   @click="selected_courses=sortedSelectedList;">
+            <input type="button" value="Hide Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
+                   v-on:click="is_courses_view_hidden=!is_courses_view_hidden"
+                   onclick="(this.value=='Hide Courses') ? this.value='Show Courses' : this.value='Hide Courses';"/>
+        </div>
+
 
         <multiselect
                 :options="courses"
@@ -74,8 +85,8 @@
         <div class="msg-warn" v-if="is_list_search">Searching in list mode,
             <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
 
-        <ul class="resources-list">
-            <template v-for="(resource, index) in sortedSelectedList">
+        <ul class="resources-list" v-if="!is_courses_view_hidden">
+            <template v-for="(resource, index) in selected_courses">
                 <li class="resource-item" :data-index="index">
                     <div class="resource-info">
                         <div class="resource-title" :id="index">
@@ -87,11 +98,10 @@
                     </div>
                 </li>
             </template>
+            <div class="msg-warn" v-if="selected_courses.length == 0">You have not added any courses yet!</div>
         </ul>
 
-        <input style="margin-left: 0; float: right;" class="btn-uni-grad btn-large" type="button"
-               value="Add Courses from Existing List"
-               v-on:click="toggleListMode()">
+        <div class="msg-warn" v-if="is_courses_view_hidden">This course list has been hidden!</div>
     </fieldset>
 </script>
 {% endverbatim %}

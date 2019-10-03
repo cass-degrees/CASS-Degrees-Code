@@ -17,6 +17,11 @@
 
 <h4>Course listing</h4>
 <div id={{ app_name }}>
+    <div class="align_right" style="margin-bottom: 5px">
+        <input type="button" value="Sort Courses" class="btn-uni-grad btn-small" style="margin-left: 0"
+                   @click="selectedResources=sortedSelectedResources;">
+    </div>
+
     <multiselect
             :options="masterOptions"
             :value="optionsProxy"
@@ -87,7 +92,13 @@
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
         },
-
+        computed: {
+            sortedSelectedResources() {
+                // sort course listing by course code
+                // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
+                return this.selectedResources.sort((a, b) => (a.code > b.code) ? 1 : -1)
+            }
+        },
         methods: {
              // The label that will be displayed on the list item
             customLabel(option) {
@@ -99,11 +110,7 @@
                 value.forEach((resource) => {
                     // only add selection if not already contained in the list
                     if (!this.selectedResources.some(element => element.code === resource.code)) {
-                        this.selectedResources.push(resource)
-
-                        // sort course listing by course code
-                        // https://flaviocopes.com/how-to-sort-array-of-objects-by-property-javascript/
-                        this.selectedResources.sort((a, b) => (a.code > b.code) ? 1 : -1)
+                        this.selectedResources.unshift(resource)
 
                         // set the hidden elements form box to value of selectedResources
                         document.getElementById("id_elements").value = JSON.stringify(this.selectedResources)

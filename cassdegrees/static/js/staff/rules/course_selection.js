@@ -61,6 +61,7 @@ Vue.component('rule_course_list', {
             "unit_value_label": "",
             "max_unit_value_label": "",
             "min_unit_value_label": "",
+            "is_courses_view_hidden": false,    // used to flag whether the course list is displayed or hidden
 
             // Display related warnings if true
             "non_unique_options": false,
@@ -99,7 +100,7 @@ Vue.component('rule_course_list', {
                     for (let x = 0; x < rule.courses.length; x++) {
                         if (rule.courses[x].code === rule.details.codes[i]['code']) {
                             rule.courses.splice(x, 1).forEach(course => {
-                                rule.selected_courses.push(course)
+                                rule.selected_courses.unshift(course)
                             });
                             break;
                         }
@@ -196,7 +197,7 @@ Vue.component('rule_course_list', {
                         for (let i = 0; i < this.tempStore.length; i++) {
                             if (this.tempStore[i].code === course.code) {
                                 this.tempStore.splice(i, 1).forEach(option => {
-                                    this.selected_courses.push(option);
+                                    this.selected_courses.unshift(option);
                                 });
                                 break;
                             }
@@ -211,7 +212,7 @@ Vue.component('rule_course_list', {
                 value.forEach((resource) => {
                     // Adds selected resources to array and prevents duplicates
                     if (!this.details.codes.some(code => code === resource.code)) {
-                        this.selected_courses.push(resource)
+                        this.selected_courses.unshift(resource)
                         this.details.codes.push({'code': resource.code, 'name': resource.name});
                     }
                     // remove the selected course from the list of available courses to add

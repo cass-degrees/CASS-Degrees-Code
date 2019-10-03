@@ -34,6 +34,13 @@
             <p>Students must pick one {{ student_description_label }} from the following {{ subplan_type_label }}:</p>
 
             <br>
+            <div class="align_right" style="margin-bottom: 5px">
+                <input type="button" value="Sort Subplans" class="btn-uni-grad btn-small" style="margin-left: 0"
+                       @click="selected_subplans=sortedSelectedList;">
+                <input type="button" value="Hide Subplans" class="btn-uni-grad btn-small" style="margin-left: 0"
+                       v-on:click="is_subplans_view_hidden=!is_subplans_view_hidden"
+                       onclick="(this.value=='Hide Subplans') ? this.value='Show Subplans' : this.value='Hide Subplans';"/>
+            </div>
 
             <multiselect
                     :options="sortedSubplanList"
@@ -53,8 +60,8 @@
             >
             </multiselect>
 
-            <ul class="resources-list">
-                <template v-for="(resource, index) in sortedSelectedList">
+            <ul class="resources-list" v-if="!is_subplans_view_hidden">
+                <template v-for="(resource, index) in selected_subplans">
                     <li class="resource-item" :data-index="index">
                         <div class="resource-info">
                             <div class="resource-title" :id="index">
@@ -66,7 +73,9 @@
                         </div>
                     </li>
                 </template>
+                <div class="msg-warn" v-if="selected_subplans.length == 0">You have not added any subplans yet!</div>
             </ul>
+            <div class="msg-warn" v-if="is_subplans_view_hidden">This subplan list has been hidden!</div>
         </div>
         <div v-else v-html="info_msg"></div>
 

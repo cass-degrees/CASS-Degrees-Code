@@ -4,6 +4,12 @@
     min-height: 600px;
 }
 
+.align_right {
+    text-align:right;
+    width:100%;
+    padding:0;
+}
+
 .rule_active_visual {
     border-left: 2px solid green;
     margin: 0 0 0 -6px;

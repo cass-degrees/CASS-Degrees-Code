@@ -10,7 +10,6 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def static_no_cache(context, url):
     path = Path("." + settings.STATIC_URL + url)
-    print(str(path) + "?modified=" + str(path.stat().st_mtime))
     if path.exists():
         return Template(settings.STATIC_URL + url + "?version=" + str(path.stat().st_mtime)).render(context)
     else:
