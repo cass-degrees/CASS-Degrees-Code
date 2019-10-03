@@ -3,11 +3,6 @@ import django.contrib.postgres.fields as psql
 from django.utils import timezone
 
 
-class SampleModel(models.Model):
-    id = models.CharField(max_length=15, primary_key=True)
-    text = models.CharField(max_length=100)
-
-
 class CourseModel(models.Model):
     id = models.AutoField(primary_key=True)
     code = models.CharField(max_length=32, unique=True)

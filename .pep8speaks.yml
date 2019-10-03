@@ -8,3 +8,5 @@ flake8:
     - F401  # Ignore unused imports - some files are automatically generated with import statements.
     - F403  # F403, F405: Ignore warnings caused by * imports
     - F405
+    - W605  # Ignore invalid escape sequence errors
+    - E722  # Ignore 'do not use bare 'except' errors
