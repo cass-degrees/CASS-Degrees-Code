@@ -24,6 +24,9 @@ Vue.component('rule_custom_text', {
     data() {
         return {
             "not_divisible": false,
+            "is_blank": false,
+            // Grabs title of page to figure out the type [Course, Subplan, Program, List]
+            "type": document.getElementById('page-title').innerText.split(' ')[1],
             "invalid_units": false,
             "is_blank": false
         }

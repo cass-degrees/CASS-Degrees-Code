@@ -15,7 +15,7 @@ Vue.component('rule_container', {
             show_add_a_rule_modal: false,
             add_a_rule_modal_option: 'course_list',
 
-            component_groups: {'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES},
+            component_groups: {'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES, 'subplan': SUBPLAN_COMPONENT_NAMES},
             component_names: null,
 
             // Forces the element to re-render, if mutable events occurred

@@ -9,9 +9,11 @@
 </fieldset>
 
 {% include "widgets/rules/course_selection.html" %}
+{% include "widgets/rules/either_or.html" %}
+{% include "widgets/rules/custom_text.html" %}
 
 {% include "widgets/rules/rule.html" %}
-{% include "widgets/rules/rule_container.html" with component_names="component_groups.rules" kind="Rule" single_rule="course_list" %}
+{% include "widgets/rules/rule_container.html" with component_names="component_groups.subplan" kind="Rule" %}
 
 <script src="{% static_no_cache 'js/staff/rules.js' %}" type="application/javascript"></script>
 

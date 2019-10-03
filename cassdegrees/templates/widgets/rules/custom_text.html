@@ -21,16 +21,18 @@
         <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>
         <div class="msg-error" v-if="invalid_units">Unit count must be non-zero!</div>
 
-        <p class="form-group">
-            <label>Show 6-unit course boxes in plans (e.g. PDF):</label>
-            <div class="pretty p-icon large-checkbox">
-                <input type="checkbox" class="custom-checkbox" v-model="details.show_course_boxes">
-                <div class="state p-primary">
-                    <i class="icon fa fa-check"></i>
-                    <label>&nbsp;</label>
+        <div v-if="type=='Program'">
+            <p class="form-group">
+                <label>Show 6-unit course boxes in plans (e.g. PDF):</label>
+                <div class="pretty p-icon large-checkbox">
+                    <input type="checkbox" class="custom-checkbox" v-model="details.show_course_boxes">
+                    <div class="state p-primary">
+                        <i class="icon fa fa-check"></i>
+                        <label>&nbsp;</label>
+                    </div>
                 </div>
-            </div>
-        </p>
+            </p>
+        </div>
     </fieldset>
 </script>
 {% endverbatim %}

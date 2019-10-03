@@ -55,6 +55,19 @@ const EITHER_OR_COMPONENT_NAMES = {
     'elective': "Elective"
 };
 
+// components for subplans
+const SUBPLAN_COMPONENT_NAMES = {
+    'course_list': "Course List",
+    'custom_text': "Custom (Text)",
+    'either_or': "Either Or"
+};
+
+// either or for subplans
+const SUBPLAN_EITHER_OR_COMPONENT_NAMES = {
+    'course_list': "Course List",
+    'custom_text': "Custom (Text)"
+};
+
 //
 const REQUISITE_COMPONENT_NAMES = {
     'incompatibility': "Incompatibility",

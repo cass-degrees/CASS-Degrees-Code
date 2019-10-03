@@ -33,10 +33,11 @@ Vue.component('rule_either_or', {
             large_unit_count: false,
             inconsistent_units: false,
 
-            component_groups: {'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES},
+            component_groups: {'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES, 'subplan': SUBPLAN_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
 
             is_eitheror: true,
+            "type": document.getElementById('page-title').innerText.split(' ')[1]
         }
     },
     methods: {

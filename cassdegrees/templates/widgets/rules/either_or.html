@@ -45,8 +45,18 @@
                     <div class="box-solid box-has-footer">
                         <p>Select a kind of rule to add:</p>
                         <div class="select">
-                            <select v-model="add_a_rule_modal_option">
-                                <option v-for="(option, index) in component_names" v-bind:value="index">
+                            <select v-if="type=='Program'" v-model="add_a_rule_modal_option">
+                                 <option v-for="(option, index) in component_names" v-bind:value="index">
+                                    {{ option }}
+                                </option>
+                            </select>
+                            <select v-else-if="type=='Subplan'" v-model="add_a_rule_modal_option">
+                                <option v-for="(option, index) in component_groups.subplan" v-bind:value="index">
+                                    {{ option }}
+                                </option>
+                            </select>
+                            <select v-else v-model="add_a_rule_modal_option">
+                                <option v-for="(option, index) in component_groups.requisites" v-bind:value="index">
                                     {{ option }}
                                 </option>
                             </select>
