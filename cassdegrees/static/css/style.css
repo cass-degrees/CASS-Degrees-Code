@@ -47,6 +47,13 @@
     width: 98.36%; /* textarea need custom width as anu styling width makes it longer */
 }
 
+.list-menu {
+    height: 50px;
+    background-color: white;
+    position: sticky;
+    top: 0px;
+}
+
 .custom_search_bar input[type=text]{
     height: 30px;
     width: 67%;

@@ -60,15 +60,20 @@
                 {% csrf_token %}
                 {# Allow manage_courses() function to behave appropriately based on origin of request. The post request can either come from list.html or managecourses.html #}
                 <input type="hidden" id="perform_function" name="perform_function" value="retrieve view from selected">
-                <div>
+                <div class="list-menu">
                     <p class="left">
                         <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}create/{% if title == 'Program' %}program{% elif title == 'Subplan' %}subplan{% elif title == 'Course' %}course{% elif title == 'List' %}list{% endif %}/" value="+ New {{ title }}">
-                    </p>
-                    {% if title == "Course" %}
-                        <p class="right">
+                        {% if title == "Course" %}
                             <input class="btn-uni-grad btn-medium" type ="submit" formmethod="get" formaction="{{ render.staff_url_prefix }}report/course/" value="View Courses Report">
-                        </p>
-                    {% endif %}
+                        {% endif %}
+                    </p>
+                    <p class="right">
+                        <input class="btn-uni-grad btn-medium" type ="submit" formaction="{{ render.staff_url_prefix }}delete/{% if title == 'Program' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% elif title == 'List' %}lists{% endif %}/" value="&times Delete Selected">
+                    </p>
+                </div>
+
+                <div id="select_all_div_{{ title }}" class="left fullwidth" hidden>
+                    <p id="select_all_msg_{{ title }}" class="msg-info"></p>
                 </div>
 
                 {# If there is no data available, notify the user #}
@@ -85,8 +90,8 @@
                                 <th class="sort" data-sort="{{ title }}{{ key }}">{{ key }}</th>
                             {% else %}
                                 <th class="text-center">
-                                    Select All </br>
-                                    <input title="Select All" type="checkbox" name="select_all" onclick="selectAll(this, '{{ title }}')">
+                                    Select All</br>
+                                    <input id="select_all" title="Select All" type="checkbox" name="select_all" onchange="selectAll(this, '{{ title }}')">
                                 </th>
                                 <th>{{ title }}</th>
                             {% endif %}
@@ -125,11 +130,6 @@
                         </tr>
                     </tfoot>
                 </table>
-                <div class="right">
-                    <p class="right">
-                       <input class="btn-uni-grad btn-large" type ="submit" formaction="{{ render.staff_url_prefix }}delete/{% if title == 'Program' %}programs{% elif title == 'Subplan' %}subplans{% elif title == 'Course' %}courses{% elif title == 'List' %}lists{% endif %}/" value="&#128465Delete Selected">
-                    </p>
-                </div>
                 {% endif %}
             </form>
         </div>
@@ -148,6 +148,65 @@
             };
 
             var {{ title }}List = new List("{{ title }}Sorter", {{ title }}Options);
+            var {{ title }}MsgHidden = true;
+
+            var PAGE_MAX = {{ title }}Options.page;
+
+            // Code for Select All (in current page/all entries)
+            function selectAll(source, currTitle) {
+                var checkboxes = document.getElementsByClassName('select_' + currTitle);
+                {# toggles all current rows displayed #}
+                for (var i=0, n=checkboxes.length; i<n; i++) {
+                    if (source.checked) {
+                        checkboxes[i].checked = source.checked;
+                    } else {
+                        checkboxes[i].checked = true;
+                    }
+                }
+                {# if popup msg for current tab is still hidden #}
+                if (window[currTitle + "MsgHidden"]) {
+                    document.getElementById("select_all_div_" + currTitle).style.display = "block";
+                    window[currTitle + "MsgHidden"] = false;
+                    document.getElementById("select_all_msg_" + currTitle).innerHTML = "All " + checkboxes.length
+                        + " " + currTitle + "s in this page are selected. <a href='#' class='show_all'>Select all " + currTitle + "s </a>" ;
+                }
+
+                var showAll = document.querySelector('.show_all');
+                {# checks for when the main select all checkbox is toggled #}
+                if (showAll) {
+                    showAll.addEventListener('click', selectAllHandler, false);
+                }
+                function selectAllHandler() {
+                    let list = window[currTitle + "List"];
+                    updatePagination(list, list.size());
+                    selectAll(source, currTitle);
+                    document.getElementById("select_all_msg_" + currTitle).innerHTML = "All " + currTitle + "s " +
+                        "are selected. <a href='#' class='reset_pagination'>Clear All Selection</a>";
+
+                    {# clears all checkboxes #}
+                    var resetPagination = document.querySelector('.reset_pagination');
+                    if (resetPagination) {
+                        resetPagination.addEventListener('click', resetHandler, false);
+                    }
+                    function resetHandler() {
+                        unselectAll(checkboxes);
+                        source.checked = false;
+                        document.getElementById("select_all_div_" + currTitle).style.display = "none";
+                        window[currTitle + "MsgHidden"] = true;
+                    }
+                }
+            }
+
+            function unselectAll(checkboxes) {
+                for (var i=0, n=checkboxes.length; i<n; i++) {
+                    checkboxes[i].checked = false;
+                }
+            }
+
+            function updatePagination(list, number) {
+                list.page = number;
+                list.update();
+            }
         </script>
     {% endfor %}
 
@@ -171,14 +230,6 @@
             document.getElementById(label+"Table").style.display = "block";
 
             oldLabel = label;
-        }
-
-        {# https://stackoverflow.com/questions/386281/how-to-implement-select-all-check-box-in-html #}
-        function selectAll(source, title) {
-            var checkboxes = document.getElementsByClassName('select_' + title);
-            for(var i=0, n=checkboxes.length; i<n; i++) {
-                checkboxes[i].checked = source.checked;
-            }
         }
 
         var openElement = (new URLSearchParams(window.location.search)).get("view");
