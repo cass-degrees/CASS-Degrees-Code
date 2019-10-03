@@ -73,7 +73,8 @@
                                 <i class="fas fa-caret-down"></i>
                             </p>
                             <div class="dropdown-content">
-                                {% if user.is_staff %}<a href="/admin/">Admin Site</a>{% endif %}
+                                {% if user.is_staff %}<a href="/staff/">Template Authoring Tool</a>{% endif %}
+                                {% if user.is_staff %}<a href="/admin/">Database Administration</a>{% endif %}
                                 <a href="/accounts/password_change/">Change Password</a>
                                 <a href="/accounts/logout/">Logout</a>
                             </div>
