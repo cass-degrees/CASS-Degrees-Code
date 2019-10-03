@@ -10,18 +10,27 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def student_course_box(context, count):
+def student_course_box(context, count, display_course_index):
     output = ""
     iters = int(int(count) / 6)
 
     for i in range(iters):
-        output += "<div class=\"card selectable-card\">" \
-                  "<div class=\"box-solid course-drop dropzone\">" \
-                  "<span class=\"grey-text\">Course #" + str(i + 1) + ":&nbsp;</span>" \
-                  "<span class=\"course-code\"></span>&nbsp;" \
-                  "<input type=\"button\" class=\"course-clear-button\" onclick=\"clearCourse(this.parentElement)\" " \
-                  "class=\"btn-uni-grad btn-snall\" value=\"Remove\" />" \
-                  "</div></div>"
+        if display_course_index:
+            output += "<div class=\"card selectable-card\">" \
+                      "<div class=\"box-solid course-drop dropzone\">" \
+                      "<span class=\"grey-text\">Course #" + str(i + 1) + ":&nbsp;</span>" \
+                      "<span class=\"course-code\"></span>&nbsp;" \
+                      "<input type=\"button\" onclick=\"clearCourse(this.parentElement)\" " \
+                      "class=\"course-clear-button btn-uni-grad btn-snall\" value=\"Remove\" />" \
+                      "</div></div>"
+        else:
+            output += "<div class=\"card selectable-card\">" \
+                      "<div class=\"box-solid course-drop dropzone\">" \
+                      "<span class=\"grey-text\">Course:&nbsp;</span>" \
+                      "<span class=\"course-code\"></span>&nbsp;" \
+                      "<input type=\"button\" onclick=\"clearCourse(this.parentElement)\" " \
+                      "class=\"course-clear-button btn-uni-grad btn-snall\" value=\"Remove\" />" \
+                      "</div></div>"
 
     return Template(output).render(context)
 

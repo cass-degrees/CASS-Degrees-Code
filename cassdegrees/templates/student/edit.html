@@ -54,7 +54,7 @@
                 <h3>Program</h3>
 
                 {% for rule in program.rules %}
-                    {% include "widgets/student/rules.html" %}
+                    {% include "widgets/student/rules.html" with render_rules=True render_units=True %}
                 {% endfor %}
             </div>
 

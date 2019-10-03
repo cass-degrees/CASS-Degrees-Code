@@ -5,7 +5,7 @@ register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
-def course_box(context, count, plan):
+def course_box(context, count, plan, display_course_index):
     output = ""
     iters = int(int(count) / 6)
 
@@ -16,11 +16,18 @@ def course_box(context, count, plan):
             course_name = None
 
         # Noting that pop() might also return None if a user hasn't selected a course yet:
-        if course_name:
-            output += "<div class=\"box grey-box\"><span class=\"grey-text\">Course #" + str(i + 1) + ":</span> " \
-                      + course_name + "</div>"
+        if display_course_index:
+            if course_name:
+                output += "<div class=\"box grey-box\"><span class=\"grey-text\">Course #" + str(i + 1) + ":</span> " \
+                          + course_name + "</div>"
+            else:
+                output += "<div class=\"box grey-text grey-box\">Course #" + str(i + 1) + ":</div>"
         else:
-            output += "<div class=\"box grey-text grey-box\">Course #" + str(i + 1) + ":</div>"
+            if course_name:
+                output += "<div class=\"box grey-box\"><span class=\"grey-text\">Course:</span> " \
+                          + course_name + "</div>"
+            else:
+                output += "<div class=\"box grey-text grey-box\">Course:</div>"
 
     return Template(output).render(context)
 

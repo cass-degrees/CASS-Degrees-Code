@@ -10,20 +10,19 @@
     </div>
 
     {% if plan != None %}
-        <h1 class="no-bottom-margin">{{ plan.name }} ({{ program.name }}, {{ program.year }}, {{ program.units }} units)</h1>
+        <h2 class="no-bottom-margin">{{ plan.name }}</h2>
+        <p class="no-bottom-margin no-top-margin">({{ program.name }}, {{ program.year }}, {{ program.units }} units)</p>
     {% else %}
         <h1 class="no-bottom-margin">{{ program.name }} ({{ program.year }}, {{ program.units }} units)</h1>
     {% endif %}
 
     <br />
 
-    <div class="columns-3 columns-no-gap">
+    <div class="columns-4 columns-no-gap">
 
         {% for rule in program.rules %}
-            {% include "widgets/pdf_rules.html" %}
+            {% include "widgets/pdf_rules.html" with render_rules=True render_units=True %}
         {% endfor %}
-
-        <div class="break-column"></div>
 
         <div class="box small-text">
             <p>
@@ -34,7 +33,7 @@
         </div>
 
         {% for rule in program.globalRequirements %}
-            <div class="box {% if forloop.last %} break-column{% endif %}">
+            <div class="box">
                 {% if rule.type == "general" %}
                     <p>
                         {{rule.prettyList}}
