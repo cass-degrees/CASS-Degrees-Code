@@ -319,8 +319,10 @@ def bulk_data_upload(request):
                         any_success = True
                         correctly_uploaded.append(course_str)
                     except:
-                        error_message = course_str + " Couldn't add: Check for duplicate course"
-                        failed_to_upload.append(error_message)
+                        error_message = "Couldn't add: Check for duplicate course"
+                        failed_to_upload.append({'item_code': course_instance.code,
+                                                 'item_name': course_instance.name,
+                                                 'error': error_message})
                         any_error = True
 
                 elif content_type == 'Subplans':
@@ -344,7 +346,10 @@ def bulk_data_upload(request):
                         correctly_uploaded.append(subplan_str)
                     except:
                         any_error = True
-                        failed_to_upload.append(subplan_str)
+                        error_message = "Couldn't add: Check for duplicate subplan"
+                        failed_to_upload.append({'item_code': subplan_instance.code,
+                                                 'item_name': subplan_instance.name,
+                                                 'error': error_message})
 
             else:
                 i = 0
@@ -361,10 +366,11 @@ def bulk_data_upload(request):
             correctly_uploaded = correctly_uploaded[0:show_count]
             correctly_uploaded.append("... and {} more items".format(upload_count - show_count))
 
+        failed_to_upload = sorted(failed_to_upload, key=lambda k: k['item_code'])
+        context['failed_items'] = failed_to_upload
         fail_count = len(failed_to_upload)
         if fail_count > show_count:
             failed_to_upload = failed_to_upload[0:show_count]
-            failed_to_upload.append("... and {} more items".format(fail_count - show_count))
 
         # Display error messages depending on the level of success of bulk upload.
         # There are 3 categories: All successful, some successful or none successful.
@@ -375,21 +381,21 @@ def bulk_data_upload(request):
         elif any_success and any_error:
             # for course in failed_to_upload:
             failed_str = ""
-            correct_str = ""
 
             for record in failed_to_upload:
-                failed_str = failed_str + "<br> - " + record
-
-            for record in correctly_uploaded:
-                correct_str = correct_str + "<br> - " + record
+                failed_str = failed_str + "<br> - " + record['item_code'] + " " + record['item_name']
+            if fail_count > show_count:
+                failed_str = failed_str + (("<br>... and {} more items").format(fail_count - show_count))
 
             context['user_msg'] = "Some items could not be added. They may already be present in the database" \
                                   " or the data may not be in the correct format. Please check the " \
                                   + content_type + \
                                   " list and try manually adding ones that failed through the dedicated " \
                                   "forms. <br><br>The following " + content_type + " could not be added: " + \
-                                  failed_str + "<br><br> " \
-                                  "The following " + content_type + " uploaded successfully: " + correct_str
+                                  failed_str + \
+                                  "<br><a href='#' onclick='toggleFailedItemsPopup();'>Click here to see a complete " + \
+                                  "list of all " + content_type + " that could not be added.</a><br><br>" + \
+                                  str(upload_count) + " items were uploaded successfully!"
             context['err_type'] = "warn"
 
         elif not any_success and any_error:

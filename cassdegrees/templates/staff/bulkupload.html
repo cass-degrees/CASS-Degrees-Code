@@ -40,6 +40,42 @@
             </form>
         </div>
     {% endfor %}
+
+
+
+    <div id="failedItemsPopup" class="modal" hidden>
+        <div class="modal-background"></div>
+        <div class="wide-modal-card card">
+            <header class="box-header">
+                Failed Items
+            </header>
+            <div class="box-solid box-has-footer">
+                <div class="modal-body">
+                    <table class="fullwidth tbl-cell-bdr">
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Reason</th>
+                        </tr>
+                        {% for item in failed_items %}
+                            <tr>
+                                <td>{{ item.item_code }}</td>
+                                <td>{{ item.item_name }}</td>
+                                <td>{{ item.error }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <footer class="box-solid text-right">
+                <input onclick="toggleFailedItemsPopup()" type="button" class="left btn-uni-grad btn-small" value="Close" />
+                <input onclick="downloadFailuresCSV({{ failed_items }})" type="button" class="left btn-uni-grad btn-small" value="Download as CSV" />
+                <br>
+            </footer>
+        </div>
+    </div>
+
+
     {# Function to hide the previous tab while opening a new one #}
     <script>
         {# If user was already on a tab (e.g. uploaded a subplan file and got a message), stay on the same tab #}
@@ -63,6 +99,35 @@
         }
 
         var openElement = (new URLSearchParams(window.location.search)).get("view");
-        setActive(openElement)
+        setActive(openElement);
+
+        // Toggle whether the failed items popup is hidden or shown
+        function toggleFailedItemsPopup() {
+            var toggle = document.getElementById("failedItemsPopup");
+            toggle.hidden = !toggle.hidden;
+        }
+
+        /*
+         * Given the list of failed items, this function converts them into a CSV file
+         * and downloads it.
+         */
+        function downloadFailuresCSV(failures) {
+            let csvContent = "data:text/csv;charset=utf-8,";
+
+            // Convert array of failures into a csv format
+            failures.forEach(function(rowDict) {
+                let row = rowDict['item_code'] + "," + rowDict['item_name'].replace(/,/g, '') + "," + rowDict['error'];
+                csvContent += row + "\r\n";
+            });
+
+            // Download CSV file by creating and clicking a link
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "bulk_upload_failed_items.csv");
+            document.body.appendChild(link); // Required for FF
+
+            link.click();
+        }
     </script>
 {% endblock %}

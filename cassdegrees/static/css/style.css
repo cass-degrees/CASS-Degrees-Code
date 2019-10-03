@@ -169,6 +169,11 @@ select.text{
     background: rgba(0, 0, 0, 0.5);
 }
 
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+
 .modal-card {
     position: absolute;
     left: 35%;
