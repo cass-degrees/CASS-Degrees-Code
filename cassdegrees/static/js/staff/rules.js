@@ -93,10 +93,10 @@ const SUBPLAN_UNITS = {
 
 const INFO_MSGS = {
     'course': '<p>This Requisite requires Courses in the system. Please create Courses ' +
-        '<a href="/staff/create/course/" target="_blank">here</a> or bulk upload Courses ' +
+        '<a href=javascript:document.getElementById("new_course_btn").click()>here</a> or bulk upload Courses ' +
         '<a href="/staff/bulk_upload/" target="_blank">here</a> first before creating this Requisite.</p>',
-    'subplan': '<p>This Requisite requires Subplans in the system. Please create Subplans ' +
-        '<a href="/staff/create/subplan/" target="_blank">here</a> first before creating this Requisite.</p>',
+    'subplan': '<p>There are no subplans of the specified year and type in the system. Please create Subplans ' +
+        '<a href=javascript:document.getElementById("new_subplan_btn").click()>here</a> first before creating this Requisite.</p>',
     'program': '<p>This Requisite requires Programs in the system. Please create Programs ' +
         '<a href="/staff/create/program/" target="_blank">here</a> first before creating this Requisite.</p>'
 };

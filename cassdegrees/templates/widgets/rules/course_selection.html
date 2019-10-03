@@ -43,13 +43,16 @@
         <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
         <div class="msg-error" v-if="invalid_min_max_units">Minimum units count can not be greater than maximum units count!</div>
 
-        <p v-if="details.list_type != 'min_max'">
-            Students must select {{ list_type_label }} {{ unit_value_label }} units from the following courses:
-        </p>
-        <p v-if="details.list_type == 'min_max'">
-            Students must select a minimum of {{ min_unit_value_label }} units
-            and a maximum of {{ max_unit_value_label }} units from the following courses:
-        </p>
+        <div v-if="courses.length != 0">
+            <p v-if="details.list_type != 'min_max'">
+                Students must select {{ list_type_label }} {{ unit_value_label }} units from the following courses:
+            </p>
+            <p v-if="details.list_type == 'min_max'">
+                Students must select a minimum of {{ min_unit_value_label }} units
+                and a maximum of {{ max_unit_value_label }} units from the following courses:
+            </p>
+        </div>
+        <div v-else v-html="info_msg"></div>
 
         <br>
         <div class="align_right" style="margin-bottom: 5px">
@@ -62,8 +65,6 @@
                    v-on:click="is_courses_view_hidden=!is_courses_view_hidden"
                    onclick="(this.value=='Hide Courses') ? this.value='Show Courses' : this.value='Hide Courses';"/>
         </div>
-
-
         <multiselect
                 :options="courses"
                 :value="optionsProxy"
@@ -83,7 +84,7 @@
         </multiselect>
 
         <div class="msg-warn" v-if="is_list_search">Searching in list mode,
-            <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
+        <a href="javascript:void(0);" @click="toggleListMode()">return to course mode</a></div>
 
         <ul class="resources-list" v-if="!is_courses_view_hidden">
             <template v-for="(resource, index) in selected_courses">
@@ -98,7 +99,6 @@
                     </div>
                 </li>
             </template>
-            <div class="msg-warn" v-if="selected_courses.length == 0">You have not added any courses yet!</div>
         </ul>
 
         <div class="msg-warn" v-if="is_courses_view_hidden">This course list has been hidden!</div>

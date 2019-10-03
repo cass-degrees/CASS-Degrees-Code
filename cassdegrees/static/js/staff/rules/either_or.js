@@ -5,7 +5,7 @@ Vue.component('rule_either_or', {
             validator(value) {
                 // Ensure that the object has all the attributes we need
                 if (!value.hasOwnProperty("either_or")) {
-                    value.either_or = [];
+                    value.either_or = [[], []];
                 }
 
                 return true;
@@ -124,10 +124,14 @@ Vue.component('rule_either_or', {
                 // Sum up the units of the or group
                 const group_units = {"exact": 0, "max": 0, "min": 0};
                 for (const details of or_group) {
-                    const child_units = this.find_rule(details).count_units();
-                    for (const key in child_units) {
-                        group_units[key] += child_units[key];
+                    const current_rule = this.find_rule(details);
+                    if(current_rule) {
+                        const child_units = current_rule.count_units();
+                        for (const key in child_units) {
+                            group_units[key] += child_units[key];
+                        }
                     }
+                    else break;
                 }
 
                 // If units has not been set yet, set it to the current OR group
@@ -194,10 +198,14 @@ Vue.component('rule_either_or', {
             for (const or_group of this.details.either_or) {
                 const group_units = {"exact": 0, "max": 0, "min": 0};
                 for (const details of or_group){
-                    const child_units = this.find_rule(details).count_units();
-                    for (const key in child_units) {
-                        group_units[key] += child_units[key];
+                    const current_rule = this.find_rule(details);
+                    if(current_rule) {
+                        const child_units = current_rule.count_units();
+                        for (const key in child_units) {
+                            group_units[key] += child_units[key];
+                        }
                     }
+                    else break;
                 }
 
                 if (group_units.exact + group_units.min > 48) {

@@ -54,7 +54,7 @@
                     {{ field }}
                 </p>
                 {% if field.name == "publish" %}
-                    <p class="text-center">Please tick the checkbox above as 'published' if you want this to be searchable as a requirement by programs and students</p>
+                    <p class="text-center">Please tick the 'publish' checkbox above if you want this subplan to be selectable in programs</p>
                 {% endif %}
                 {% for error in field.errors %}
                      <div class="msg-error inline-error">{{ error }}</div>
@@ -72,7 +72,7 @@
     </form>
 
     <p class="text-right">
-        <input class="left btn-uni-grad btn-large" type="button" value="New Course"
+        <input id="new_course_btn" class="left btn-uni-grad btn-large" type="button" value="New Course"
                onclick="toggleCourseCreationPopup()">
         <input class="btn-uni-grad btn-large" type="button" value="Cancel"
                onclick="{% if edit or 'list' in request.META.HTTP_REFERER %}returnToList('Subplan'){% else %}goBack(){% endif %}">

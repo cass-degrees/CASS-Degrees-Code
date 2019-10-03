@@ -3,36 +3,38 @@
 {% verbatim %}
 <script type="text/x-template" id="subplanRuleMultiselectTemplate">
     <fieldset v-if="!redraw">
+        <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
+        <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
+        <div class="msg-error" v-if="wrong_year_selected">Selected subplans must have same year as program!</div>
+        <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
-        <div v-if="subplans.length != 0">
-            <div class="msg-error" v-if="non_unique_options">Options must be unique!</div>
-            <div class="msg-error" v-if="inconsistent_units">Options have different unit values!</div>
-            <div class="msg-error" v-if="wrong_year_selected">Selected subplans must have same year as program!</div>
-            <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
+        <p class="form-group">
+            <Label style="width: 20.8333%; text-align: right; float: left;">List name:</Label>
+            <input class="text tfull" v-model="details.list_description"
+                   placeholder="Optional description for CASS Staff Reference, e.g. CASS Majors" style="margin-left: 0;">
+        </p>
 
-            <p class="form-group">
-                <Label style="width: 20.8333%; text-align: right; float: left;">List name:</Label>
-                <input class="text tfull" v-model="details.list_description"
-                       placeholder="Optional description for CASS Staff Reference, e.g. CASS Majors" style="margin-left: 0;">
-            </p>
+        <p class="form-group">
+            <label style="width: 20.8333%; text-align: right; float: left;">Student description:</label>
+            <input class="text tfull" v-model="details.kind" v-on:change="updateStudentDescriptionLabel()" aria-required="true"
+                   placeholder="e.g. Arts Major - brief description for students here" style="margin-left: 0;">
+        </p>
 
-            <p class="form-group">
-                <label style="width: 20.8333%; text-align: right; float: left;">Student description:</label>
-                <input class="text tfull" v-model="details.kind" v-on:change="updateStudentDescriptionLabel()" aria-required="true"
-                       placeholder="e.g. Arts Major - brief description for students here" style="margin-left: 0;">
-            </p>
+        <p class="form-group">
+            <label style="width: 20.8333%; text-align: right; float: left;">Subplan type:</label>
+            <select v-model="details.subplan_type" v-on:change="change_filter" required style="margin-left: 0;">
+                <option v-for="(msg, type) in subplan_types" v-bind:value="type">{{ msg }}</option>
+            </select>
+        </p>
 
-            <p class="form-group">
-                <label style="width: 20.8333%; text-align: right; float: left;">Subplan type:</label>
-                <select v-model="details.subplan_type" v-on:change="change_filter" required style="margin-left: 0;">
-                    <option v-for="(msg, type) in subplan_types" v-bind:value="type">{{ msg }}</option>
-                </select>
-            </p>
+        <br>
 
-            <br>
-
+        <div v-if="sortedSubplanList.length != 0">
             <p>Students must pick one {{ student_description_label }} from the following {{ subplan_type_label }}:</p>
+        </div>
+        <div v-else-if="program_year != '' && details.subplan_type != ''" v-html="info_msg"></div>
 
+        <div v-if="program_year != '' && details.subplan_type != ''">
             <br>
             <div class="align_right" style="margin-bottom: 5px">
                 <input type="button" value="Sort Subplans" class="btn-uni-grad btn-small" style="margin-left: 0"
@@ -59,7 +61,6 @@
                     ref="multiselectref"
             >
             </multiselect>
-
             <ul class="resources-list" v-if="!is_subplans_view_hidden">
                 <template v-for="(resource, index) in selected_subplans">
                     <li class="resource-item" :data-index="index">
@@ -73,11 +74,10 @@
                         </div>
                     </li>
                 </template>
-                <div class="msg-warn" v-if="selected_subplans.length == 0">You have not added any subplans yet!</div>
             </ul>
-            <div class="msg-warn" v-if="is_subplans_view_hidden">This subplan list has been hidden!</div>
         </div>
-        <div v-else v-html="info_msg"></div>
+        <div v-else-if="program_year == ''">Please select a year for the current program</div>
+        <div v-else-if="details.subplan_type == ''">Please select a subplan type</div>
 
     </fieldset>
 </script>
