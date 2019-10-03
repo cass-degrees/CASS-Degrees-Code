@@ -83,8 +83,8 @@ Vue.component('rule_subplan', {
         // Sets the program year to be the value of the id_year field in the original component
         rule.program_year = document.getElementById('id_year').value;
         // Modifies the original 'id_year' element by telling it to refresh all components on all keystrokes
-        document.getElementById('id_year').addEventListener("input", function () {
-            app.redraw();
+        document.getElementById('id_year').addEventListener("change", function () {
+            rule.do_redraw();
         });
 
         // Keep a copy of the OR Rule's "update_units" function (Or a blank function if unavailable)
