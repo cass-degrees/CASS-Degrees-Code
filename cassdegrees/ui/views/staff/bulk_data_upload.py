@@ -147,7 +147,7 @@ def bulk_data_upload(request):
                         comments = comments.upper() if comments is not None else ""
 
                         # Semester columns with 'other' and non-empty Comments column are marked with 'other_offering'.
-                        other_offering = semesters == "OTHER" or comments != ""
+                        other_offering = semesters == "OTHER" or comments is None
 
                         sem_offer_set = False  # Marks whether semester 1, 2 offerings are set in the "Semesters" column
 
