@@ -29,14 +29,17 @@
 
         <br>
 
-        <div v-if="sortedSubplanList.length != 0">
+        <div v-if="sortedSelectedList.length != 0">
             <p>Students must pick one {{ student_description_label }} from the following {{ subplan_type_label }}:</p>
         </div>
-        <div v-else-if="program_year != '' && details.subplan_type != ''" v-html="info_msg"></div>
+        <div v-else-if="program_year != '' && details.subplan_type != '' && filtered_subplans.length == 0" v-html="info_msg"></div>
 
         <div v-if="program_year != '' && details.subplan_type != ''">
             <br>
+
             <div class="align_right" style="margin-bottom: 5px">
+                <input type="button" value="Add All Subplans" class="btn-uni-grad btn-small" style="margin-left: 0"
+                       @click="addAllSubplans">
                 <input type="button" value="Sort Subplans" class="btn-uni-grad btn-small" style="margin-left: 0"
                        @click="selected_subplans=sortedSelectedList;">
                 <input type="button" value="Hide Subplans" class="btn-uni-grad btn-small" style="margin-left: 0"

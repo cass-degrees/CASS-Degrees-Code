@@ -136,7 +136,19 @@ Vue.component('rule_subplan', {
     },
 
     methods: {
-// Returns label for multiselect drop down, label for dynamic list beneath generated separately
+        // Add all subplans of the current filtered type, remove them from the filtered_subplans list of options
+        addAllSubplans() {
+            this.filtered_subplans.forEach((subplan) => {
+                if (!this.details.ids.some(id => id === subplan.id)) {
+                    this.selected_subplans.unshift(subplan);
+                    this.details.ids.push(subplan.id)
+                }
+            })
+            // Clear the filtered subplans array as all have been added and should no longer be available
+            this.filtered_subplans = []
+        },
+
+        // Returns label for multiselect drop down, label for dynamic list beneath generated separately
         customLabel(option) {
             return `${option.code} - ${option.name} ${option.year}`;
         },
