@@ -1,10 +1,11 @@
 {# Generic visual container for rules with options to duplicate and delete #}
 {% load cache_control %}
+{% load static %}
 
 {% verbatim %}
 <script type="text/x-template" id="ruleTemplate">
     <div class="card">
-        <header class="box-header">
+        <header class="box-header draggable draggable-rule">
             <p class="card-header-title">
                 {{ component_names[details.type] }}
             </p>
@@ -12,8 +13,6 @@
                  alt="Help button" v-on:click="show_help = true" />
             <input type="button" v-on:click="$emit('remove')" class="btn-uni-grad btn-snall no-left-margin" value="Remove" />
             <input type="button" v-on:click="$emit('duplicate_rule')" class="btn-uni-grad btn-snall no-left-margin" value="Duplicate" />
-            <input type="button" v-on:click="$emit('move_up')" class="btn-uni-grad btn-snall no-left-margin" value="Move Up" />
-            <input type="button" v-on:click="$emit('move_down')" class="btn-uni-grad btn-snall no-left-margin" value="Move Down" />
         </header>
         <div class="box-solid">
             <div class="card-content" v-bind:refresh="refresh" v-bind:is="'rule_' + details.type" v-bind:details="details"></div>
@@ -39,4 +38,5 @@
 </script>
 {% endverbatim %}
 
+<script type="text/javascript" src="{% static 'js/vendor/interact.js' %}"></script>
 <script type="text/javascript" src="{% static_no_cache "js/staff/rules/rule.js" %}"></script>

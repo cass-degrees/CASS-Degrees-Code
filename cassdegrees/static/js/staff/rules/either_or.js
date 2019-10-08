@@ -42,10 +42,12 @@ Vue.component('rule_either_or', {
     },
     methods: {
         add_or() {
+            should_mark_newest_component = false;
             this.details.either_or.push([]);
             this.do_redraw();
         },
         add_rule() {
+            should_mark_newest_component = true;
             this.show_add_a_rule_modal = false;
             // Add chosen rule to the right or group (based on the button clicked).
             this.details.either_or[this.which_or].push({
@@ -53,64 +55,28 @@ Vue.component('rule_either_or', {
             });
         },
         remove(index, group) {
+            should_mark_newest_component = false;
             this.details.either_or[group].splice(index, 1);
             this.update_units();
             this.do_redraw();
         },
         duplicate_rule(index, group) {
+            should_mark_newest_component = true;
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.details.either_or[group].push(JSON.parse(JSON.stringify(this.details.either_or[group][index])));
             this.do_redraw();
         },
-        move_up_rule(index, group) {
-            var rules_array = this.details.either_or[group];
-
-            if (index > 0) {
-                var to_move = rules_array[index];
-                rules_array[index] = rules_array[index - 1];
-                rules_array[index - 1] = to_move;
-                this.do_redraw();
-            }
-        },
-        move_down_rule(index, group) {
-            var rules_array = this.details.either_or[group];
-
-            if (index < rules_array.length - 1) {
-                var to_move = rules_array[index];
-                rules_array[index] = rules_array[index + 1];
-                rules_array[index + 1] = to_move;
-                this.do_redraw();
-            }
-        },
         remove_group(group) {
+            should_mark_newest_component = false;
             this.details.either_or.splice(group, 1);
             this.update_units();
             this.do_redraw();
         },
         duplicate_group(group) {
+            should_mark_newest_component = true;
             // JSON.parse(JSON.stringify(...)) is done to actually duplicate the contents of the rule, rather than just copying the memory references.
             this.details.either_or.splice(group, 0, JSON.parse(JSON.stringify(this.details.either_or[group])));
             this.do_redraw();
-        },
-        move_up(group) {
-            var groups_array = this.details.either_or;
-
-            if (group > 0) {
-                var to_move = groups_array[group];
-                groups_array[group] = groups_array[group - 1];
-                groups_array[group - 1] = to_move;
-                this.do_redraw();
-            }
-        },
-        move_down(group) {
-            var groups_array = this.details.either_or;
-
-            if (group < groups_array.length - 1) {
-                var to_move = groups_array[group];
-                groups_array[group] = groups_array[group + 1];
-                groups_array[group + 1] = to_move;
-                this.do_redraw();
-            }
         },
         check_options(is_submission) {
             let valid = true;
@@ -219,6 +185,14 @@ Vue.component('rule_either_or', {
         // https://michaelnthiessen.com/force-re-render/
         do_redraw() {
             this.refresh.push("");
+        },
+        set_id(group, id) {
+            // Used for tracking where elements are dropped outside of Vue
+            id_map[this._uid] = this;
+            if (id == null)
+                return this._uid + "_" + group;
+            else
+                return this._uid + "_" + group + "_" + id;
         }
     },
     template: '#eitherOrTemplate'

@@ -15,41 +15,43 @@ Vue.component('rule', {
         }
     },
     mounted() {
-        const siblings = app.$children[0].$children;
+        if (should_mark_newest_component) {
+            const siblings = app.$children[0].$children;
 
-        // Determine whether this rule is the most recent rule by finding which sibling
-        // has the highest _uid assigned by Vue.
-        let max = 0;
-        const rule_creation_ranks = {};
-        siblings.forEach(function (sib) {
-            if (!sib.$children[0].is_eitheror) {
-                rule_creation_ranks[sib._uid] = sib;
-                sib.$el.classList.remove("rule_active_visual");
-                max = (sib._uid > max) ? sib._uid : max;
-            }
-            // Else we need to get the children of the either or rule
-            else {
-                // If nested or rules get implemented, this section may need to be made recursive
-                const either_or_rules = sib.$children[0].$children;
-                sib.$el.classList.remove("rule_active_visual");
-
-                if (either_or_rules.length > 0) {
-                    either_or_rules.forEach(function (rule) {
-                        rule_creation_ranks[rule._uid] = rule;
-                        rule.$el.classList.remove("rule_active_visual");
-                        max = (rule._uid > max) ? rule._uid : max;
-                    })
-                } else {
+            // Determine whether this rule is the most recent rule by finding which sibling
+            // has the highest _uid assigned by Vue.
+            let max = 0;
+            const rule_creation_ranks = {};
+            siblings.forEach(function (sib) {
+                if (!sib.$children[0].is_eitheror) {
                     rule_creation_ranks[sib._uid] = sib;
+                    sib.$el.classList.remove("rule_active_visual");
                     max = (sib._uid > max) ? sib._uid : max;
                 }
-            }
-        });
-        const recent_rule = rule_creation_ranks[max];
+                // Else we need to get the children of the either or rule
+                else {
+                    // If nested or rules get implemented, this section may need to be made recursive
+                    const either_or_rules = sib.$children[0].$children;
+                    sib.$el.classList.remove("rule_active_visual");
 
-        // Add a visual cue and scroll to the most recent rule
-        recent_rule.$el.classList.add("rule_active_visual");
-        recent_rule.$el.scrollIntoView({behavior: "smooth"})
+                    if (either_or_rules.length > 0) {
+                        either_or_rules.forEach(function (rule) {
+                            rule_creation_ranks[rule._uid] = rule;
+                            rule.$el.classList.remove("rule_active_visual");
+                            max = (rule._uid > max) ? rule._uid : max;
+                        })
+                    } else {
+                        rule_creation_ranks[sib._uid] = sib;
+                        max = (sib._uid > max) ? sib._uid : max;
+                    }
+                }
+            });
+            const recent_rule = rule_creation_ranks[max];
+
+            // Add a visual cue and scroll to the most recent rule
+            recent_rule.$el.classList.add("rule_active_visual");
+            recent_rule.$el.scrollIntoView({behavior: "smooth"})
+        }
     },
     methods: {
         check_options(is_submission) {
@@ -62,14 +64,7 @@ Vue.component('rule', {
         },
 
         count_units() {
-            const units = {"exact": 0, "max": 0, "min": 0};
-            for (const child of this.$children){
-                const child_units = child.count_units();
-                for (const key in child_units) {
-                    units[key] += child_units[key];
-                }
-            }
-            return units;
+            return this.$children[0].count_units();
         },
 
         get_or_rule_update_units_fn() {

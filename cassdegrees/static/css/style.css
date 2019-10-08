@@ -107,6 +107,29 @@
     color:#FFF;
 }
 
+.draggable-group {
+    background-color: white;
+}
+
+.dropzone-area {
+    width: 100%;
+    height: 60px;
+    border: 2px green dashed;
+    margin-bottom: 10px;
+}
+
+.hovering {
+    z-index:100;
+    box-shadow: 15px 30px 24px #888888;
+    position: relative;
+    opacity: 0.8;
+}
+
+.hidden-outer {
+    height: 0px;
+}
+
+
 /* Adds carets to list sorting options */
 table th {}
 .sort:after{

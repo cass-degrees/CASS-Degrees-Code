@@ -13,24 +13,27 @@
         </div>
         <br v-if="large_unit_count" />
 
-        <div class="box bdr-solid bdr-uni" v-for="(item, i) in details.either_or" :key="i">
-            <fieldset id="orRulesContainer">
-                <legend>Group {{ i + 1 }}</legend>
+        <div :drag_id="set_id(-1)"><div class="group-dropzone dropzone-area" hidden></div></div>
+        <div v-for="(item, i) in details.either_or" :key="i">
+            <div :drag_id="set_id(i)" class="box bdr-solid bdr-uni draggable draggable-group">
+                <fieldset id="orRulesContainer">
+                    <legend>Group {{ i + 1 }}</legend>
 
-                <div v-for="(item, j) in details.either_or[i]" :key="j" >
-                    <rule class="rule-container" v-bind:details="item" v-on:update="update(j, $event)"
-                          v-on:remove="remove(j, i)" v-on:duplicate_rule="duplicate_rule(j, i)"
-                          v-on:move_up="move_up_rule(j, i)" v-on:move_down="move_down_rule(j, i)"></rule>
-                    <div v-if="j < details.either_or[i].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
-                </div>
+                    <div :drag_id="set_id(i, -1)"><div class="dropzone dropzone-area" hidden></div></div>
+                    <div v-for="(item, j) in details.either_or[i]" :key="j" :drag_id="set_id(i, j)" >
+                        <rule class="rule-container" v-bind:details="item" v-on:update="update(j, $event)"
+                              v-on:remove="remove(j, i)" v-on:duplicate_rule="duplicate_rule(j, i)"></rule>
+                        <div v-if="j < details.either_or[i].length - 1 && separator.length > 0">{{ separator }}<br /><br /></div>
+                        <div class="dropzone dropzone-area" hidden></div>
+                    </div>
 
-                <input class="btn-uni-grad btn-medium no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = i; component_names = component_groups.rules" value="Add New Rule to Group" />
-                <input class="btn-uni-grad btn-medium no-left-margin" type="button" v-on:click="remove_group(i)" value="Remove This Group" />
-                <input class="btn-uni-grad btn-medium no-left-margin" type="button" v-on:click="duplicate_group(i)" value="Duplicate This Group" />
-                <input class="btn-uni-grad btn-medium no-left-margin" type="button" v-on:click="move_up(i)" value="Move Up" />
-                <input class="btn-uni-grad btn-medium no-left-margin" type="button" v-on:click="move_down(i)" value="Move Down" />
+                    <input class="btn-uni-grad btn-medium no-left-margin" type="button" v-on:click="show_add_a_rule_modal = true; which_or = i; component_names = component_groups.rules" value="Add New Rule to Group" />
+                    <input class="btn-uni-grad btn-medium no-left-margin" type="button" v-on:click="remove_group(i)" value="Remove This Group" />
+                    <input class="btn-uni-grad btn-medium no-left-margin" type="button" v-on:click="duplicate_group(i)" value="Duplicate This Group" />
 
-            </fieldset>
+                </fieldset>
+            </div>
+            <div :drag_id="set_id(i)"><div class="group-dropzone dropzone-area" hidden></div></div>
         </div>
 
         <input class="btn-uni-grad btn-large no-left-margin" type="button" v-on:click="add_or" value="Add new OR Group" />
