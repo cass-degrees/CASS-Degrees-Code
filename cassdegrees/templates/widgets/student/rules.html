@@ -34,7 +34,7 @@
                             {# Not all required courses - give descriptions #}
                             <p>Complete {{ rule.unit_count }} units from a selection of:</p>
                             {% for code in rule.codes %}
-                                {{ code }}{% if not forloop.last %}, {% endif %}
+                                {{ code.code }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
