@@ -27,7 +27,7 @@ Vue.component('rule_either_or', {
         return {
             show_add_a_rule_modal: false,
             which_or: 0,
-            add_a_rule_modal_option: 'course_list',
+            add_a_rule_modal_option: '',
 
             // Show warnings if appropriate
             large_unit_count: false,
@@ -35,6 +35,7 @@ Vue.component('rule_either_or', {
 
             component_groups: {'rules': EITHER_OR_COMPONENT_NAMES, 'requisites': REQUISITE_EITHER_OR_COMPONENT_NAMES, 'subplan': SUBPLAN_EITHER_OR_COMPONENT_NAMES},
             component_names: EITHER_OR_COMPONENT_NAMES,
+            component_help: ALL_COMPONENT_HELP,
 
             is_eitheror: true,
             "type": document.getElementById('page-title').innerText.split(' ')[1]

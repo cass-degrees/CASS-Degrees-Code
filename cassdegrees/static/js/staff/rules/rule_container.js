@@ -13,10 +13,11 @@ Vue.component('rule_container', {
     data() {
         return {
             show_add_a_rule_modal: false,
-            add_a_rule_modal_option: 'course_list',
+            add_a_rule_modal_option: '',
 
             component_groups: {'rules': COMPONENT_NAMES, 'requisites': REQUISITE_COMPONENT_NAMES, 'subplan': SUBPLAN_COMPONENT_NAMES},
             component_names: null,
+            component_help: ALL_COMPONENT_HELP,
 
             // Forces the element to re-render, if mutable events occurred
             redraw: false,

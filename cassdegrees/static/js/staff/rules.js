@@ -24,7 +24,7 @@ const ALL_COMPONENT_HELP = {
     'subplan': "A rule which gives students a choice from a particular set of majors, minors, specialisations or " +
                "other subplans. The description here is used to describe the rule when displaying this rule to " +
                "students.",
-    'course': "A rule which specifies that students should pick a certain amount of units from a set of available " +
+    'course_list': "A rule which specifies that students should pick a certain amount of units from a set of available " +
               "courses.",
     'course_requisite': "A rule which specifies that students should have taken a set of courses before taking this " +
                         "one.",
