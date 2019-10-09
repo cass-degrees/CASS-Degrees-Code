@@ -88,7 +88,6 @@ class ProgramModel(models.Model):
                      ("mast-sing", "Masters Single Degree"),
                      ("mast-adv", "Masters (Advanced) Degree"),
                      ("mast-doub", "Masters Flexible Double Degree"),
-                     ("vert-doub", "Vertical Flexible Double Degree"),
                      ("other", "Other Degree"))
 
     programType = models.CharField(max_length=10, choices=degreeChoices)
