@@ -42,7 +42,7 @@ def pretty_print_rules(program):
                         subplans[id] = object
                     rule["contents"] = subplans
                     rule["units"] = units
-                if rule["type"] == "course":
+                if rule["type"] == "course_list":
                     gen_request = HttpRequest()
                     gen_request.GET = {'select': 'code,name,units', 'from': 'course'}
                     rule['courses'] = []
@@ -80,17 +80,7 @@ def view_section(request):
 
         subplan = model_to_dict(SubplanModel.objects.get(id=int(id_to_edit)))
         pretty_print_reqs(subplan)
-
-        for rule in subplan['rules']:
-            # Add a new field containing the courses that match the given code
-            rule['courses'] = []
-            for course in rule['codes']:
-                code = course['code']
-                name = course['name']
-                gen_request.GET['code_exact'] = code
-                gen_request.GET['name_exact'] = name
-                courses = json.loads(search(gen_request).content.decode())
-                rule['courses'] += courses
+        pretty_print_rules(subplan)
 
         return render(request, 'staff/view/viewsubplan.html', context={'data': subplan})
 

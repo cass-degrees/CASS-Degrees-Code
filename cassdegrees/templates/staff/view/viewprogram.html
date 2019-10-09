@@ -98,7 +98,7 @@
                         </ul>
                     </p>
                 {# Course Rules #}
-                {% elif rule.type == 'course' %}
+                {% elif rule.type == 'course_list' %}
                     <p>
                         {% if rule.list_type != "min_max" %}
                             {% if rule.list_type == "min" %}
@@ -135,7 +135,7 @@
                     </p>
                 {# Custom-text Rules #}
                 {% elif rule.type == "custom_text" %}
-                    <p>{{ rule.units }} units from {{ rule.text }}</p>
+                    <p>{{ rule.unit_count }} units from {{ rule.text }}</p>
                 {# Elective Rules #}
                 {% elif rule.type == "elective" %}
                     <p>{{ rule.units }} units from the completion of elective courses offered by the ANU</p>

@@ -75,34 +75,81 @@
             {% endif %}
         {% endfor %}
 
-        {# Displays all of the required courses in a table #}
-        {% for rule in data.rules %}
-            <p>
-                <i>
-                    {% if rule.list_type != "min_max" %}
-                        {% if rule.list_type == "min" %}
-                            A minimum of
-                        {% elif rule.list_type == "exact" %}
-                            Exactly
-                        {% elif rule.list_type == "max" %}
-                            A maximum of
-                        {% endif %}
-                        {{ rule.unit_count }} units
-                    {% else %}
-                        A minimum of {{ rule.min_unit_count }} units
-                        and a maximum of {{ rule.max_unit_count }} units
-                    {% endif %}
-                    from completion of the following course(s):
-                </i>
-                <table class="tbl-cell-bdr">
-                    <tr><th>Code</th><th>Title</th><th>Units</th></tr>
-                        {% for course in rule.courses %}
-                            <tr><td>{{ course.code }}</td><td>{{ course.name }}</td><td>{{ course.units }}</td></tr>
-                        {% endfor %}
-                </table>
-
-            </p>
-            <br />
-        {% endfor %}
+        <div style="margin-left: 40px">
+            {% for rule in data.rules %}
+                {# Course Rule #}
+                {% if rule.type == "course_list" %}
+                    {# Displays all of the required courses in a table #}
+                    <p>
+                        <i>
+                            {% if rule.list_type != "min_max" %}
+                                {% if rule.list_type == "min" %}
+                                    A minimum of
+                                {% elif rule.list_type == "exact" %}
+                                    Exactly
+                                {% elif rule.list_type == "max" %}
+                                    A maximum of
+                                {% endif %}
+                                {{ rule.unit_count }} units
+                            {% else %}
+                                A minimum of {{ rule.min_unit_count }} units
+                                and a maximum of {{ rule.max_unit_count }} units
+                            {% endif %}
+                            from completion of the following course(s):
+                        </i>
+                        <table class="tbl-cell-bdr">
+                            <tr><th>Code</th><th>Title</th><th>Units</th></tr>
+                                {% for course in rule.courses %}
+                                    <tr><td>{{ course.code }}</td><td>{{ course.name }}</td><td>{{ course.units }}</td></tr>
+                                {% endfor %}
+                        </table>
+                    </p>
+                {# Custom Text Rule #}
+                {% elif rule.type == "custom_text" %}
+                    <p>{{ rule.unit_count }} units from {{ rule.text }}</p>
+                {# Either Or Rules #}
+                {% elif rule.type == 'either_or' %}
+                    Either:
+                    {% for or_rule in rule.either_or %}
+                        <div style="margin-left: 40px">
+                            {% for sub_rule in or_rule %}
+                                {# Course Or Rule #}
+                                {% if sub_rule.type == "course_list" %}
+                                    <p>
+                                        <i>
+                                            {% if sub_rule.list_type != "min_max" %}
+                                                {% if sub_rule.list_type == "min" %}
+                                                    A minimum of
+                                                {% elif sub_rule.list_type == "exact" %}
+                                                    Exactly
+                                                {% elif sub_rule.list_type == "max" %}
+                                                    A maximum of
+                                                {% endif %}
+                                                {{ sub_rule.unit_count }} units
+                                            {% else %}
+                                                A minimum of {{ sub_rule.min_unit_count }} units
+                                                and a maximum of {{ sub_rule.max_unit_count }} units
+                                            {% endif %}
+                                            from completion of the following course(s):
+                                        </i>
+                                        <table class="tbl-cell-bdr">
+                                            <tr><th>Code</th><th>Title</th><th>Units</th></tr>
+                                                {% for course in sub_rule.courses %}
+                                                    <tr><td>{{ course.code }}</td><td>{{ course.name }}</td><td>{{ course.units }}</td></tr>
+                                                {% endfor %}
+                                        </table>
+                                    </p>
+                                {# Custom Text Or Rule #}
+                                {% elif sub_rule.type == "custom_text" %}
+                                    <p>{{ sub_rule.unit_count }} units from {{ sub_rule.text }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% if not forloop.last %}OR{% endif %}
+                    {% endfor %}
+                {% endif %}
+                <br />
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
