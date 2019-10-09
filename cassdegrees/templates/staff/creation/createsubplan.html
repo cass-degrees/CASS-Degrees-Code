@@ -92,7 +92,10 @@
                 document.getElementById('mainForm').year.value = "{{ year }}";
         });
 
-        function submit_course_form(){
+        function submit_course_form() {
+            // Disable check for unsaved changes - we are saving them here!
+            contentsSubmission = true;
+
             app.export_rules();
             document.getElementById('mainForm').submit();
         }
@@ -115,6 +118,9 @@
                         return false;
                     }
                 }
+
+                // Disable check for unsaved changes - we are saving them here!
+                contentsSubmission = true;
 
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();

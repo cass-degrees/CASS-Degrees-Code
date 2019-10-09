@@ -80,3 +80,69 @@ function updateCheckboxes() {
 }
 
 document.addEventListener("DOMContentLoaded", updateCheckboxes);
+
+// Try to catch instances where users might enter text
+let pageDirtied = false;
+let contentsSubmission = false;
+
+let appContents;
+let globalReqsContents;
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Catch input boxes
+    document.querySelectorAll("input").forEach(function(element) {
+        element.addEventListener('change', () => {
+            if (!pageDirtied) {
+                console.log("Marking page as dirtied (input changed)");
+                pageDirtied = true;
+            }
+        });
+    });
+
+    // Check to see if we are submitting a form box and ignore if if so
+    document.querySelectorAll("form").forEach(function(element) {
+        element.addEventListener('submit', () => {
+            console.log("Form submission - skipping dirtied check");
+            contentsSubmission = true;
+        });
+    });
+
+    // Capture Vue data when ready
+    if (Vue) {
+        Vue.nextTick(() => {
+            if (app !== undefined) {
+                appContents = JSON.stringify(app.$data);
+            }
+
+            if (globalRequirementsApp !== undefined) {
+                globalReqsContents = JSON.stringify(globalRequirementsApp.$data);
+            }
+        });
+    }
+});
+
+window.addEventListener('beforeunload', function (e) {
+    // We don't want to warn if we are submitting a form of some kind
+    if (contentsSubmission) {
+        return;
+    }
+
+    // Try to see if a Vue element has been modified
+    if (app !== undefined && appContents !== JSON.stringify(app.$data)) {
+        console.log("Marking page as dirtied (app contents changed)");
+        pageDirtied = true;
+    }
+
+    if (globalRequirementsApp !== undefined && globalReqsContents !== JSON.stringify(globalRequirementsApp.$data)) {
+        console.log("Marking page as dirtied (global requirements contents changed)");
+        pageDirtied = true;
+    }
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload
+    if (pageDirtied) {
+        e.preventDefault();
+        // Message typically ignored - Chrome/Firefox generally use their own generic message
+        // here to prevent phishing/etc.
+        e.returnValue = 'Unsaved content - are you sure you wish to continue?';
+    }
+});

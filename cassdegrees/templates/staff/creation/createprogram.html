@@ -135,6 +135,9 @@
                     return false;
                 }
 
+                // Disable check for unsaved changes - we are saving them here!
+                contentsSubmission = true;
+
                 document.getElementById('mainForm').action.value = form_action;
                 document.getElementById('redirect').value = redirect;
                 document.getElementById('mainForm').submit();
@@ -147,6 +150,9 @@
         function force_submit_form(form_action, redirect) {
             app.export_rules();
             globalRequirementsApp.export_requirements();
+
+            // Disable check for unsaved changes - we are saving them here!
+            contentsSubmission = true;
 
             document.getElementById('mainForm').action.value = form_action;
             document.getElementById('redirect').value = redirect;
