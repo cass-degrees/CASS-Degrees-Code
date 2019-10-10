@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from api.models import ProgramModel, CourseModel, SubplanModel
 from django.forms import model_to_dict
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 import zlib
 import base64
@@ -65,6 +67,7 @@ def load_messages(cookies):
 
 
 # Static page for student landing
+@login_required
 def student_index(request):
     # Load up the error and regular messages to render in the plan
     render_settings = load_messages(request.session)
@@ -80,10 +83,11 @@ def student_index(request):
             except ProgramModel.DoesNotExist:
                 continue
 
-    return render(request, 'student/index.html', context={'plans': plans, 'render': render_settings})
+    return render(request, 'student/prototype.html', context={'plans': plans, 'render': render_settings})
 
 
 # Delete the requested plan
+@login_required
 def student_delete(request):
     plan_name = request.GET.get('plan', None)
 
@@ -97,6 +101,7 @@ def student_delete(request):
 
 
 # Creation page. Also sends program metadata.
+@login_required
 def student_create(request):
     id_to_view = request.GET.get('id', None)
     plan_to_duplicate = request.GET.get('plan', None)
@@ -137,6 +142,7 @@ def student_create(request):
 
 
 # Main edit page. Sends program metadata for specific course chosen.
+@login_required
 def student_edit(request):
     courses = CourseModel.objects.distinct('code')
     subplans = SubplanModel.objects.all()
@@ -294,3 +300,38 @@ def student_pdf(request):
                                          template="pdf_program.html", context=context)
 
         return response.render()
+
+
+# Student portal page
+def student_portal(request):
+    # Load up the error and regular messages to render in the plan
+    render_settings = load_messages(request.session)
+
+    query = request.GET.get('q', '')
+
+    filtered = {}
+
+    # No search, render default page
+    if not query:
+        paginator = Paginator(ProgramModel.objects.filter(publish=True), 10)  # Show 10 programs per page
+
+        page = request.GET.get('page')
+        programs = paginator.get_page(page)
+        return render(request, 'student/index.html', context={'programs': programs, 'render': render_settings})
+
+    # User search
+    else:
+        if len(query) == 4 and query.isnumeric():
+            filtered = ProgramModel.objects.filter(year__icontains=int(query), publish=True)
+        else:
+            filtered = ProgramModel.objects.filter(code__icontains=query, publish=True)
+            if not filtered:
+                filtered = ProgramModel.objects.filter(name__icontains=query, publish=True)
+
+    paginator = Paginator(filtered, 10)  # Show 10 programs per page
+
+    page = request.GET.get('page')
+    programs = paginator.get_page(page)
+
+    # Gives published programs for the page to render
+    return render(request, 'student/index.html', context={'programs': programs, 'render': render_settings})

@@ -1,12 +1,14 @@
 {% extends "base.html" %}
+{% load static %}
+{% load cache_control %}
 {% load breadcrumbs %}
 
-{% block page-title %}Home{% endblock %}
+{% block page-title %}Student Portal{% endblock %}
 
-{% block subtitle %}Welcome to the CASS Student Planner!{% endblock %}
+{% block subtitle %}Welcome to the CASS Student Portal{% endblock %}
 
 {% block breadcrumb-trail %}
-    {% finalcrumb 'Homepage' %}
+    {% finalcrumb 'Student Portal' %}
 {% endblock %}
 
 {% block content %}
@@ -19,94 +21,79 @@
     {% endif %}
 
     <p>
-        The CASS student planner tool is designed to help you plan out your degree, either
-        at the beginning or throughout. This tool will check for common issues that you may
-        encounter in planning out your degree, helping you to graduate on time.
+        This page provides a searchable list of program templates in PDF form.<br>
+        Search by the program name to find the plan you're looking for and click on the program to view the template.
     </p>
 
-    <a href="create/">
-        <input class="btn-uni-grad btn-large" type="button" value="Create New Degree Plan" />
-    </a>
+    <form class="box bdr-solid bdr-uni bg-uni50 anuform custom_search_bar" action="?action=Search" method="get">
+        <input class="text" name="q" size="24" maxlength="75" type="text" id="search_bar"
+               placeholder="Search for a Program... (Search by either name, code or year)"
+               value="{{ autofill }}"
+        >
+        <span class="btn-group">
+            <input class="btn-uni-grad btn-medium" type="submit" value="Search">
+            <input class="btn-uni-grad btn-medium" type="submit" value="Clear"
+                   onclick="document.getElementById('search_bar').value=''">
+        </span>
+    </form>
 
-    <hr />
-
-    <div>
-    {% for plan in plans %}
-        {% if plan.name %}{% with i=forloop.counter0 %}
-        <div class="list w-full block-center">
-            {# Render the plan loading button #}
-            <div class="large-menu-item">
-                <a href="/edit/?plan={{ plan.name }}" class="hide-link-underline">
-                    <div class="card selectable-card">
-                        <div class="box-solid card-content">
-                            <b>{{ plan.name }} </b><text class="right">{{ plan.date }}</text>
+    <div class="list">
+        {% for degree in programs %}
+            <a href="../staff/pdf/program?id={{ degree.id }}" target="_blank" class="hide-link-underline">
+                <div class="card selectable-card">
+                    <div class="box-solid">
+                        <div class="card-content">
+                            <b class="course-title">
+                                Name: {{ degree.name }}
+                            </b>
+                            -
+                            <b class="course-year">
+                                ({{ degree.year }}) - Program Code: {{ degree.code }}
+                            </b>
                             <br />
-                            {{ plan.program }}
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {# Render the plan duplicate button #}
-            <div id="{{ i }}Duplicate" class="small-menu-item">
-                <a href="/create/?plan={{ plan.name }}" class="hide-link-underline">
-                    <div class="card selectable-card">
-                        <div class="box-solid card-content center noborder-left">
-                            <p>Duplicate</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {# Render the plan delete button #}
-            <div id="{{ i }}Remove" class="small-menu-item">
-                <a href="javascript:void(0);" class="hide-link-underline">
-                    <div class="card selectable-card">
-                        <div class="box-solid card-content center noborder-left">
-                            <p>Remove</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {# Render the plan deletion confirmation button #}
-            <div hidden id="{{ i }}Confirm" class="small-menu-item">
-                <a href="/delete/?plan={{ plan.name }}" class="hide-link-underline">
-                    <div class="card">
-                        <div class="box-solid card-content center delete-color noborder-left">
-                            <p >Confirm</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {# Render the plan delete cancel button #}
-            <div hidden id="{{ i }}Cancel" class="small-menu-item">
-                <a href="javascript:void(0);" class="hide-link-underline">
-                    <div class="card selectable-card">
-                        <div class="box-solid card-content center noborder-left">
-                            <p id="{{ plan.name }}Test2">Cancel</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {# Script to make the buttons switch when certain buttons are clicked #}
-            <script type="text/javascript">
-                // Get the relevant elements
-                var dup{{ i }} = document.getElementById("{{ i }}Duplicate");
-                var rem{{ i }} = document.getElementById("{{ i }}Remove");
-                var can{{ i }} = document.getElementById("{{ i }}Cancel");
-                var con{{ i }} = document.getElementById("{{ i }}Confirm");
+                            <span class="course-type">
+                                {% if degree.programType == 'ugrad-sing' %}
+                                    Undergraduate Single Pass Degree
+                                {% elif degree.programType == 'ugrad-doub' %}
+                                    Undergraduate Flexible Double Degree
+                                {% elif degree.programType == 'hon' %}
+                                        Honours Degree
+                                {% elif degree.programType == 'mast-sing' %}
+                                    Masters Single Degree
+                                {% elif degree.programType == 'mast-adv' %}
+                                    Masters (Advanced) Degree
+                                {% elif degree.programType == 'mast-doub' %}
+                                    Masters Flexible Double Degree
+                                {% elif degree.programType == 'vert-doub' %}
+                                    Vertical Flexible Double Degree
+                                {% elif degree.programType == 'other' %}
+                                    Other Degree
+                                {% endif %}
+                            </span>
+                            /
+                            <span class="course-units">
+                                {{ degree.units }} units
+                            </span>
 
-                // Create a function to switch the confirm, delete, duplicate, and cancel buttons
-                fn{{ i }} = function() {
-                    rem{{ i }}.hidden = !rem{{ i }}.hidden;
-                    dup{{ i }}.hidden = !dup{{ i }}.hidden;
-                    can{{ i }}.hidden = !can{{ i }}.hidden;
-                    con{{ i }}.hidden = !con{{ i }}.hidden;
-                }
-                rem{{ i }}.onclick = fn{{ i }};
-                can{{ i }}.onclick = fn{{ i }};
-            </script>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+        <div class="box-solid text-center">
+            <div class="card-content">
+                {% if programs.has_previous %}
+                    <a href="?page=1" class="hide-link-underline">&laquo; first</a>
+                    <a href="?page={{ programs.previous_page_number }}" class="hide-link-underline">previous</a>
+                {% endif %}
+
+                Page {{ programs.number }} of {{ programs.paginator.num_pages }}
+
+                {% if programs.has_next %}
+                    <a href="?page={{ programs.next_page_number }}" class="hide-link-underline">next</a>
+                    <a href="?page={{ programs.paginator.num_pages }}" class="hide-link-underline">last &raquo;</a>
+                {% endif %}
+            </div>
         </div>
-        {% endwith %}{% endif %}
-    {% endfor %}
     </div>
-
 {% endblock %}

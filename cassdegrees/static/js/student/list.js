@@ -1,4 +1,4 @@
-/* Small list.js helper for student creation of plans */
+/* Small list.js helper for student portal search of plans */
 var options = {
   valueNames: ['course-details'],
   fuzzySearch: {
@@ -10,4 +10,4 @@ var options = {
   }
 };
 
-var courseSearch = new List('courses', options);
+var programSearch = new List('programs', options);
