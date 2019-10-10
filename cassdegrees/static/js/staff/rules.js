@@ -186,7 +186,7 @@ function dragMoveListener(event, x, y, origin_x, origin_y) {
             'translate(' + (event.pageX - x) + 'px, ' + (event.pageY - y) + 'px) scale(0.33)';
 }
 
-interact('.draggable-rule').draggable({
+interact('.draggable-rule').ignoreFrom('.btn-snall').draggable({
     inertia: false,
     autoScroll: true,
 
@@ -371,7 +371,7 @@ interact('.dropzone').dropzone({
     }
 });
 
-interact('.draggable-group').draggable({
+interact('.draggable-group').ignoreFrom('.rule-container').draggable({
     inertia: false,
     autoScroll: true,
 

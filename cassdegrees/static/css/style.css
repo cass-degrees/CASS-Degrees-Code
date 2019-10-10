@@ -363,6 +363,10 @@ select.text{
     user-select: none;
     cursor: move;
 }
+/* Reverts the draggable CSS changes */
+.non-draggable {
+    cursor: default;
+}
 
 /* Ensures course drop boxes are of the right size */
 .course-drop {

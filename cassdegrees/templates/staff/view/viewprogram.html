@@ -168,33 +168,46 @@
                                         </ul>
                                     </p>
                                 {# Course Or Rule #}
-                                {% elif sub_rule.type == 'course' %}
+                                {% elif sub_rule.type == 'course_list' %}
                                     <p>
-                                        {{ sub_rule.unit_count }} units from the completion of the following courses:
+                                        {% if sub_rule.list_type != "min_max" %}
+                                            {% if sub_rule.list_type == "min" %}
+                                                A minimum of
+                                            {% elif sub_rule.list_type == "exact" %}
+                                                Exactly
+                                            {% elif sub_rule.list_type == "max" %}
+                                                A maximum of
+                                            {% endif %}
+                                            {{ sub_rule.unit_count }} units
+                                        {% else %}
+                                            A minimum of {{ sub_rule.min_unit_count }} units
+                                            and a maximum of {{ sub_rule.max_unit_count }} units
+                                        {% endif %}
+                                        from the completion of the following courses:
                                         <ul>
                                             {% for course in sub_rule.courses %}
-                                                <li>
-                                                    {{ course.code }} - {{ course.name }} ({{ course.units }} units)
-                                                </li>
+                                                <li>{{ course.code }} - {{ course.name }} ({{ course.units }} units)</li>
                                             {% endfor %}
                                         </ul>
                                     </p>
                                 {# Elective Or Rule #}
-                                {% elif rule.type == 'elective' %}
+                                {% elif sub_rule.type == 'elective' %}
                                     <p>
-                                        {{ rule.unit_count }} units from completion of
-                                        {% if rule.year_level != 'all' %}
-                                            {{ rule.year_level }}-level
+                                        {{ sub_rule.unit_count }} units from completion of
+                                        {% if sub_rule.year_level != 'all' %}
+                                            {{ sub_rule.year_level }}-level
                                         {% endif %}
-                                        {% if rule.subject_area == 'all' %}
+                                        {% if sub_rule.subject_area == 'all' %}
                                             elective courses offered by ANU
                                         {% else %}
-                                            courses in the subject area {{ rule.subject_area }}
+                                            courses in the subject area {{ sub_rule.subject_area }}
                                         {% endif %}
                                     </p>
                                 {# Custom-text Or Rule #}
                                 {% elif sub_rule.type == "custom_text" %}
                                     <p>{{ sub_rule.units }} units from {{ sub_rule.text }}</p>
+                                {% else %}
+                                    Invalid Rule: {{ rule.type }}
                                 {% endif %}
                             {% endfor %}
                         </div>
