@@ -31,7 +31,7 @@
             {% csrf_token %}
             <input type="hidden" name="id" value="{{ request.GET.id }}">
             <div class="fullwidth auto-overflow">
-                <input class="btn-uni-grad btn-small right" type ="submit" formaction="/staff/delete/subplans/" value="&#128465Delete">
+                <input class="btn-uni-grad btn-small right" type ="submit" formaction="/staff/delete/subplans/" value="&times Delete">
             </div>
         </form>
     {% endif %}
@@ -47,15 +47,12 @@
             {{ form.management_form }}
 
             {% for field in form %}
-                <p class="form-group">
+                <p class="form-group" {% if field.name == 'publish' %}  hidden {% endif %}>
                     {% if not field.is_hidden %}
                         {{ field.label_tag }}
                     {% endif %}
                     {{ field }}
                 </p>
-                {% if field.name == "publish" %}
-                    <p class="text-center">Please tick the 'publish' checkbox above if you want this subplan to be selectable in programs</p>
-                {% endif %}
                 {% for error in field.errors %}
                      <div class="msg-error inline-error">{{ error }}</div>
                 {% endfor %}
@@ -70,6 +67,23 @@
         {% include "widgets/staff/global_requirements.html" %}
         {% include "widgets/staff/subplan_rules.html" %}
     </form>
+
+    <div class="anuform">
+        <fieldset>
+            <legend>
+                Publish Subplan
+            </legend>
+            <p>
+                A subplan that is not published will not be visible to students and cannot be added as a
+                requirement elsewhere.
+            </p>
+
+            <p class="form-group" onchange="document.getElementById('id_publish').checked =
+                                            !(document.getElementById('id_publish').checked);">
+                {{ form.publish.label_tag }} {{ form.publish }}
+            </p>
+        </fieldset>
+    </div>
 
     <p class="text-right">
         <input id="new_course_btn" class="left btn-uni-grad btn-large" type="button" value="New Course"
@@ -102,20 +116,22 @@
 
         function submit_form(redirect) {
             if (globalRequirementsApp.export_requirements() && app.export_rules()) {
-                // Ensure that the course has been agreed to to being non public on submission.
-                if (!document.getElementById("id_publish").checked &&
-                    !confirm("You haven't marked this subplan as 'published' - this means this won't appear " +
-                        "to students or be selectable as a requirement elsewhere.\r\n\r\nAre you sure you want to continue?")) {
-                    return false;
-                }
-
-                // If the user has chosen to publish a subplan but the unit count is inconsistent, verify with the user
-                if (document.getElementById("id_publish").checked) {
-                    var planType = document.getElementById("id_planType").value;
-                    if (planType && !isValidUnitCount( SUBPLAN_UNITS[planType] ) &&
-                        !confirm("You have created a subplan that does not contain " + SUBPLAN_UNITS[planType] +
-                            " units.\n\nAre you sure you want to continue? (Not Recommended)")){
+                if (redirect) {
+                    // Ensure that the course has been agreed to to being non public on submission.
+                    if (!document.getElementById("id_publish").checked &&
+                        !confirm("You haven't marked this subplan as 'published' - this means this won't appear " +
+                            "to students or be selectable as a requirement elsewhere.\r\n\r\nAre you sure you want to continue?")) {
                         return false;
+                    }
+
+                    // If the user has chosen to publish a subplan but the unit count is inconsistent, verify with the user
+                    if (document.getElementById("id_publish").checked) {
+                        var planType = document.getElementById("id_planType").value;
+                        if (planType && !isValidUnitCount(SUBPLAN_UNITS[planType]) &&
+                            !confirm("You have created a subplan that does not contain " + SUBPLAN_UNITS[planType] +
+                                " units.\n\nAre you sure you want to continue? (Not Recommended)")) {
+                            return false;
+                        }
                     }
                 }
 
