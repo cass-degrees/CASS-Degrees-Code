@@ -3,19 +3,16 @@
 {% verbatim %}
 <script type="text/x-template" id="customTextRuleTemplate">
     <fieldset>
-        <p>
-            Students must complete the following:
-        </p>
-
         <div class="msg-error" v-if="is_blank">All options must be filled in!</div>
 
         <p>
-            <textarea v-model="details.text" v-on:change="check_options" style="width: 100%" placeholder="Enter some custom rules here..." aria-required="true" required></textarea>
+            Students must complete
+            <input style="margin-left: 0;" class="text" v-on:change="update_units" onkeydown="javascript: return checkKeys(event)" type="number" min="6" max="1000" step="6" v-model="details.unit_count" aria-required="true" required>
+            units from...
         </p>
 
-        <p class="form-group">
-            <label>Unit value for this item:</label>
-            <input class="text" v-on:change="update_units" onkeydown="javascript: return checkKeys(event)" type="number" min="6" max="1000" step="6" v-model="details.unit_count" aria-required="true" required>
+        <p>
+            <textarea v-model="details.text" v-on:change="check_options" style="width: 100%" placeholder="e.g. International Exchange" aria-required="true" required></textarea>
         </p>
 
         <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>

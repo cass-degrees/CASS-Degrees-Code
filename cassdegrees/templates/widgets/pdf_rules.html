@@ -85,8 +85,7 @@
                 {% endif %}
             {% endfor %}
         {% elif rule.type == "custom_text" %}
-            <p>For {{ rule.unit_count }} units:</p>
-            <p>{{ rule.text }}</p>
+            <p>{{ rule.unit_count }} units from {{ rule.text }}</p>
         {% else %}
             ERROR: Unknown rule type "{{ rule.type }}"!
         {% endif %}

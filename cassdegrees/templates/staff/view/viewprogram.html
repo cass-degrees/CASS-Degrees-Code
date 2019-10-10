@@ -208,7 +208,7 @@
                                     </p>
                                 {# Custom-text Or Rule #}
                                 {% elif sub_rule.type == "custom_text" %}
-                                    <p>{{ sub_rule.units }} units from {{ sub_rule.text }}</p>
+                                    <p>{{ sub_rule.unit_count }} units from {{ sub_rule.text }}</p>
                                 {% else %}
                                     Invalid Rule: {{ rule.type }}
                                 {% endif %}
