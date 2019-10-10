@@ -9,15 +9,16 @@
         {% elif rule.type == 'elective' %}
             <p>
                 {{ rule.unit_count }} units from
-                {% if rule.year_level != 'all' %}
+                {% if rule.year_level|lower != 'all' %}
                     {{ rule.year_level }}-level
                 {% endif %}
-                {% if rule.subject_area != 'all' %}
-                    {{ rule.subject_area }}
+
+                {% if rule.subject_area == '' %}
+                    Elective
                 {% else %}
-                    elective
+                    {{ rule.subject_area }}
                 {% endif %}
-                courses
+                Courses
                 {% if render_units %}:{% endif %}
             </p>
         {% elif rule.type == "year_level" %}

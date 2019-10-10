@@ -16,9 +16,9 @@
             <div class="msg-error" v-if="invalid_units">Unit count must be greater than 0!</div>
             <div class="msg-error" v-if="invalid_units_step">Unit count should be divisible by 6!</div>
             <div class="msg-error" v-if="units_is_blank">Unit count must be filled in!</div>
-            <div class="msg-error" v-if="is_invalid">Subject area cannot be "Any" while no year levels are selected!</div>
+            <div class="msg-error" v-if="is_invalid">Subject area cannot be empty while no year levels are selected!</div>
 
-            <p>
+            <p class="form-group">
                 Students must complete a
                 <select v-model="details.minmax" required>
                     <option value="min">Minimum</option>
@@ -26,136 +26,137 @@
                 </select>
                 of
                 <input style="margin-left: 0;" class="text" onkeydown="javascript: return checkKeys(event)" type="number" v-on:change="check_options" v-model="details.unit_count" min="0" step="6" max="1000" aria-required="true" required>
-                units from courses in the subject area
-                <select v-model="details.subject_area" v-on:change="check_options" required>
-                    <option value="any" selected>Any</option>
-                    <option v-for="subject_area in subject_areas" v-bind:value="subject_area">{{ subject_area }}</option>
-                </select>
-                and in the following year levels:
+                units of
+                <!-- https://stackoverflow.com/questions/53944468/regex-allow-letters-and-space-only-in-html-input-box -->
+                <input style="margin-left: 0;" class="text" type="text" onkeydown="return /[a-z, ]/i.test(event.key)"
+                       aria-required="true" class="text" v-model="details.subject_area" placeholder="e.g. Arts (optional)">
+                Courses, in the following year levels:
             </p>
 
-            <br />
+            <p class="form-group">
+                <table class="tbl-row-bdr">
+                    <thead>
+                        <tr>
+                            <th>
+                                1000-level
+                            </th>
+                            <th>
+                                2000-level
+                            </th>
+                            <th>
+                                3000-level
+                            </th>
+                            <th>
+                                4000-level
+                            </th>
+                            <th>
+                                5000-level
+                            </th>
+                            <th>
+                                6000-level
+                            </th>
+                            <th>
+                                7000-level
+                            </th>
+                            <th>
+                                8000-level
+                            </th>
+                            <th>
+                                9000-level
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <!-- Because of the Vue container, these need custom styling pre-applied. They still
+                                 otherwise work fine, however. -->
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses1000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses2000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses3000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses4000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses5000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses6000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses7000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses8000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                            <td>
+                                 <div class="pretty centered p-icon">
+                                    <input type="checkbox" class="custom-checkbox" v-model="details.courses9000Level" v-on:change="check_options">
+                                    <div class="state p-primary">
+                                      <i class="icon fa fa-check"></i>
+                                      <label>&nbsp;</label>
+                                    </div>
+                                 </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </p>
 
-            <table class="tbl-row-bdr">
-                <thead>
-                    <tr>
-                        <th>
-                            1000-level
-                        </th>
-                        <th>
-                            2000-level
-                        </th>
-                        <th>
-                            3000-level
-                        </th>
-                        <th>
-                            4000-level
-                        </th>
-                        <th>
-                            5000-level
-                        </th>
-                        <th>
-                            6000-level
-                        </th>
-                        <th>
-                            7000-level
-                        </th>
-                        <th>
-                            8000-level
-                        </th>
-                        <th>
-                            9000-level
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <!-- Because of the Vue container, these need custom styling pre-applied. They still
-                             otherwise work fine, however. -->
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses1000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses2000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses3000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses4000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses5000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses6000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses7000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses8000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                        <td>
-                             <div class="pretty centered p-icon">
-                                <input type="checkbox" class="custom-checkbox" v-model="details.courses9000Level" v-on:change="check_options">
-                                <div class="state p-primary">
-                                  <i class="icon fa fa-check"></i>
-                                  <label>&nbsp;</label>
-                                </div>
-                             </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+
 
             <p>
                 Additional custom requirements (Optional):

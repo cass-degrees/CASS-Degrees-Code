@@ -10,7 +10,7 @@ Vue.component('rule_elective', {
                 }
 
                 if (!value.hasOwnProperty("subject_area")) {
-                    value.subject_area = "all";
+                    value.subject_area = "";
                 }
 
                 if (!value.hasOwnProperty("year_level")) {

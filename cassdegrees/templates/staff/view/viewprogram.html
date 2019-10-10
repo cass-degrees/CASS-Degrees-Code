@@ -63,12 +63,13 @@
                     {% elif rule.minmax == "max" %}
                         maximum of {{ rule.unit_count }} units may
                     {% endif %}
-                    come from completion of {{ rule.prettyList }}
-                    {% if rule.subject_area == "any" %}
-                        courses.
+                    come from completion of
+                    {% if rule.subject_area == "" or rule.subject_area|lower == "any" %}
+                        any {{ rule.prettyList }}
                     {% else %}
-                        courses from the subject area {{ rule.subject_area }}.
+                        {{ rule.prettyList }} {{ rule.subject_area }}
                     {% endif %}
+                    Courses.
                     {% if rule.customRequirements != "" %}
                         {{ rule.customRequirements }}
                     {% endif %}
@@ -124,13 +125,14 @@
                 {% elif rule.type == 'elective' %}
                     <p>
                         {{ rule.unit_count }} units from completion of
-                        {% if rule.year_level != 'all' %}
+                        {% if rule.year_level|lower != 'all' %}
                             {{ rule.year_level }}-level
                         {% endif %}
-                        {% if rule.subject_area == 'all' %}
-                            elective courses offered by ANU
+
+                        {% if rule.subject_area == '' %}
+                            Elective Courses offered by ANU.
                         {% else %}
-                            courses in the subject area {{ rule.subject_area }}
+                            {{ rule.subject_area }} Courses.
                         {% endif %}
                     </p>
                 {# Custom-text Rules #}
@@ -194,13 +196,14 @@
                                 {% elif sub_rule.type == 'elective' %}
                                     <p>
                                         {{ sub_rule.unit_count }} units from completion of
-                                        {% if sub_rule.year_level != 'all' %}
+                                        {% if sub_rule.year_level|lower != 'all' %}
                                             {{ sub_rule.year_level }}-level
                                         {% endif %}
-                                        {% if sub_rule.subject_area == 'all' %}
-                                            elective courses offered by ANU
+
+                                        {% if sub_rule.subject_area == '' %}
+                                            Elective Courses offered by ANU.
                                         {% else %}
-                                            courses in the subject area {{ sub_rule.subject_area }}
+                                            {{ sub_rule.subject_area }} Courses.
                                         {% endif %}
                                     </p>
                                 {# Custom-text Or Rule #}

@@ -16,12 +16,11 @@
                     <option value="all" selected>All</option>
                     <option v-for="year_level in number_of_year_levels" v-bind:value="year_level*1000">{{ year_level*1000 }}-level</option>
                 </select>
-                electives in
-                <select v-model="details.subject_area" required>
-                    <option value="all" selected>Any</option>
-                    <option v-for="subject_area in subject_areas" v-bind:value="subject_area">{{ subject_area }}</option>
-                </select>
-                subject area.
+                electives of
+                <!-- https://stackoverflow.com/questions/53944468/regex-allow-letters-and-space-only-in-html-input-box -->
+                <input style="margin-left: 0;" class="text" type="text" onkeydown="return /[a-z, ]/i.test(event.key)"
+                       aria-required="true" class="text" v-model="details.subject_area" placeholder="e.g. Arts (optional)">
+                Courses.
             </p>
         </div>
         <div v-else v-html="info_msg"></div>

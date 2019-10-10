@@ -36,11 +36,12 @@
             <div class="box">
                 {% if rule.type == "general" %}
                     <p>
-                        {{rule.prettyList}}
-                        {% if rule.subject_area != "any" %}
-                            {{ rule.subject_area }}
+                        {% if rule.subject_area == "" or rule.subject_area|lower == "any" %}
+                            Any {{ rule.prettyList }}
+                        {% else %}
+                            {{ rule.prettyList }} {{ rule.subject_area }}
                         {% endif %}
-                        courses: <br/>
+                        Courses: <br/>
                         <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> units ({{ rule.unit_count }}
                         {% if rule.minmax == "min" %}
                             <b>minimum</b>)
