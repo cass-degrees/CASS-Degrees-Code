@@ -39,6 +39,13 @@ def bulk_data_upload(request):
     if request.method == 'POST':
         base_model_url = request.build_absolute_uri('/api/model/')
 
+        # Check if any errors or successes appear when uploading the files.
+        # Used for determining type of message to show to the user on the progress of their file upload.
+        any_error = False
+        any_success = False
+        failed_to_upload = []
+        correctly_uploaded = []
+
         # Open file in text mode:
         # https://stackoverflow.com/questions/16243023/how-to-resolve-iterator-should-return-strings-not-bytes
         raw_uploaded_file = request.FILES['uploaded_file']
@@ -58,13 +65,6 @@ def bulk_data_upload(request):
 
         # First row contains the column type headings (code, name etc). We can't add them to the db.
         first_row_checked = False
-
-        # Check if any errors or successes appear when uploading the files.
-        # Used for determining type of message to show to the user on the progress of their file upload.
-        any_error = False
-        any_success = False
-        failed_to_upload = []
-        correctly_uploaded = []
 
         # If the uploaded file was an excel sheet, convert it to a format that is the same as the output of when
         # the percent separated value files are processed by the else statement below.
@@ -115,6 +115,7 @@ def bulk_data_upload(request):
                     "otherOffering",
                     "currentlyActive"
                 ])
+                row_counter = 1  # Used solely for keeping track of the row number for error reporting. Starts at 1.
                 for row in sheet.iter_rows():
                     # This is the initialisation phase, where the file reader determines the column positions.
                     col_counter = 0
@@ -127,13 +128,26 @@ def bulk_data_upload(request):
                                     col_index[cell.value] = col_counter
                                     col_counter += 1
 
-                                # If every column has been indexed, then mark columns_set as true.
-                                if col_counter == len(row):
+                                # If every necessary column has been indexed, then mark columns_set as true.
+                                cols = col_index.keys()
+                                if 'School/Centre' in cols and 'Course Code' in cols and 'Course Title' in cols and \
+                                        'Primary Convener' in cols and 'Semesters' in cols and 'Sessions' in cols and \
+                                        'Comments' in cols:
                                     columns_set = True
+
+                                if col_counter == len(row) and not columns_set:
+                                    context['user_msg'] = "Failed to upload file... " \
+                                                          "File doesn't contain all expected columns! These are: \n" \
+                                                          "'School/Centre', 'Course Code', 'Course Title', " \
+                                                          "'Primary Convener', 'Semesters', 'Sessions' and 'Comments'."
+                                    context['err_type'] = "error"
+                                    return render(request, 'staff/bulkupload.html', context=context)
 
                     # Once the column positions are set,
                     # check the offerings specified in the 'Semester' and 'Sessions' columns and process accordingly.
                     else:
+                        row_counter += 1
+
                         code = row[col_index["Course Code"]].value
                         name = row[col_index["Course Title"]].value
 
@@ -142,7 +156,17 @@ def bulk_data_upload(request):
                         sessions = str(row[col_index["Sessions"]].value)
                         comments = str(row[col_index["Comments"]].value)
 
-                        semesters = semesters.upper() if semesters is not None else ""
+                        # If any of these values are missing, then this row is malformed and thus must be rejected.
+                        if code is None or name is None or semesters is None:
+                            any_error = True
+                            # Item code AAAA0000 is used to bring the error all the way to the top (due to sorting),
+                            # as it is a critical error.
+                            failed_to_upload.append({'item_code': 'AAAA0000 Bad Row Error',
+                                                     'item_name': f'(Malformed row number {row_counter})',
+                                                     'error': "This row has missing data, skipping"})
+                            continue
+
+                        semesters = semesters.upper()
                         sessions = sessions.upper() if sessions is not None else ""
                         comments = comments.upper() if comments is not None else ""
 
@@ -241,11 +265,24 @@ def bulk_data_upload(request):
                     "otherOffering",
                     "currentlyActive"
                 ])
+                row_counter = 1  # Used solely for keeping track of the row number for error reporting. Starts at 1.
                 for row in sheet.iter_rows():
                     # Don't do anything for the column header row
                     if set(first_row) != set(row):
+                        row_counter += 1
                         code, name, units, years_offered, offerings, subplan_dep, program_dep, status = \
                             [col.value for col in row]
+
+                        # If any of these values are missing, then this row is malformed and thus must be rejected.
+                        if code is None or name is None or units is None or years_offered is None or offerings is None \
+                                or status is None:
+                            any_error = True
+                            # Item code AAAA0000 is used to bring the error all the way to the top (due to sorting),
+                            # as it is a critical error.
+                            failed_to_upload.append({'item_code': "AAAA0000 Bad Row Error",
+                                                     'item_name': f'(Malformed row number {row_counter}',
+                                                     'error': "This row has missing data, skipping"})
+                            continue
 
                         s1_offer = "Sem1" in offerings
                         s2_offer = "Sem2" in offerings
