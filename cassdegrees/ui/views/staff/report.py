@@ -5,8 +5,10 @@ from django.http import HttpRequest, HttpResponse
 from api.models import CourseModel, ProgramModel, SubplanModel
 from api.views import search
 
+from openpyxl import Workbook
+from openpyxl.styles import Font
+
 import json
-import xlwt
 
 
 def generate_course_info_table():
@@ -111,36 +113,33 @@ def generate_course_info_table():
 
 
 # Generates the courses report and then uses that to generate an excel file based off that.
-# https://www.pythoncircle.com/post/190/how-to-download-data-as-csv-and-excel-file-in-django/
+# https://djangotricks.blogspot.com/2019/02/how-to-export-data-to-xlsx-files.html
 def generate_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
 
     # File name is defined here
-    response['Content-Disposition'] = 'attachment; filename="Course Report.xls"'
+    response['Content-Disposition'] = 'attachment; filename="Course Report.xlsx"'
 
-    wb = xlwt.Workbook(encoding='utf-8')  # Create new workbook
-    ws = wb.add_sheet("Courses")  # Add new sheet
+    wb = Workbook()  # Create new workbook
+    ws = wb.active
+    ws.title = 'Courses'
 
     columns, body = generate_course_info_table()
 
-    # Make the top row to be bold
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
+    row_ind = 1  # Openpyxl worksheets start at index 1 for rows and columns.
 
     for col_ind in range(len(columns)):
-        ws.write(0, col_ind, columns[col_ind], font_style)
-
-    # The body should not be bold
-    font_style = xlwt.XFStyle()
-
-    row_ind = 1  # Since column names occupy row number 0, start writing at row index 1.
+        cell = ws.cell(row=row_ind, column=col_ind + 1)
+        cell.value = columns[col_ind]
+        cell.font = Font(bold=True)  # Make header rows bold
 
     # Write all the body rows to the excel workbook.
     for row in body:
-        for col_ind in range(len(row)):
-            ws.write(row_ind, col_ind, row[col_ind], font_style)
-
         row_ind += 1
+
+        for col_ind in range(len(row)):
+            cell = ws.cell(row=row_ind, column=col_ind + 1)
+            cell.value = row[col_ind]
 
     wb.save(response)
     return response

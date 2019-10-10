@@ -73,7 +73,7 @@ def bulk_data_upload(request):
             # Used https://www.pythoncircle.com/post/591/how-to-upload-and-process-the-excel-file-in-django/
             # to help me read the excel files.
             excel_file = openpyxl.load_workbook(raw_uploaded_file)
-            sheet = excel_file["Sheet1"]
+            sheet = excel_file[excel_file.sheetnames[0]]  # Get the first sheet in the excel file.
 
             first_row = list(sheet.iter_rows())[0]
 
