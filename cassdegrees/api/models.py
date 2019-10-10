@@ -96,4 +96,4 @@ class ProgramModel(models.Model):
     rules = psql.JSONField(default=list)
 
     class Meta:
-        unique_together = (("code", "year"), ("name", "year"))
+        unique_together = (("code", "year", "programType"), ("name", "year", "programType"))

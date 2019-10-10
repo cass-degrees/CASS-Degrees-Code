@@ -31,57 +31,25 @@ def raise_unique_error(view_str, conflictID):
     ])
 
 
-# for any constraints c1 c2
+# for any constraint c in constraints, check if that key is unique
 # https://stackoverflow.com/questions/4659360/get-django-object-id-based-on-model-attribute
-def check_constraint(model, data, c1, c2, view_str, formID):
-    # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
-    try:
-        draft_c1 = data[c1]
-    except KeyError:
-        draft_c1 = None
-    try:
-        draft_c2 = data[c2]
-    except KeyError:
-        draft_c2 = None
+def check_constraint(model, data, constraints, view_str, formID):
+    dictionary = {}
+
+    missing_inputs = False
+
+    for c in constraints:
+        # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
+        try:
+            dictionary[c] = data[c]
+        except KeyError:
+            missing_inputs = True
+            break
 
     # check that input has been received for the fields and then check for duplicate
-    if draft_c1 is not None and draft_c2 is not None:
+    if not missing_inputs:
         try:
-            conflict_id = model.objects.only('id').get(**{c1: draft_c1, c2: draft_c2}).id
-            if conflict_id == formID:
-                conflict_id = None
-        except model.DoesNotExist:
-            conflict_id = None
-    else:
-        conflict_id = None
-
-    if conflict_id is not None:
-        raise_unique_error(view_str, conflict_id)
-
-
-# for any constraints c1 c2 c3
-def check_three_constraint(model, data, c1, c2, c3, view_str, formID):
-    # check assignment as keys may not exist in cleaned dictionary if field level validation has failed
-    try:
-        draft_c1 = data[c1]
-    except KeyError:
-        draft_c1 = None
-    try:
-        draft_c2 = data[c2]
-    except KeyError:
-        draft_c2 = None
-    try:
-        draft_c3 = data[c3]
-    except KeyError:
-        draft_c3 = None
-
-    # check constraint and return conflicting ID if present
-    if draft_c1 is not None and draft_c2 is not None and draft_c3 is not None:
-        try:
-            conflict_id = model.objects.only('id').get(**{
-                c1: draft_c1,
-                c2: draft_c2,
-                c3: draft_c3}).id
+            conflict_id = model.objects.only('id').get(**dictionary).id
             if conflict_id == formID:
                 conflict_id = None
         except model.DoesNotExist:
@@ -175,8 +143,8 @@ class EditProgramFormSnippet(ModelForm):
         cleaned_data = super().clean()
         formID = self.instance.id
 
-        check_constraint(ProgramModel, cleaned_data, 'code', 'year', 'edit_program', formID)
-        check_constraint(ProgramModel, cleaned_data, 'name', 'year', 'edit_program', formID)
+        check_constraint(ProgramModel, cleaned_data, ['code', 'year', 'programType'], 'edit_program', formID)
+        check_constraint(ProgramModel, cleaned_data, ['name', 'year', 'programType'], 'edit_program', formID)
 
         return cleaned_data
 
@@ -265,8 +233,8 @@ class EditSubplanFormSnippet(ModelForm):
         formID = self.instance.id
 
         # relevant constraints are (code, year) and (name, year, planType)
-        check_constraint(SubplanModel, cleaned_data, 'code', 'year', 'edit_subplan', formID)
-        check_three_constraint(SubplanModel, cleaned_data, 'name', 'year', 'planType', 'edit_subplan', formID)
+        check_constraint(SubplanModel, cleaned_data, ['code', 'year'], 'edit_subplan', formID)
+        check_constraint(SubplanModel, cleaned_data, ['name', 'year', 'planType'], 'edit_subplan', formID)
 
         return cleaned_data
 
@@ -380,6 +348,6 @@ class EditCourseFormSnippet(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        check_constraint(CourseModel, cleaned_data, 'code', 'year', 'edit_course', self.instance.id)
+        check_constraint(CourseModel, cleaned_data, ['code', 'year'], 'edit_course', self.instance.id)
 
         return cleaned_data
