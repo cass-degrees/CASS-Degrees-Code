@@ -342,16 +342,26 @@ class EditCourseFormSnippet(ModelForm):
 
     def clean_code(self):
         data = self.cleaned_data['code']
+
+        # enforce 8-9 character long course code length
         if len(data) != 8 and len(data) != 9:
             raise forms.ValidationError("This should be at least 8-9 characters  (4 Letters, 4 Numbers "
                                         "+ 1 Optional Letter)!")
+
+        # all courses must start with 4 digit alpha
         if not data[:4].isalpha():
             raise forms.ValidationError("Course Code should start with 4 letters!")
+
+        # all courses must end with at least 4 digits
         if not data[4:8].isdigit():
             raise forms.ValidationError("Course Code should end with 4 numbers!")
+
+        # where a course code is 9 characters the last must be alpha
         if len(data) == 9 and not data[-1:].isalpha():
             raise forms.ValidationError("Extra Key should be a letter e.g. A, B, C")
-        if CourseModel.objects.filter(code=data):
+
+        # course codes must be unique, unless you are editing existing courses
+        if CourseModel.objects.filter(code=data) and CourseModel.objects.get(code=data).id != self.instance.id:
             raise forms.ValidationError("A course with this code already exists!")
         return data.upper()
 
