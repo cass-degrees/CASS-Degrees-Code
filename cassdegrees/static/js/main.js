@@ -142,11 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Capture Vue data when ready
     if (Vue) {
         Vue.nextTick(() => {
-            if (app !== undefined) {
+            if (typeof app !== 'undefined') {
                 appContents = JSON.stringify(app.$data);
             }
 
-            if (globalRequirementsApp !== undefined) {
+            if (typeof globalRequirementsApp !== 'undefined') {
                 globalReqsContents = JSON.stringify(globalRequirementsApp.$data);
             }
         });
@@ -160,12 +160,12 @@ window.addEventListener('beforeunload', function (e) {
     }
 
     // Try to see if a Vue element has been modified
-    if (app !== undefined && appContents !== JSON.stringify(app.$data)) {
+    if (typeof app !== 'undefined' && appContents !== JSON.stringify(app.$data)) {
         console.log("Marking page as dirtied (app contents changed)");
         pageDirtied = true;
     }
 
-    if (globalRequirementsApp !== undefined && globalReqsContents !== JSON.stringify(globalRequirementsApp.$data)) {
+    if (typeof globalRequirementsApp !== 'undefined' && globalReqsContents !== JSON.stringify(globalRequirementsApp.$data)) {
         console.log("Marking page as dirtied (global requirements contents changed)");
         pageDirtied = true;
     }
