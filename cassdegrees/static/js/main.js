@@ -29,6 +29,38 @@ function returnToList(pageName) {
     window.location.href = STAFF_URL_PREFIX + "list/?view="+pageName;
 }
 
+/**
+ * Hides the content of the specified element's siblings (Assuming the element is a legend)
+ */
+function collapseContent(element) {
+    // Determine if the content should be hidden or not
+    let should_hide = false;
+    for (className of element.classList) {
+        if (className === 'collapse-off') {
+            should_hide = true;
+            break;
+        }
+    }
+
+    // Changes the caret to the appropriate direction
+    if (should_hide) {
+        element.classList.remove('collapse-off');
+        element.classList.add('collapse-on');
+    }
+    else {
+        element.classList.remove('collapse-on');
+        element.classList.add('collapse-off');
+    }
+
+    // Hides/shows all of the sibling elements
+    let siblings = element.parentNode.childNodes;
+    for (let sibling of siblings){
+        if (sibling.tagName && sibling.tagName !== 'LEGEND'){
+            sibling.style.display = (should_hide ? 'none' : '');
+        }
+    }
+}
+
 // Attempt to replace all checkboxes on the page with modern equivalents, noting that browsers don't typically
 // allow for custom checkbox styling, we have to implement this logic ourselves.
 // This preserves all element semantics, including JavaScript event handlers and so forth.

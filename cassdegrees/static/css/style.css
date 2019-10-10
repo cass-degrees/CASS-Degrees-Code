@@ -129,6 +129,24 @@
     height: 0px;
 }
 
+.collapse-off:after{
+    content: '';
+    border: 8px solid transparent;
+    position: relative;
+    left: 2px;
+    top: 14px;
+    border-top-color: inherit;
+    margin-right: 6px;
+}
+.collapse-on:after{
+    content: '';
+    border: 8px solid transparent;
+    position: relative;
+    left: 2px;
+    bottom: 14px;
+    border-bottom-color: inherit;
+    margin-right: 6px;
+}
 
 /* Adds carets to list sorting options */
 table th {}

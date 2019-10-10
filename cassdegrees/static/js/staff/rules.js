@@ -199,6 +199,10 @@ interact('.draggable-rule').ignoreFrom('.btn-snall').draggable({
         let id = event.target.parentNode.parentNode.getAttribute('drag_id');
         event.target.parentNode.parentNode.classList.add('hidden-outer');
 
+        // Unhide all collapsed elements
+        for (let element of event.target.getElementsByClassName('collapse-on'))
+            element.onclick();
+
         // Make the class look like it's hovering
         event.target.parentNode.classList.add('hovering');
         // Unhide all of the drop zones
@@ -384,6 +388,11 @@ interact('.draggable-group').ignoreFrom('.rule-container').draggable({
         // Make the class look like it's hovering
         event.target.parentNode.classList.add('hovering');
         event.target.parentNode.classList.add('hidden-outer');
+
+        // Unhide all collapsed elements
+        for (let element of event.target.getElementsByClassName('collapse-on'))
+            element.onclick();
+
         // Unhide all of the drop zones, then re-hide the one belowe the currently held element
         var dropzones = document.getElementsByClassName('group-dropzone dropzone-area');
         for (var dropzone of dropzones) {

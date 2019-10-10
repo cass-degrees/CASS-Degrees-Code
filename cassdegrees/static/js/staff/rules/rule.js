@@ -79,7 +79,20 @@ Vue.component('rule', {
             }
             return () => {
             };
-        }
+        },
     },
     template: '#ruleTemplate'
 });
+
+function collapse(element) {
+    var window = element.parentNode.parentNode.getElementsByClassName('card-content')[0];
+    window.style.display = (window.style.display === "none" ? "" : "none");
+    if (window.style.display === "none") {
+        element.classList.remove('collapse-off');
+        element.classList.add('collapse-on');
+    }
+    else {
+        element.classList.remove('collapse-on');
+        element.classList.add('collapse-off');
+    }
+}
