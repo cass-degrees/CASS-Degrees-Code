@@ -21,7 +21,7 @@
     <div class="columns-4 columns-no-gap">
 
         {% for rule in program.rules %}
-            {% include "widgets/pdf_rules.html" with render_rules=True render_units=True %}
+            {% include "widgets/pdf_rules.html" with render_rules=True render_units=True cache_large_lists=True %}
         {% endfor %}
 
         <div class="box small-text">
@@ -59,4 +59,6 @@
             </div>
         {% endfor %}
     </div>
+
+    {% print_extended_course_lists %}
 {% endblock %}
