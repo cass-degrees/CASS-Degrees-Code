@@ -97,18 +97,25 @@ def delete_course(request):
             gen_request.GET = {'select': 'code,year,rules', 'from': 'program', 'rules': course['code']}
             # programs which depend on course where its code is equal to course['code']
             programs = json.loads(search(gen_request).content.decode())
+            gen_request.GET = {'select': 'name,year,elements', 'from': 'list', 'elements': course['code']}
+            # lists which depend on course where its code is equal to course['code']
+            lists = json.loads(search(gen_request).content.decode())
 
             # if there are any subplans/programs that could be affected by the deletion of the selected courses
-            if len(subplans) > 0 or len(programs) > 0:
+            if len(subplans) > 0 or len(programs) > 0 or len(lists) > 0:
                 # compose error message
                 if len(subplans) > 0:
                     for subplan in subplans:
-                        error_msg += "Course Code: '" + course['code'] + " is used by Subplan Code: '" + \
-                                     subplan['code'] + "'(" + str(subplan['year']) + ").\n"
+                        error_msg += "Course Code: '" + course['code'] + "' is used by Subplan Code: '" + \
+                                     subplan['code'] + "' (" + str(subplan['year']) + ").\n"
                 if len(programs) > 0:
                     for program in programs:
-                        error_msg += "Course Code: '" + course['code'] + " is used by Program Code: '" + \
-                                     program['code'] + "'(" + str(program['year']) + ").\n"
+                        error_msg += "Course Code: '" + course['code'] + "' is used by Program Code: '" + \
+                                     program['code'] + "' (" + str(program['year']) + ").\n"
+                if len(lists) > 0:
+                    for list in lists:
+                        error_msg += "Course Code: '" + course['code'] + "' is used by List Name: '" + \
+                                     list['name'] + "' (" + str(list['year']) + ").\n"
                 continue  # dont append course to the list instances
         instances.append(CourseModel.objects.get(id=course['id']))
 
