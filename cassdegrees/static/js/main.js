@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Capture Vue data when ready
-    if (Vue) {
+    if (typeof Vue !== 'undefined' && Vue) {
         Vue.nextTick(() => {
             if (typeof app !== 'undefined') {
                 appContents = JSON.stringify(app.$data);

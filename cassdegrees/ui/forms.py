@@ -291,7 +291,7 @@ class EditCourseFormSnippet(ModelForm):
                                            'placeholder': "e.g. Art and Design Histories: Form and Space"}),
             'units': forms.NumberInput(attrs={'class': "text eighth-width", 'placeholder': "e.g. 6",
                                               'onkeydown': "javascript: return checkKeys(event)",
-                                              'type': "number"}),
+                                              'step': 6, 'type': "number"}),
             'offeredYears': forms.Select(choices=offered_years_choices, attrs={'class': "eighth-width"})
         }
         labels = {

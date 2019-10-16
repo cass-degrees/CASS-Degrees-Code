@@ -68,10 +68,11 @@
         </fieldset>
     </form>
 
-    <form class="anuform">
-        {% include "widgets/rules/resources.html" %}
-        {% include "widgets/staff/course_rules.html" %}
-    </form>
+{# Removed Temporarily due to the reduced importance of course rules #}
+{#    <form class="anuform">                              #}
+{#        {% include "widgets/rules/resources.html" %}    #}
+{#        {% include "widgets/staff/course_rules.html" %} #}
+{#    </form>                                             #}
 
     <p class="text-right">
         <input class="btn-uni-grad btn-large" type="button" value="Cancel"
@@ -86,7 +87,7 @@
 
     <script>
         function submit_form(form_action, redirect) {
-            if (app.export_rules()) {
+            if (true /*DISABLED: app.export_rules()*/) {
                 // Disable check for unsaved changes - we are saving them here!
                 contentsSubmission = true;
 
