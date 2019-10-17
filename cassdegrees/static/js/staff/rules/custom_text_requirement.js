@@ -19,12 +19,13 @@ Vue.component('rule_custom_text_req', {
         }
     },
     created() {
-        this.check_options();
+        this.check_options(false);
     },
     methods: {
         check_options(is_submission) {
-            this.is_blank = this.details.text === "";
-
+            if (is_submission) {
+                this.is_blank = this.details.text === "";
+            }
             return !this.is_blank;
         },
         update_units() {

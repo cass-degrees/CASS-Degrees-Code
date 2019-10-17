@@ -40,9 +40,10 @@ Vue.component('rule_program', {
     },
     methods: {
         check_options(is_submission) {
-            // Ensure all data has been filled in
-            this.is_blank = this.details.program === "";
-
+            if (is_submission) {
+                // Ensure all data has been filled in
+                this.is_blank = this.details.program === "";
+            }
             return !this.is_blank;
         },
         // https://michaelnthiessen.com/force-re-render/

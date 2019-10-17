@@ -37,7 +37,7 @@ Vue.component('rule_course_requisite', {
                     return a['code'].localeCompare(b['code'])
                 }
             );
-            rule.check_options();
+            rule.check_options(false);
         });
         request.open("GET", "/api/search/?select=code,name&from=course");
         request.send();
@@ -46,23 +46,25 @@ Vue.component('rule_course_requisite', {
         add_course() {
             // Mutable modification - redraw needed
             this.details.codes.push(-1);
-            this.check_options();
+            this.check_options(false);
             this.do_redraw();
         },
         remove_course(index) {
             // Mutable modification - redraw needed
             this.details.codes.splice(index, 1);
-            this.check_options();
+            this.check_options(false);
             this.do_redraw();
         },
         check_options(is_submission) {
             // Ensure all data has been filled in
             this.is_blank = false;
-            for (const index in this.details.codes) {
-                const value = this.details.codes[index];
-                if (value === -1 || value === "") {
-                    this.is_blank = true;
-                    break;
+            if (is_submission) {
+                for (const index in this.details.codes) {
+                    const value = this.details.codes[index];
+                    if (value === -1 || value === "") {
+                        this.is_blank = true;
+                        break;
+                    }
                 }
             }
 

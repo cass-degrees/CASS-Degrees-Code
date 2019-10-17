@@ -83,23 +83,38 @@ Vue.component('global_requirement_general', {
         const request = new XMLHttpRequest();
 
         request.addEventListener("load", () => {
-            rule.check_options();
+            rule.check_options(false);
         });
         request.open("GET", "/api/search/?select=code&from=course");
         request.send();
     },
     methods: {
-        check_options() {
-            this.invalid_units = this.details.unit_count <= 0;
-            this.invalid_units_step = this.details.unit_count % 6 !== 0;
-            this.units_is_blank = this.details.unit_count === "";
-
-            this.is_invalid = !this.details.courses1000Level && !this.details.courses2000Level && !this.details.courses3000Level
-                && !this.details.courses4000Level && !this.details.courses5000Level && !this.details.courses6000Level
-                && !this.details.courses7000Level && !this.details.courses8000Level && !this.details.courses9000Level
-                && this.details.subject_area === "";
-
-            return !this.is_invalid && !this.invalid_units && !this.invalid_units_step && !this.units_is_blank;
+        check_options(is_submission) {
+            // Add/Remove errors
+            if (is_submission) {
+                this.invalid_units = this.details.unit_count <= 0;
+                this.invalid_units_step = this.details.unit_count % 6 !== 0;
+                this.units_is_blank = this.details.unit_count === "";
+                this.is_invalid = !this.details.courses1000Level && !this.details.courses2000Level && !this.details.courses3000Level
+                    && !this.details.courses4000Level && !this.details.courses5000Level && !this.details.courses6000Level
+                    && !this.details.courses7000Level && !this.details.courses8000Level && !this.details.courses9000Level
+                    && this.details.subject_area === "";
+            }
+            // Remove errors
+            else {
+                if (this.details.unit_count > 0)
+                    this.invalid_units = false;
+                if (this.details.unit_count % 6 === 0)
+                    this.invalid_units_step = false;
+                if (this.details.unit_count !== "")
+                    this.units_is_blank = false;
+                if (this.details.subject_area !== ""
+                    || this.details.courses1000Level || this.details.courses2000Level || this.details.courses3000Level
+                    || this.details.courses4000Level || this.details.courses5000Level || this.details.courses6000Level
+                    || this.details.courses7000Level || this.details.courses8000Level || this.details.courses9000Level
+                )
+                    this.is_invalid = false;
+            }
         }
     },
     template: '#generalGlobalRequirementTemplate'
@@ -196,7 +211,7 @@ const globalRequirementsApp = new Vue({
         export_requirements() {
             let valid = true;
             for (const index in this.$children[0].$children) {
-                valid = valid && this.$children[0].$children[index].$children[0].check_options();
+                valid = valid && this.$children[0].$children[index].$children[0].check_options(true);
             }
 
             // Serialize list structures - this doesn't translate well over POST requests normally.

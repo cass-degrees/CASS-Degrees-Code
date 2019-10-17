@@ -12,7 +12,7 @@
         </p>
 
         <p>
-            <textarea v-model="details.text" v-on:change="check_options" style="width: 100%" placeholder="e.g. International Exchange" aria-required="true" required></textarea>
+            <textarea v-model="details.text" v-on:change="check_options(false)" style="width: 100%" placeholder="e.g. International Exchange" aria-required="true" required></textarea>
         </p>
 
         <div class="msg-error" v-if="not_divisible">Units must be divisible by 6!</div>

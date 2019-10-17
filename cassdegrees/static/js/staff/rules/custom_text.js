@@ -32,17 +32,25 @@ Vue.component('rule_custom_text', {
         }
     },
     created() {
-        this.check_options();
+        this.check_options(false);
         // Keep a copy of the Or Rule's "update_units" function (Or a blank function if unavailable)
         this.parent_update_units_fn = this.$parent.get_or_rule_update_units_fn();
     },
     methods: {
         check_options(is_submission) {
-            this.is_blank = this.details.text === "";
+            if(is_submission) {
+                this.is_blank = this.details.text === "";
 
-            this.invalid_units = this.details.unit_count <= 0;
-            this.not_divisible = this.details.unit_count % 6 !== 0;
-
+                this.invalid_units = this.details.unit_count <= 0;
+                this.not_divisible = this.details.unit_count % 6 !== 0;
+            } else {
+                if (this.details.text !== "")
+                    this.is_blank = false;
+                if (this.details.unit_count > 0)
+                    this.invalid_units = false;
+                if (this.details.unit_count % 6 === 0)
+                    this.not_divisible = false;
+            }
             return !this.not_divisible && !this.is_blank;
         },
         count_units() {
@@ -51,7 +59,7 @@ Vue.component('rule_custom_text', {
         update_units() {
             // To be called whenever the unit count is updated. Will ask the OR rule to re-evaluate the unit count
             this.parent_update_units_fn();
-            this.check_options();
+            this.check_options(false);
         },
     },
     template: '#customTextRuleTemplate'
