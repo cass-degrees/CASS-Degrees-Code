@@ -8,6 +8,19 @@ from django.shortcuts import render
 staff_url_prefix = "/staff/"
 
 
+def format_title(column_name):
+    """
+    Reformats column name from camel case to a more readable state. eg. programType to Program Type
+    :param column_name:
+    :return: a readable column name
+    """
+    new_column_name = ''
+    for c in column_name:
+        new_column_name += ' ' if c.istitle() else ''
+        new_column_name += c
+    return new_column_name.title()
+
+
 def data_dict_as_displayable(data):
     """
     Rename and drop elements of a data dictionary ("Program", "Subplan", "Course") such that they are human
@@ -34,7 +47,7 @@ def data_dict_as_displayable(data):
         output_list = []
         for value_dict in value_dict_lists:
             # https://stackoverflow.com/questions/5352546/extract-subset-of-key-value-pairs-from-python-dictionary-object
-            new_sub_dict = {k.title(): value_dict[k] for k in desired_sub_columns}
+            new_sub_dict = {format_title(k): value_dict[k] for k in desired_sub_columns}
             output_list.append(new_sub_dict)
 
         new_dict[key] = output_list
