@@ -115,6 +115,8 @@ Vue.component('global_requirement_general', {
                 )
                     this.is_invalid = false;
             }
+
+            return !this.invalid_units && !this.invalid_units_step && !this.units_is_blank && !this.is_invalid;
         }
     },
     template: '#generalGlobalRequirementTemplate'

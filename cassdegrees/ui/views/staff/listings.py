@@ -50,6 +50,9 @@ def data_dict_as_displayable(data):
             new_sub_dict = {format_title(k): value_dict[k] for k in desired_sub_columns}
             output_list.append(new_sub_dict)
 
+        # Sort by latest update
+        output_list.sort(key=(lambda x: x['Last Updated']))
+
         new_dict[key] = output_list
 
     return new_dict
