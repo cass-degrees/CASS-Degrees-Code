@@ -33,8 +33,8 @@ def data_dict_as_displayable(data):
 
     # Columns that are needed
     desired_columns = {
-        'Program': ['id', 'code', 'year', 'name', 'programType', 'units', 'lastUpdated'],
-        'Subplan': ['id', 'code', 'year', 'name', 'planType', 'lastUpdated'],
+        'Program': ['id', 'code', 'year', 'name', 'programType', 'units', 'lastUpdated', 'publish'],
+        'Subplan': ['id', 'code', 'year', 'name', 'planType', 'lastUpdated', 'publish'],
         'Course': ['id', 'code', 'name', 'units', 'lastUpdated'],
         'List': ['id', 'name', 'year', 'lastUpdated']
     }

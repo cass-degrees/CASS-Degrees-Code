@@ -107,6 +107,10 @@
     color:#FFF;
 }
 
+.unpublished-color {
+    background-color: #ffa5a5;
+}
+
 .draggable-group {
     background-color: white;
 }

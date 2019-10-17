@@ -86,14 +86,16 @@
                     <thead>
                         <tr>
                         {% for key in content.0 %}
-                            {% if key != "Id" %}
-                                <th class="sort" data-sort="{{ title }}{{ key }}">{{ key }}</th>
-                            {% else %}
-                                <th class="text-center">
-                                    Select All</br>
-                                    <input id="select_all" title="Select All" type="checkbox" name="select_all" onchange="selectAll(this, '{{ title }}')">
-                                </th>
-                                <th>{{ title }}</th>
+                            {% if key != "Publish" %}
+                                {% if key != "Id" %}
+                                    <th class="sort" data-sort="{{ title }}{{ key }}">{{ key }}</th>
+                                {% else %}
+                                    <th class="text-center">
+                                        Select All</br>
+                                        <input id="select_all" title="Select All" type="checkbox" name="select_all" onchange="selectAll(this, '{{ title }}')">
+                                    </th>
+                                    <th>{{ title }}</th>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                         </tr>
@@ -103,10 +105,10 @@
                     {% for row in content %}
                         <tr>
                             {% for key, item in row.items %}
-
+                                {% if key != "Publish" %}
                                     {# If the item is in the ID column, generate a link to it instead #}
                                     {% if key != "Id" %}
-                                        <td class="{{ title }}{{ key }}">{{ item }}</td>
+                                        <td class="{{ title }}{{ key }}{% if row.Publish is False %} unpublished-color{% endif %}">{{ item }}</td>
                                     {% else %}
                                         <td><p class="text-center"><input title="Select" type="checkbox" class="select_{{ title }}" name="id" value="{{ item }}"  onchange="sessionStorage.setItem('selected', {{ item }})"/></p></td>
                                         <td>
@@ -116,7 +118,7 @@
                                             {% if title == 'Program' %}<a class="btn-uni-grad" href="{{ render.staff_url_prefix }}pdf/program?id={{ item }}">PDF</a>{% endif %}
                                         </td>
                                     {% endif %}
-
+                                {% endif %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
