@@ -48,10 +48,11 @@ def data_dict_as_displayable(data):
         for value_dict in value_dict_lists:
             # https://stackoverflow.com/questions/5352546/extract-subset-of-key-value-pairs-from-python-dictionary-object
             new_sub_dict = {format_title(k): value_dict[k] for k in desired_sub_columns}
+            new_sub_dict['Last Updated'] = new_sub_dict['Last Updated'].strftime("%Y/%m/%d (Y/M/D)")
             output_list.append(new_sub_dict)
 
         # Sort by latest update
-        output_list.sort(key=(lambda x: x['Last Updated']))
+        output_list.sort(key=(lambda x: x['Last Updated']), reverse=True)
 
         new_dict[key] = output_list
 
