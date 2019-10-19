@@ -19,7 +19,7 @@
                 electives of
                 <!-- https://stackoverflow.com/questions/53944468/regex-allow-letters-and-space-only-in-html-input-box -->
                 <input style="margin-left: 0;" class="text" type="text" onkeydown="return /[a-z, ]/i.test(event.key)"
-                       aria-required="true" class="text" v-model="details.subject_area" placeholder="e.g. Arts (optional)">
+                       aria-required="true" v-model="details.subject_area" placeholder="e.g. Arts (optional)">
                 Courses.
             </p>
         </div>
