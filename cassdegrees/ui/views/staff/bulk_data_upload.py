@@ -280,7 +280,7 @@ def bulk_data_upload(request):
                             # Item code AAAA0000 is used to bring the error all the way to the top (due to sorting),
                             # as it is a critical error.
                             failed_to_upload.append({'item_code': "AAAA0000 Bad Row Error",
-                                                     'item_name': f'(Malformed row number {row_counter}',
+                                                     'item_name': f'(Malformed row number {row_counter})',
                                                      'error': "This row has missing data, skipping"})
                             continue
 
@@ -301,10 +301,70 @@ def bulk_data_upload(request):
             # If the uploaded excel sheet is in custom format specified in line 23,
             # then simply convert from the excel format to a list of lists.
             else:
+                row_counter = 0
+                col_size = 0  # Save the number of columns with actual data in the excel sheet (exclude empty columns)
+                col_size_set = False
                 for row in sheet.iter_rows():
+                    row_counter += 1  # Used for keeping track of the row number for error reporting. Starts at 1.
+
                     row_data = list()
                     for cell in row:
-                        row_data.append(str(cell.value))
+                        # Leave None types as None, don't convert those to string.
+                        cell_value = str(cell.value) if cell.value is not None else None
+                        row_data.append(cell_value)
+
+                    # Remove all trailing "None" columns of the excel sheet,
+                    # which could result by when data is written to a new column and then is promptly removed.
+                    if col_size_set:
+                        row_data = row_data[0:col_size]
+                    else:
+                        # Remove all trailing empty cells only from the first row, as size of excel sheet is unknown.
+                        # This isn't done on all rows since some rows may be missing data and it would be unacceptable
+                        # if the entire file was rejected if only one column or subplan had issues.
+                        while row_data and row_data[-1] is None:
+                            row_data.pop()
+
+                        col_size = len(row_data)
+                        col_size_set = True
+
+                    # Since this section can be used for either courses or subplan custom format,
+                    # error messages must be customised for each different types.
+                    if content_type == 'Courses':
+                        if len(row_data) != 12:
+                            context['user_msg'] = "Number of columns in the file doesn't match the requirements! " \
+                                                  "Ensure that the following columns are in the file: " \
+                                                  "code, name, units, offeredYears, offeredSem1, offeredSem2, " \
+                                                  "offeredSummer, offeredAutumn, offeredWinter, offeredSpring, " \
+                                                  "otherOffering and currentlyActive."
+                            context['err_type'] = "error"
+                            return render(request, 'staff/bulkupload.html', context=context)
+
+                        elif None in row_data:
+                            any_error = True
+                            # Item code AAAA0000 is used to bring the error all the way to the top (due to sorting),
+                            # as it is a critical error.
+                            failed_to_upload.append({'item_code': "AAAA0000 Bad Row Error",
+                                                     'item_name': f'(Malformed row number {row_counter})',
+                                                     'error': "This row has missing data, skipping"})
+                            continue
+
+                    elif content_type == 'Subplans':
+                        if len(row_data) != 5:
+                            context['user_msg'] = "Number of columns in the file doesn't match the requirements! " \
+                                                  "Ensure that the following columns are in the file: " \
+                                                  "code, year, name, units and planType."
+                            context['err_type'] = "error"
+                            return render(request, 'staff/bulkupload.html', context=context)
+
+                        elif None in row_data:
+                            any_error = True
+                            # Item code AAAA-XXXX is used to bring the error all the way to the top (due to sorting),
+                            # as it is a critical error.
+                            failed_to_upload.append({'item_code': "AAAA-XXXX Bad Row Error",
+                                                     'item_name': f'(Malformed row number {row_counter})',
+                                                     'error': "This row has missing data, skipping"})
+                            continue
+
                     uploaded_file.append(row_data)
 
         else:
@@ -326,37 +386,38 @@ def bulk_data_upload(request):
                         any_error = True
                         break
 
-                    course_instance = CourseModel()
-                    course_instance.code = row[map['code']]
-                    course_instance.name = row[map['name']]
-                    course_instance.units = int(row[map['units']])
-
-                    course_instance.offeredYears = row[map['offeredYears']].upper()
-
-                    # str() is wrapped around the value because if CASS supported file gets uploaded,
-                    # then boolean values would be added to the rows instead of string "True" and "False".
-                    # This is to support both string and boolean versions of True and False.
-                    course_instance.offeredSem1 = str(row[map['offeredSem1']]).upper() == "TRUE"
-                    course_instance.offeredSem2 = str(row[map['offeredSem2']]).upper() == "TRUE"
-
-                    course_instance.offeredSummer = str(row[map['offeredSummer']]).upper() == "TRUE"
-                    course_instance.offeredAutumn = str(row[map['offeredAutumn']]).upper() == "TRUE"
-                    course_instance.offeredWinter = str(row[map['offeredWinter']]).upper() == "TRUE"
-                    course_instance.offeredSpring = str(row[map['offeredSpring']]).upper() == "TRUE"
-
-                    course_instance.otherOffering = str(row[map['otherOffering']]).upper() == "TRUE"
-
-                    course_instance.currentlyActive = str(row[map['currentlyActive']]).upper() == "TRUE"
-
-                    course_str = course_instance.code + " - " + course_instance.name
-
-                    # Save the course instance
                     try:
+                        course_instance = CourseModel()
+                        course_instance.code = row[map['code']]
+                        course_instance.name = row[map['name']]
+                        course_instance.units = int(row[map['units']])
+
+                        course_instance.offeredYears = row[map['offeredYears']].upper()
+
+                        # str() is wrapped around the value because if CASS supported file gets uploaded,
+                        # then boolean values would be added to the rows instead of string "True" and "False".
+                        # This is to support both string and boolean versions of True and False.
+                        course_instance.offeredSem1 = str(row[map['offeredSem1']]).upper() == "TRUE"
+                        course_instance.offeredSem2 = str(row[map['offeredSem2']]).upper() == "TRUE"
+
+                        course_instance.offeredSummer = str(row[map['offeredSummer']]).upper() == "TRUE"
+                        course_instance.offeredAutumn = str(row[map['offeredAutumn']]).upper() == "TRUE"
+                        course_instance.offeredWinter = str(row[map['offeredWinter']]).upper() == "TRUE"
+                        course_instance.offeredSpring = str(row[map['offeredSpring']]).upper() == "TRUE"
+
+                        course_instance.otherOffering = str(row[map['otherOffering']]).upper() == "TRUE"
+
+                        course_instance.currentlyActive = str(row[map['currentlyActive']]).upper() == "TRUE"
+
+                        course_str = course_instance.code + " - " + course_instance.name
+
+                        # Save the course instance
                         course_instance.save()
                         any_success = True
                         correctly_uploaded.append(course_str)
+
                     except:
-                        error_message = "Couldn't add: Check for duplicate course"
+                        error_message = "Couldn't add: Check for data integrity or for duplicate course"
                         failed_to_upload.append({'item_code': course_instance.code,
                                                  'item_name': course_instance.name,
                                                  'error': error_message})
@@ -367,23 +428,24 @@ def bulk_data_upload(request):
                         any_error = True
                         break
 
-                    subplan_instance = SubplanModel()
-                    subplan_instance.code = row[map['code']]
-                    subplan_instance.year = int(row[map['year']])
-                    subplan_instance.name = row[map['name']]
-                    subplan_instance.units = int(row[map['units']])
-                    subplan_instance.planType = str(row[map['planType']])
-                    subplan_str = str(subplan_instance.year) + " - " + subplan_instance.code + " - " + \
-                        subplan_instance.name
-
-                    # Save the subplan instance
                     try:
+                        subplan_instance = SubplanModel()
+                        subplan_instance.code = row[map['code']]
+                        subplan_instance.year = int(row[map['year']])
+                        subplan_instance.name = row[map['name']]
+                        subplan_instance.units = int(row[map['units']])
+                        subplan_instance.planType = str(row[map['planType']])
+                        subplan_str = str(subplan_instance.year) + " - " + subplan_instance.code + " - " + \
+                            subplan_instance.name
+
+                        # Save the subplan instance
                         subplan_instance.save()
                         any_success = True
                         correctly_uploaded.append(subplan_str)
+
                     except:
                         any_error = True
-                        error_message = "Couldn't add: Check for duplicate subplan"
+                        error_message = "Couldn't add: Check for data integrity or for duplicate subplan"
                         failed_to_upload.append({'item_code': subplan_instance.code,
                                                  'item_name': subplan_instance.name,
                                                  'error': error_message})
